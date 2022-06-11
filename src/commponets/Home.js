@@ -9,12 +9,11 @@ import "./Home.css";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const todoState = useSelector((state) => state.home);
-  const { products } = todoState;
+  const { products } = useSelector((state) => state.home);
 
-//    useEffect(() => {
-//      dispatch(getAdds());
-//  });
+  useEffect(() => {
+    dispatch(getAdds());
+  }, [products]);
 
   const [index, setIndex] = useState(0);
 
@@ -25,26 +24,27 @@ const Home = () => {
   return (
     <>
       <Header />
-      <Carousel  style={{
-                    overflow: "hidden",
-                    boxShadow: "1px 1px 15px #343A40",
-                    margin: "25px",
-                    borderRadius: "20px",
-                  }} activeIndex={index} onSelect={handleSelect}>
+      <Carousel
+        style={{
+          overflow: "hidden",
+          boxShadow: "1px 1px 15px #343A40",
+          margin: "25px",
+          borderRadius: "20px",
+        }}
+        activeIndex={index}
+        onSelect={handleSelect}
+      >
         {products.map((item, i) => {
           return (
-            <Carousel.Item style={{height:"520px"}}>
+            <Carousel.Item key={i} style={{ height: "520px" }}>
               <img
-                className="d-block w-10 mx-auto d-flex justify-content-center"
-                style={{height:"350px"}}
+                className="d-block mx-auto d-flex justify-content-center"
+                style={{ height: "350px" }}
                 src={item.image}
-                alt="First slide"
+                alt={item.category}
               />
-              <Carousel.Caption style={{color:"black"}}>
+              <Carousel.Caption style={{ color: "black" }}>
                 <h3>{item.title}</h3>
-                <p>
-                  Nulla vitae elit libero, a pharetra augue mollis interdum.
-                </p>
               </Carousel.Caption>
             </Carousel.Item>
           );
@@ -59,79 +59,67 @@ const Home = () => {
                 key={i}
                 className="col-lg-4 col-md-5 col-sm-6 my-3 d-flex justify-content-center"
               >
-                <Card
-                  className="card card-item"
-                  key={i}
-                  style={{
-                    overflow: "hidden",
-                    maxWidth: "500px",
-                    boxShadow: "1px 1px 15px #343A40",
-                    margin: "5px",
-                    borderRadius: "20px",
-                    transitionDuration: "3s",
-                  }}
-                >
-                  <Container>
-                    <Row>
-                      <Col xs={30} sm={4} md={4}>
-                        <Card.Img
-                          variant="center"
-                          src={item.image}
-                          style={{
-                            marginTop:"1em"
-,                            height: "250px",
-                            maxHeight: "250px",
-                            width: "300px",
-                            maxWidth: "200px",
-                            textAlign: "center",
-                          }}
-                        />
-                      </Col>
-                    </Row>
-                  </Container>
-                  <Card.Body style={{ textAlign: "center", color: "black" }}>
-                    <Card.Title style={{ textAlign: "center", color: "black" }}>
-                      {item.title.substring(0, 20)}
-                    </Card.Title>
-                    <Card.Title style={{ textAlign: "center", color: "black" }}>
-                      $ {item.price}
-                    </Card.Title>
-                    <Card.Text style={{ textAlign: "center", color: "black" }}>
-                      {item.description.substring(0, 20)}...
-                    </Card.Text>
-                    <Link to={`/Seller/${item.id}`}>
+                <Link to={`/Seller/${item.id}`}>
+                  <Card
+                    className="card card-item"
+                    key={i}
+                    style={{
+                      overflow: "hidden",
+                      maxWidth: "500px",
+                      boxShadow: "1px 1px 15px #343A40",
+                      margin: "5px",
+                      borderRadius: "20px",
+                      transitionDuration: "3s",
+                    }}
+                  >
+                    <Container>
+                      <Row>
+                        <Col xs={30} sm={4} md={4}>
+                          <Card.Img
+                            variant="center"
+                            src={item.image}
+                            style={{
+                              marginTop: "1em",
+                              height: "250px",
+                              maxHeight: "250px",
+                              width: "300px",
+                              maxWidth: "200px",
+                              textAlign: "center",
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                    </Container>
+                    <Card.Body style={{ textAlign: "center", color: "black" }}>
+                      <Card.Title
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        {item.title.substring(0, 20)}
+                      </Card.Title>
+                      <Card.Title
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        $ {item.price}
+                      </Card.Title>
+                      <Card.Text
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        {item.description.substring(0, 20)}...
+                      </Card.Text>
                       <Button className="btn-sm" variant="dark">
-                        Detail
+                        Shop now &#x2192;
                       </Button>
-                    </Link>
-                  </Card.Body>
-                </Card>
+                    </Card.Body>
+                  </Card>
+                </Link>
               </div>
             );
           })}
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };
 
 export default Home;
-
-// const [student, setStudents] = useState([]);
-// async function getAllStudent() {
-//   try {
-//     const student = await axios.get("https://fakestoreapi.com/products/");
-//     setStudents(student.data);
-//   } catch (error) {
-//     console.log("Problem");
-//   }
-// }
-// getAllStudent();
-{
-  /* {prop.student.map((res)=>{
-return(
-  <p>{res.title}</p>
-)
-} */
-}

@@ -1,8 +1,14 @@
-import React, { useState } from "react";
-import { Button, Col, Container, Row, Table } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addToCart, decreseCart } from "../redux/reducers/cartReducer";
+import {
+  addToCart,
+  clearCart,
+  decreseCart,
+  getTotals,
+  removerFromCart,
+} from "../redux/reducers/cartReducer";
 import Header from "./Header";
 
 const Addtocart = () => {
@@ -10,8 +16,10 @@ const Addtocart = () => {
   const user = useSelector((state) => state.users);
   const nav = useNavigate();
   const cart = useSelector((state) => state.cart);
-  console.log(cart);
-  const [plus, setPlus] = useState();
+
+  useEffect(() => {
+    dispatch(getTotals());
+  }, [cart]);
 
   const onMinus = (item) => {
     dispatch(decreseCart(item));
@@ -19,29 +27,32 @@ const Addtocart = () => {
   const onPlus = (item) => {
     dispatch(addToCart(item));
   };
+  const handleRemove = (item) => {
+    dispatch(removerFromCart(item));
+  };
+
+  const cartClear = () => {
+    dispatch(clearCart());
+  };
   const cntShop = () => {
     nav("/");
   };
+  const payment = () => {
+    nav("/finalPayment");
+  };
+
   return (
     <div>
       <Header />
       <div className="container">
-        <div className="container col-md-5 my-5">
+        <div className="my-5">
           <h2 className="container">Your Cart Is Ready</h2>
         </div>
+        <Button variant="outline-warning" className="btn" onClick={cntShop}>
+          <strong>&#x2190;Continue Shopping</strong>
+        </Button>
         <Table striped className="my-4">
           <thead>
-            <tr>
-              <th colSpan={8}>
-                <Button
-                  variant="outline-warning"
-                  className="btn"
-                  onClick={cntShop}
-                >
-                  <strong>&#x2190;Continue Shopping</strong>
-                </Button>
-              </th>
-            </tr>
             <tr>
               <th>Items</th>
               <th colSpan={3}>Description</th>
@@ -60,17 +71,26 @@ const Addtocart = () => {
                   </td>
                   <td>{item.title}</td>
                   <td>
-                    <Button variant="danger" className="btn btn-sm">
+                    <Button
+                      variant="danger"
+                      className="btn btn-sm"
+                      onClick={() => handleRemove(item)}
+                    >
                       X
                     </Button>
                   </td>
-                  <td style={{ textAlign: "right" }}>${item.price}</td>
-                  <td>
-                    <Button className="btn btn-sm" onClick={() => onMinus(item)}>
+                  <td style={{ textAlign: "center" }}>${item.price}</td>
+                  <td style={{ textAlign: "center" }}>
+                    <Button
+                      className="btn btn-sm"
+                      onClick={() => onMinus(item)}
+                    >
                       -
                     </Button>
                     <span className="mx-2">{item.cartQuantity}</span>
-                    <Button className="btn btn-sm" onClick={() => onPlus(item)}>+</Button>
+                    <Button className="btn btn-sm" onClick={() => onPlus(item)}>
+                      +
+                    </Button>
                   </td>
                   <td style={{ textAlign: "right" }}>
                     ${item.price * item.cartQuantity}
@@ -80,12 +100,23 @@ const Addtocart = () => {
             })}
           </tbody>
         </Table>
-        <div className="container col-md-5 my-5">
-          <div className="container my-3"></div>
+        <div className="col-md-15 text-right">
+          <div className="demo-content bg-alt">
+            Subtotal: ${cart.cartTotalAmount}
+          </div>
         </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="demo-content">
+        <div className="col-md-5 my-4">
+          <Button
+            variant="outline-danger"
+            className="text-left btn"
+            onClick={cartClear}
+          >
+            <strong>Clear Cart</strong>
+          </Button>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            <div className="demo-content">
               <Button
                 variant="outline-warning"
                 className="text-left btn"
@@ -95,10 +126,10 @@ const Addtocart = () => {
               </Button>
             </div>
           </div>
-          <div class="col-md-6 text-right">
-            <div class="demo-content bg-alt">
+          <div className="col-md-6 text-right">
+            <div className="demo-content bg-alt">
               {user ? (
-                <Button variant="success" className="text-right ml-6 btn">
+                <Button onClick={payment} variant="success" className="text-right ml-6 btn col-md-15 lg">
                   Procced to Payment
                 </Button>
               ) : (
@@ -110,7 +141,6 @@ const Addtocart = () => {
           </div>
         </div>
       </div>
-      <div></div>
     </div>
   );
 };

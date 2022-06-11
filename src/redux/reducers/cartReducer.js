@@ -36,6 +36,22 @@ const cartSlice = createSlice({
         state.cartItems.push(tempProduct);
       }
     },
+    removerFromCart(state, action) {
+      const nextCartItems = state.cartItems.filter(
+        (cartItem) => cartItem.id !== action.payload.id
+      );
+      state.cartItems = nextCartItems;
+
+      toast.error(`${action.payload.title}  removed from cart`, {
+         position: "bottom-left",
+       });
+      },
+    clearCart(state, action){
+      state.cartItems = [];
+      toast.error(`Cart Clear`, {
+         position: "bottom-left",
+       });
+      },
     decreseCart(state, action) {
       const itemIndex = state.cartItems.findIndex(
         (cartItem) => cartItem.id === action.payload.id
@@ -57,9 +73,28 @@ const cartSlice = createSlice({
         });
       }
     },
+    getTotals(state,action){
+      let {total, quantity} = state.cartItems.reduce(
+        (cartTotal, cartItem) => {
+          const {price, cartQuantity} = cartItem;
+          const itemTotal = price * cartQuantity;
+
+          cartTotal.total += itemTotal
+          cartTotal.quantity += cartQuantity
+
+          return cartTotal;
+        },
+        {
+          total: 0,
+          quantity: 0,
+        }
+      );
+      state.cartTotalQuntity = quantity;
+      state.cartTotalAmount = total
+    }
   },
 });
 
-export const { addToCart, decreseCart } = cartSlice.actions;
+export const { addToCart, decreseCart, removerFromCart, clearCart, getTotals } = cartSlice.actions;
 
 export default cartSlice.reducer;

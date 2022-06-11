@@ -61,8 +61,7 @@ const Header = () => {
       log("/Login");
   }
   const logOutSession = () =>{
-      dispatch(login.rejected())
-      nav("/");
+      nav("/Login");
   }
   return (
     <div>

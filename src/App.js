@@ -5,6 +5,7 @@ import Search from "./commponets/Search";
 import Seller from "./commponets/Seller";
 import Addtocart from "./commponets/Addtocart";
 import Login from "./commponets/Login";
+import Finalpayment from './commponets/Finalpayment'
 import Register from "./commponets/Register";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/Login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/addToCart" element={<Addtocart/>}></Route>
+          <Route path="/Finalpayment" element={<Finalpayment/>}></Route>
           <Route path="/Seller/:id" element={<Seller />}></Route>
         </Routes>
       </Router>

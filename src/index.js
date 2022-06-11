@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import homeReducer from './redux/reducers/homeReducer'
 import { configureStore } from '@reduxjs/toolkit';
 import  userReducer  from './redux/reducers/loginReducer';
-import cartReducer from './redux/reducers/cartReducer';
+import cartReducer, { getTotals } from './redux/reducers/cartReducer';
 import registerReducer from './redux/reducers/userReducer';
 
 
@@ -19,6 +19,7 @@ export const store = configureStore({
       register: registerReducer
     }
 })
+store.dispatch(getTotals());
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
