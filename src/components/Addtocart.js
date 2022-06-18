@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -8,18 +8,53 @@ import {
   decreseCart,
   getTotals,
   removerFromCart,
-} from "../redux/reducers/cartReducer";
+} from "../store/CartSlice";
 import Header from "./Header";
+import axios from 'axios';
 
+let firstRender = true;
 const Addtocart = () => {
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.users);
-  const nav = useNavigate();
-  const cart = useSelector((state) => state.cart);
+  const [user, setUser] = useState();
+    const nav = useNavigate();
+    const cart = useSelector((state) => state.cart);
+
+
+    
+    useEffect(() => {
+      dispatch(getTotals());
+    }, []);
+  const refreshToken = async () =>{
+    const res = await axios.get("http://localhost:5000/api/refresh", {
+      withCredentials: true,
+    }).catch(err => console.log(err))
+    const data = await res.data
+    return data;
+  }
+
+
+  const sendRequest = async () =>{
+    const res = await axios.get("http://localhost:5000/api/user",{
+      withCredentials: true
+    }).catch(err => console.log(err))
+    const data = await res.data
+    return data;
+  }
 
   useEffect(() => {
-    dispatch(getTotals());
-  }, [cart]);
+    if(firstRender){
+      firstRender = false
+      sendRequest().then((data)=> setUser(data.user));
+    }
+    let interval = setInterval(()=>{
+      refreshToken().then(data=>setUser(data.user))
+    },1000 * 29)
+    
+    
+    return ()=>clearInterval(interval)
+  },[]);
+
 
   const onMinus = (item) => {
     dispatch(decreseCart(item));
@@ -40,10 +75,12 @@ const Addtocart = () => {
   const payment = () => {
     nav("/finalPayment");
   };
+  const login = () => {
+    nav("/login");
+  };
 
   return (
     <div>
-      <Header />
       <div className="container">
         <div className="my-5">
           <h2 className="container">Your Cart Is Ready</h2>
@@ -54,7 +91,7 @@ const Addtocart = () => {
         <Table striped className="my-4">
           <thead>
             <tr>
-              <th>Items</th>
+              <th>Items {user && user.firstname}</th>
               <th colSpan={3}>Description</th>
               <th style={{ textAlign: "right" }}>Price</th>
               <th style={{ textAlign: "center" }}>Qty</th>
@@ -128,13 +165,14 @@ const Addtocart = () => {
           </div>
           <div className="col-md-6 text-right">
             <div className="demo-content bg-alt">
-              {user ? (
+              {!isLoggedIn ? (
+                <Button onClick={login} variant="success" className="btn">
+                Login
+              </Button>
+                
+              ) : (
                 <Button onClick={payment} variant="success" className="text-right ml-6 btn col-md-15 lg">
                   Procced to Payment
-                </Button>
-              ) : (
-                <Button variant="success" className="btn">
-                  Login
                 </Button>
               )}
             </div>

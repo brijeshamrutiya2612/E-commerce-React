@@ -1,23 +1,60 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getTotals, removerFromCart } from "../store/CartSlice";
+import axios from "axios";
+import { getData } from "../store/ProductsSlice";
 
 const Finalpayment = () => {
-  const user = useSelector((state) => state.users);
+  let firstRender;
+  // const user = useSelector((state) => state.users);
   const dispatch = useDispatch();
+  const [user, setUser] = useState();
   const cart = useSelector((state) => state.cart);
   const tax = (cart.cartTotalAmount * 23) / 100;
   const gTotal = cart.cartTotalAmount + tax;
-  // useEffect(() => {
-  //     dispatch(getTotals());
-  //   }, [cart]);
-
+  useEffect(() => {
+      dispatch(getTotals());
+    }, [cart]);
+    
+    const refreshToken = async () =>{
+      const res = await axios.get("http://localhost:5000/api/refresh", {
+        withCredentials: true,
+      }).catch(err => console.log(err))
+      const data = await res.data
+      return data;
+    }
+    const sendRequest = async () => {
+      const res = await axios.get('http://localhost:5000/api/user' , {
+          withCredentials: true,
+        })
+        .catch((err) => console.log(err));
+      const data = await res.data;
+      return data;
+    };
+    useEffect(()=>{
+      dispatch(getData())
+    },[])
+    useEffect(()=>{
+      if(firstRender){
+        firstRender = false
+        sendRequest().then((data)=> setUser(data.user));
+      }
+      let interval = setInterval(()=>{
+        refreshToken().then(data=>setUser(data.user))
+      },1000 * 29)
+      
+      return ()=>clearInterval(interval)
+    },[])
   
   const successInfo = () =>{
     
   }
+  const handleRemove = (item) => {
+    dispatch(removerFromCart(item));
+  };
   return (
     <div>
       <div>
@@ -33,7 +70,7 @@ const Finalpayment = () => {
             <thead>
               <tr>
                 <th>Items</th>
-                <th colSpan={2}>Description</th>
+                <th colSpan={3}>Description</th>
                 <th style={{ textAlign: "right" }}>Price</th>
                 <th style={{ textAlign: "center" }}>Qty</th>
                 <th style={{ textAlign: "right" }}>Total</th>
@@ -48,7 +85,7 @@ const Finalpayment = () => {
                       <img style={{ width: "4rem" }} src={item.image} alt="" />
                     </td>
                     <td>{item.title}</td>
-                    {/* <td>
+                    <td>
                     <Button
                       variant="danger"
                       className="btn btn-sm"
@@ -56,7 +93,7 @@ const Finalpayment = () => {
                     >
                       X
                     </Button>
-              </td>*/}
+              </td>
                     <td style={{ textAlign: "center" }}>${item.price}</td>
                     <td style={{ textAlign: "center" }}>
                       <span className="mx-2">{item.cartQuantity}</span>
@@ -76,9 +113,9 @@ const Finalpayment = () => {
           </div>
           <div className="col-md-15 text-right">
             <div className="demo-content bg-alt">
-              Tax: ${Math.floor(tax)}
+            Tax:  ${Math.floor(tax)}
               <br />
-              Grand Total: ${Math.floor(gTotal)}
+              Grand Total:  ${Math.floor(gTotal)}
             </div>
           </div>
           <div className="col-md-5 my-4">
@@ -91,9 +128,7 @@ const Finalpayment = () => {
           </Button> */}
           </div>
           <h4 className="my-5">Shipping Address</h4>
-          {/* {user.map((item) => {
-            return <p>{item.name}</p>;
-          })} */}
+          <p>{user && user.address1}</p>
           <div className="col-md-10 col-lg-15">
             <Button variant="success" size="lg" onClick={successInfo}>
               ${Math.floor(gTotal)} Payment

@@ -1,33 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
-import homeReducer from './redux/reducers/homeReducer'
-import { configureStore } from '@reduxjs/toolkit';
-import  userReducer  from './redux/reducers/loginReducer';
-import cartReducer, { getTotals } from './redux/reducers/cartReducer';
-import registerReducer from './redux/reducers/userReducer';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { store } from "./store/soter";
 
 
-export const store = configureStore({
-    reducer:{
-      home: homeReducer,
-      cart: cartReducer,
-      users: userReducer,
-      register: registerReducer
-    }
-})
-store.dispatch(getTotals());
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-    <App />
-    </Provider>
-  </React.StrictMode>
+  <BrowserRouter>
+    <React.StrictMode>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </React.StrictMode>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -7,8 +7,8 @@ import Header from "./Header";
 import { useDispatch } from "react-redux";
 import "./Home.css";
 import { FaCartArrowDown, FaCartPlus } from "react-icons/fa";
-import { addToCart } from "../redux/reducers/cartReducer";
-import Footer from "./Footer";
+import { addToCart } from "../store/CartSlice";
+
 
 const Seller = (prop) => {
   const [student, setStudents] = useState([]);
@@ -52,8 +52,6 @@ const Seller = (prop) => {
   }
   return (
     <>
-      <Header />
-
       <div className="container my-5 d-flex">
         <div className="row">
           <div className="col-lg-4 col-md-4 col-sm-6 my-3 d-flex justify-content-center">
@@ -159,7 +157,7 @@ const Seller = (prop) => {
           </Container>
         </div>
       </div>
-      <Footer />
+
     </>
   );
 };
