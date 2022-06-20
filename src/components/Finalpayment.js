@@ -1,67 +1,72 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { getTotals, removerFromCart } from "../store/CartSlice";
-import axios from "axios";
 import { getData } from "../store/ProductsSlice";
 
+
+axios.defaults.withCredentials = true;
+let firstRender = true;
+
 const Finalpayment = () => {
-  let firstRender;
-  // const user = useSelector((state) => state.users);
+  const users = useSelector((state) => state.userlogin.isLoggedIn);
   const dispatch = useDispatch();
   const [user, setUser] = useState();
   const cart = useSelector((state) => state.cart);
   const tax = (cart.cartTotalAmount * 23) / 100;
   const gTotal = cart.cartTotalAmount + tax;
   useEffect(() => {
-      dispatch(getTotals());
-    }, [cart]);
-    
-    const refreshToken = async () =>{
-      const res = await axios.get("http://localhost:5000/api/refresh", {
-        withCredentials: true,
-      }).catch(err => console.log(err))
-      const data = await res.data
-      return data;
-    }
-    const sendRequest = async () => {
-      const res = await axios.get('http://localhost:5000/api/user' , {
-          withCredentials: true,
-        })
-        .catch((err) => console.log(err));
-      const data = await res.data;
-      return data;
-    };
-    useEffect(()=>{
-      dispatch(getData())
-    },[])
-    useEffect(()=>{
-      if(firstRender){
-        firstRender = false
-        sendRequest().then((data)=> setUser(data.user));
-      }
-      let interval = setInterval(()=>{
-        refreshToken().then(data=>setUser(data.user))
-      },1000 * 29)
-      
-      return ()=>clearInterval(interval)
-    },[])
-  
-  const successInfo = () =>{
-    
-  }
+    dispatch(getTotals());
+  }, [cart]);
+
+  useEffect(() => {
+    dispatch(getData());
+  }, []);
+
+  const successInfo = () => {};
   const handleRemove = (item) => {
     dispatch(removerFromCart(item));
   };
+
+
+  const refreshToken = async () => {
+    const res = await axios
+      .get("http://localhost:5000/api/refresh", {
+        withCredentials: true,
+      })
+      .catch((err) => console.log(err));
+    const data = await res.data;
+    return data;
+  };
+  const sendRequest = async () => {
+    const res = await axios
+      .get("http://localhost:5000/api/user", {
+        withCredentials: true,
+      })
+      .catch((err) => console.log(err));
+    const data = await res.data;
+    return data;
+  };
+  useEffect(() => {
+    if (firstRender) {
+      firstRender = false;
+      sendRequest().then((data) => setUser(data.user));
+    }
+    let interval = setInterval(() => {
+      refreshToken().then((data) => setUser(data.user));
+    }, 1000 * 29);
+    return () => clearInterval(interval);
+  }, []);
+
+  
   return (
     <div>
-      <div>
-        <div className="container">
-          <div className="my-5">
-            <h2 className="container">Final Payment</h2>
-            <h4 className="container my-4">Your Cart Items</h4>
+      <div className="pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
+        <div>
+          <div className="">
+            <h2 className="pt-3">Final Payment</h2>
+            <h4 className="my-4">Your Cart Items</h4>
           </div>
           {/* <Button variant="outline-warning" className="btn" onClick={cntShop}>
           <strong>&#x2190;Continue Shopping</strong>
@@ -79,21 +84,21 @@ const Finalpayment = () => {
             <tbody>
               {cart.cartItems.map((item, i) => {
                 return (
-                  <tr>
+                  <tr key={i}>
                     <td>{i + 1}</td>
                     <td>
                       <img style={{ width: "4rem" }} src={item.image} alt="" />
                     </td>
                     <td>{item.title}</td>
                     <td>
-                    <Button
-                      variant="danger"
-                      className="btn btn-sm"
-                      onClick={() => handleRemove(item)}
-                    >
-                      X
-                    </Button>
-              </td>
+                      <Button
+                        variant="danger"
+                        className="btn btn-sm"
+                        onClick={() => handleRemove(item)}
+                      >
+                        X
+                      </Button>
+                    </td>
                     <td style={{ textAlign: "center" }}>${item.price}</td>
                     <td style={{ textAlign: "center" }}>
                       <span className="mx-2">{item.cartQuantity}</span>
@@ -113,9 +118,9 @@ const Finalpayment = () => {
           </div>
           <div className="col-md-15 text-right">
             <div className="demo-content bg-alt">
-            Tax:  ${Math.floor(tax)}
+              Tax: ${Math.floor(tax)}
               <br />
-              Grand Total:  ${Math.floor(gTotal)}
+              Grand Total: ${Math.floor(gTotal)}
             </div>
           </div>
           <div className="col-md-5 my-4">
@@ -129,9 +134,11 @@ const Finalpayment = () => {
           </div>
           <h4 className="my-5">Shipping Address</h4>
           <p>{user && user.address1}</p>
-          <div className="col-md-10 col-lg-15">
+          <p>{user && user.address2}</p>
+          <p>{user && user.address3}</p>
+          <div className="text-center">
             <Button variant="success" size="lg" onClick={successInfo}>
-              ${Math.floor(gTotal)} Payment
+              Your Total Amount <b>${Math.floor(gTotal)}</b> to Pay
             </Button>
           </div>
         </div>

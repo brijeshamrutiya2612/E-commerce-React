@@ -10,51 +10,18 @@ import {
   removerFromCart,
 } from "../store/CartSlice";
 import Header from "./Header";
-import axios from 'axios';
+import axios from "axios";
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 
-let firstRender = true;
 const Addtocart = () => {
-  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
   const dispatch = useDispatch();
   const [user, setUser] = useState();
-    const nav = useNavigate();
-    const cart = useSelector((state) => state.cart);
-
-
-    
-    useEffect(() => {
-      dispatch(getTotals());
-    }, []);
-  const refreshToken = async () =>{
-    const res = await axios.get("http://localhost:5000/api/refresh", {
-      withCredentials: true,
-    }).catch(err => console.log(err))
-    const data = await res.data
-    return data;
-  }
-
-
-  const sendRequest = async () =>{
-    const res = await axios.get("http://localhost:5000/api/user",{
-      withCredentials: true
-    }).catch(err => console.log(err))
-    const data = await res.data
-    return data;
-  }
-
+  const nav = useNavigate();
+  const cart = useSelector((state) => state.cart);
   useEffect(() => {
-    if(firstRender){
-      firstRender = false
-      sendRequest().then((data)=> setUser(data.user));
-    }
-    let interval = setInterval(()=>{
-      refreshToken().then(data=>setUser(data.user))
-    },1000 * 29)
-    
-    
-    return ()=>clearInterval(interval)
-  },[]);
-
+    dispatch(getTotals());
+  }, []);
 
   const onMinus = (item) => {
     dispatch(decreseCart(item));
@@ -81,19 +48,21 @@ const Addtocart = () => {
 
   return (
     <div>
-      <div className="container">
-        <div className="my-5">
-          <h2 className="container">Your Cart Is Ready</h2>
-        </div>
+      <div className="my-5 pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
+        <div className="pt-4">
         <Button variant="outline-warning" className="btn" onClick={cntShop}>
           <strong>&#x2190;Continue Shopping</strong>
         </Button>
-        <Table striped className="my-4">
+        </div>
+        
+          <h2 style={{textAlign:"center"}} className="pt-3 pb-5"><ShoppingBagIcon style={{fontSize:"100px",color:"#14657C"}}/> Your Cart</h2>
+        
+        <Table striped className="my-2">
           <thead>
             <tr>
               <th>Items {user && user.firstname}</th>
               <th colSpan={3}>Description</th>
-              <th style={{ textAlign: "right" }}>Price</th>
+              <th style={{ textAlign: "center" }}>Price</th>
               <th style={{ textAlign: "center" }}>Qty</th>
               <th style={{ textAlign: "right" }}>Total</th>
             </tr>
@@ -101,7 +70,7 @@ const Addtocart = () => {
           <tbody>
             {cart.cartItems.map((item, i) => {
               return (
-                <tr>
+                <tr key={i}>
                   <td>{i + 1}</td>
                   <td>
                     <img style={{ width: "4rem" }} src={item.image} alt="" />
@@ -119,13 +88,18 @@ const Addtocart = () => {
                   <td style={{ textAlign: "center" }}>${item.price}</td>
                   <td style={{ textAlign: "center" }}>
                     <Button
-                      className="btn btn-sm"
+                      className="btn"
+                      variant="light"
                       onClick={() => onMinus(item)}
                     >
                       -
                     </Button>
-                    <span className="mx-2">{item.cartQuantity}</span>
-                    <Button className="btn btn-sm" onClick={() => onPlus(item)}>
+                    <span className="pl-2 pr-2">{item.cartQuantity}</span>
+                    <Button
+                      className="btn btn-sm"
+                      variant="light"
+                      onClick={() => onPlus(item)}
+                    >
                       +
                     </Button>
                   </td>
@@ -138,7 +112,7 @@ const Addtocart = () => {
           </tbody>
         </Table>
         <div className="col-md-15 text-right">
-          <div className="demo-content bg-alt">
+          <div className="demo-content bg-alt pt-2">
             Subtotal: ${cart.cartTotalAmount}
           </div>
         </div>
@@ -167,11 +141,14 @@ const Addtocart = () => {
             <div className="demo-content bg-alt">
               {!isLoggedIn ? (
                 <Button onClick={login} variant="success" className="btn">
-                Login
-              </Button>
-                
+                  Login
+                </Button>
               ) : (
-                <Button onClick={payment} variant="success" className="text-right ml-6 btn col-md-15 lg">
+                <Button
+                  onClick={payment}
+                  variant="success"
+                  className="text-right ml-6 btn col-md-15 lg"
+                >
                   Procced to Payment
                 </Button>
               )}

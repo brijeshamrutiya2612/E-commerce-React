@@ -3,52 +3,60 @@ import {
   Badge,
   Button,
   Container,
+  Form,
   FormControl,
   Nav,
   Navbar,
   NavDropdown,
 } from "react-bootstrap";
-import {  Box, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginActions } from "../store/loginSlice";
-import { BsFillCartFill } from "react-icons/bs";
+import { BsFillCartFill, BsFillCartPlusFill } from "react-icons/bs";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import axios from "axios";
+import ShoppingBag from "@mui/icons-material/ShoppingBag";
 
 axios.defaults.withCredentials = true;
+let firstRender = true;
+
 function Header() {
-  let firstRender = true;
   const dispatch = useDispatch();
   const nav = useNavigate();
   const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
-  // const cart = useSelector((state) => state.cart);
+  const cart = useSelector((state) => state.cart);
+  const { getProd } = useSelector((state) => state.products);
   const [value, setValue] = useState();
   const [user, setUser] = useState();
 
-  //   const refreshToken = async () =>{
-  //         const res = await axios.get("http://localhost:5000/api/refresh", {
-  //           withCredentials: true,
-  //         }).catch(err => console.log(err))
-  //         const data = await res.data
-  //         return data;
-  //       }
-  //   const sendRequest = async () => {
-  //   const res = await axios.get('http://localhost:5000/api/user' , {
-  //       withCredentials: true,
-  //     })
-  //     .catch((err) => console.log(err));
-  //   const data = await res.data;
-  //   return data;
-  // };
+  const refreshToken = async () => {
+    const res = await axios
+      .get("http://localhost:5000/api/refresh", {
+        withCredentials: true,
+      })
+      .catch((err) => console.log(err));
+    const data = await res.data;
+    return data;
+  };
+  const sendRequest = async () => {
+    const res = await axios
+      .get("http://localhost:5000/api/user", {
+        withCredentials: true,
+      })
+      .catch((err) => console.log(err));
+    const data = await res.data;
+    return data;
+  };
   useEffect(() => {
-    // if(firstRender){
-    //   firstRender = false
-    //   sendRequest().then((data)=> setUser(data.user));
-    // }
-    // let interval = setInterval(()=>{
-    //   refreshToken().then((data)=>setUser(data.user))
-    // },1000 * 29)
-    // return ()=>clearInterval(interval)
+    if (firstRender) {
+      firstRender = false;
+      sendRequest().then((data) => setUser(data.user));
+    }
+    let interval = setInterval(() => {
+      refreshToken().then((data) => setUser(data.user));
+    }, 1000 * 29);
+    return () => clearInterval(interval);
   }, []);
 
   const sendLogoutReq = async () => {
@@ -66,90 +74,79 @@ function Header() {
   const home = () => {
     nav("/");
   };
+
   return (
     <div>
-      <Navbar
-        collapseOnSelect
-        expand="lg"
-        style={{
-          backgroundColor: "#14657C",
-        }}
-        variant="dark"
-      >
-        <Navbar.Brand>MART</Navbar.Brand>
-        <Container>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav" className="col-md-3">
-            <Nav>
-              <Button
-                variant="dark"
-                style={{ textAlign: "left" }}
-                onClick={home}
-              >
-                HOME
-              </Button>
-              <NavDropdown
-                style={{ mxWidth: "110px" }}
-                title="PRODUCT"
-                id="collasible-nav-dropdown"
-              >
-                <NavDropdown.Item>
-                  <Link
-                    style={{ color: "#343A40", textDecoration: "none" }}
-                    to="/"
-                  >
-                  </Link>
-                </NavDropdown.Item>
-                {/* <NavDropdown.Item>WOMAN</NavDropdown.Item>
-            <NavDropdown.Item>JWELLARY</NavDropdown.Item>
-            <NavDropdown.Item>ELECTRONICS</NavDropdown.Item> */}
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-
-          <form className="d-flex my-3 col-md-8">
-            <FormControl
-              type="search"
-              placeholder="Search by Category..."
-
-              aria-label="Search" />
-            <Button
-              className="ml-3"
-              type="submit"
-              variant="dark"
+      <Navbar bg="light" expand="lg">
+        <Container fluid>
+          <Navbar.Brand href="#">
+            <ShoppingBag style={{ fontSize: "50px", color: "#14657C" }} /> MART
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="navbarScroll" />
+          <Navbar.Collapse id="navbarScroll">
+            <Nav
+              className="me-auto my-2 my-lg-0"
+              style={{ maxHeight: "100px" }}
+              navbarScroll
             >
-              Search
-            </Button>
-            <Button className="ml-1" onClick={home} variant="dark">
-              Reset
-            </Button>
-          </form>
-
-          <Link to="/addToCart">
-            <Badge className="ml-3" style={{ color: "white" }}>
-              <BsFillCartFill color="white" fontSize="30px" />
-              {/* {cart.cartItems.length} */}
-            </Badge>
-          </Link>
-          <div className="text-right col-md-1">
-          </div>
-          <Box sx={{ marginLeft: "auto" }}>
-            
-              {!isLoggedIn && (<>
-                <Tab to="/login" LinkComponent={Link} label="Login" />
-                <Tab to="/register" LinkComponent={Link} label="Signup" />
-              </>)}
-              {isLoggedIn && (
-                <>
+              <Nav.Link onClick={home}>Home</Nav.Link>
+              <Nav.Link href="#action2">Products</Nav.Link>
+            </Nav>
+            <Form className="d-flex mx-auto mb-2">
+              <Form.Control
+                type="search"
+                placeholder="Search"
+                className="me-2 mt-2"
+                aria-label="Search"
+              />
+              <Button variant="outline-success" className="ml-2">
+                Search
+              </Button>
+              <Button variant="outline-danger" className="ml-2">
+                Reset
+              </Button>
+            </Form>
+            <Link to="/addToCart">
+              <ShoppingCartOutlinedIcon />
+              {cart.cartItems.length}
+            </Link>
+            {!isLoggedIn && (
+              <>
+                <Tab
+                  to="/login"
+                  LinkComponent={Link}
+                  label="Login"
+                  style={{ color: "#14657C" }}
+                />
+                &#x2002;
+                <Tab
+                  to="/register"
+                  LinkComponent={Link}
+                  label="Signup"
+                  style={{ color: "#14657C" }}
+                />
+              </>
+            )}
+            {isLoggedIn && (
+              <>
+                <NavDropdown className="pr-5" title={user && user.firstname.toUpperCase()} id="navbarScrollingDropdown">
+                  <NavDropdown.Item><Link to={`/user/${user._id}`}>Dashboard</Link></NavDropdown.Item>
+                  <NavDropdown.Item href="#action4">
+                    Your Cart
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
                   <Tab
-                    onClick={handleLogout}
-                    to="/"
-                    LinkComponent={Link}
-                    label="Logout" />
-                  <p>{user && user.firstname}</p>
-                </>
-              )}
-          </Box>
+                  onClick={handleLogout}
+                  to="/"
+                  LinkComponent={Link}
+                  label="Logout"
+                  style={{ color: "#14657C" }}
+                />
+                </NavDropdown>
+                
+              </>
+            )}
+          </Navbar.Collapse>
         </Container>
       </Navbar>
     </div>

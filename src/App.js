@@ -11,12 +11,14 @@ import Finalpayment from "./components/Finalpayment";
 import { useSelector } from "react-redux";
 import Header from "./components/Header";
 import New from "./components/New";
+import Userprofile from "./components/Userprofile";
 
 function App() {
   const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
   console.log(isLoggedIn);
   return (
     <React.Fragment>
+      <div style={{margin: "auto", backgroundColor:"#E5E5E5"}}>
       <header>
         <Header />
       </header>
@@ -31,8 +33,10 @@ function App() {
           <Route path="/Finalpayment" element={<Finalpayment />}></Route>
           <Route path="/Seller/:id" element={<Seller />}></Route>
           <Route path="/new" element={<New />}></Route>
+          <Route path="/user/:id" element={<Userprofile/>}></Route>
         </Routes>
       </main>
+      </div>
     </React.Fragment>
   );
 }

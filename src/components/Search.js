@@ -28,7 +28,6 @@ const Search = () => {
   console.log(search);
   return (
     <>
-      <Header />
       <div className="container">
         <h3>Your Choice is in Our Place</h3>
         <div className="row">

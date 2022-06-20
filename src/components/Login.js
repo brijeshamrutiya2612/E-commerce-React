@@ -7,6 +7,7 @@ import { loginActions } from "../store/loginSlice";
 // import shop from "./login_bck.jpg";
 import axios from "axios";
 import Header from "./Header";
+import ShoppingBag from "@mui/icons-material/ShoppingBag";
 
 
 const Login = () => {
@@ -81,10 +82,11 @@ const Login = () => {
               }}
             >
               <h2
-                className="container col-md-5 justify-content-center"
-                style={{ fontSize: "50px", color: "#BE8550" }}
+                 className="container text-center"
+                 variant="contained"
+                
               >
-                Mart
+                <ShoppingBag style={{fontSize:"50px",color:"#14657C"}}/> MART
               </h2>
               <h2 className="container mx-auto my-4 justify-content-center">
                 Sign In
@@ -116,6 +118,7 @@ const Login = () => {
                   <Button
                     className="container col-md-11 justify-content-center"
                     variant="contained"
+                    style={{backgroundColor:"#14657C"}}
                     onClick={homeComponent}
                   >
                     LOGIN

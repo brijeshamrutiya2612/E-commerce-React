@@ -4,7 +4,8 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const baseURL = "https://jsonplaceholder.typicode.com/posts";
+
+const baseURL = "https://fakestoreapi.com/products/";
 const initialState = {
   getProd: [],
   addTodoStatus: "",
@@ -22,7 +23,24 @@ export const getData = createAsyncThunk(
   "getProd/getData",
   async () => {
     try {
-      const response = await axios.get(baseURL);
+      const response = await axios.get("https://fakestoreapi.com/products/",{
+        withCredentials:false
+      });
+      // console.log(response.data)
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return error.response.data;
+    }
+  }
+);
+export const getCategory = createAsyncThunk(
+  "getProd/getCategory",
+  async () => {
+    try {
+      const response = await axios.get("https://fakestoreapi.com/products/categories",{
+        withCredentials:false
+      });
       // console.log(response.data)
       return response.data;
     } catch (error) {

@@ -6,46 +6,14 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getData } from "../store/ProductsSlice";
 
-axios.defaults.withCredentials = true;
 const Home = () => {
-  let firstRender = true;
   const dispatch = useDispatch();
-  const {getProd} = useSelector(state=>state.products)
-  
+  const { getProd } = useSelector((state) => state.products);
+  // console.log(getProd);
   const [user, setUser] = useState();
- 
-
-  const refreshToken = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/refresh", {
-        withCredentials: true,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-
-  const sendRequest = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/user", {
-        withCredentials: true,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
 
   useEffect(() => {
-    dispatch(getData())
-     if (firstRender) {
-      firstRender = false;
-      sendRequest().then((data) => setUser(data.user));
-    }
-    let interval = setInterval(() => {
-      refreshToken().then((data) => setUser(data.user));
-    }, 1000 * 29);
-
-    return () => clearInterval(interval);
+    dispatch(getData());
   }, []);
   const [index, setIndex] = useState(0);
 
@@ -56,7 +24,6 @@ const Home = () => {
     <div>
       <div
         style={{
-          backgroundColor: "#AFC7D3",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           width: "auto",
@@ -86,7 +53,7 @@ const Home = () => {
                 <img
                   className="d-block mx-auto d-flex justify-content-center"
                   style={{ height: "350px" }}
-                  src={item.url}
+                  src={item.image}
                   alt={item.category}
                 />
                 <Carousel.Caption style={{ color: "black" }}>
@@ -96,9 +63,9 @@ const Home = () => {
             );
           })}
         </Carousel>
-        {/* <div className="container">
+        <div className="container">
           <div className="row">
-            {users.map((item, i) => {
+            {getProd.map((item, i) => {
               return (
                 <div
                   key={i}
@@ -163,7 +130,7 @@ const Home = () => {
               );
             })}
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );

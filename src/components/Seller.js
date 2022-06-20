@@ -21,14 +21,20 @@ const Seller = (prop) => {
     async function getAllStudent() {
       try {
         const student = await axios.get(
-          `https://fakestoreapi.com/products/${id}`
+          `https://fakestoreapi.com/products/${id}`,{
+            withCredentials:false
+          }
         );
         setStudents(student.data);
 
-        const rate = await axios.get(`https://fakestoreapi.com/products/${id}`);
+        const rate = await axios.get(`https://fakestoreapi.com/products/${id}`,{
+          withCredentials:false
+        });
         setRate(rate.data.rating);
 
-        const all = await axios.get("https://fakestoreapi.com/products/");
+        const all = await axios.get("https://fakestoreapi.com/products/",{
+          withCredentials:false
+        });
         setAll(all.data);
 
         const Product = all.data;
@@ -52,9 +58,9 @@ const Seller = (prop) => {
   }
   return (
     <>
-      <div className="container my-5 d-flex">
+      <div className="d-flex" style={{backgroundColor:"white"}}>
         <div className="row">
-          <div className="col-lg-4 col-md-4 col-sm-6 my-3 d-flex justify-content-center">
+          <div className="d-flex justify-content-center">
             <Card className="card" style={{ border: "none", width: "20rem" }}>
               <Card.Img
                 variant="top"
@@ -84,7 +90,7 @@ const Seller = (prop) => {
             </p>
             <Button
               variant="warning"
-              className="col-md-15 d-flex justify-content-center"
+              className="d-flex justify-content-center"
               onClick={() => send(student)}
             >
               <FaCartArrowDown className="my-1 d-flex justify-content-center" />&#x2003;
@@ -92,7 +98,7 @@ const Seller = (prop) => {
             </Button>
             <Button
               variant="success"
-              className="col-md-15 my-3 d-flex justify-content-center"
+              className="d-flex justify-content-center"
               onClick={() => finalBuy(student)}
             >
               <FaCartPlus className="my-1 d-flex justify-content-center" />&#x2003;&#x2003;
@@ -102,20 +108,20 @@ const Seller = (prop) => {
           </div>
         </div>
       </div>
-      <div className="container my-5 d-flex">
+      <div className="d-flex" style={{backgroundColor:"white"}}>
         <div className="row">
           <Container style={{ borderTop: "1px solid" }}>
             <h3>Related Products</h3>
-            {all.map((item) => {
+            {all.map((item,i) => {
               return (
                 <>
-                  <div key={item.id} className="container my-5 d-flex">
+                  <div key={i} className="d-flex">
                     <Link
                       to={`/Seller/${item.id}`}
                       style={{ color: "black", textDecoration: "none" }}
                     >
                       <div className="row">
-                        <div className="my-3 justify-content-center">
+                        <div className="justify-content-center">
                           <Card className="card" style={{border:"none"}}>
                             <Card.Img
                               variant="top"
