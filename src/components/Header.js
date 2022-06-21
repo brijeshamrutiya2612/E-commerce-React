@@ -77,7 +77,12 @@ function Header() {
 
   return (
     <div>
-      <Navbar bg="light" expand="lg">
+      <Navbar style={{width: "100%",
+    backgroundColor: "#fff",
+    height: "52px",
+    lineHeight: "52px",
+    display:"inline-block",
+    position: "relative"}} bg="light" expand="lg">
         <Container fluid>
           <Navbar.Brand href="#">
             <ShoppingBag style={{ fontSize: "50px", color: "#14657C" }} /> MART
