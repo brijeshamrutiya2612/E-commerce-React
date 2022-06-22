@@ -12,17 +12,23 @@ import { useSelector } from "react-redux";
 import Header from "./components/Header";
 import New from "./components/New";
 import Userprofile from "./components/Userprofile";
+import Footer from "./components/Footer";
+import Admin from "./Admin/Admin";
+import Dashboard from "./Admin/Pages/Dashboard";
+import AddProducts from "./Admin/Pages/AddProducts";
+
 
 function App() {
   const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
   console.log(isLoggedIn);
   return (
     <React.Fragment>
-      <div style={{margin: "auto", backgroundColor:"#E5E5E5"}}>
+      <div style={{margin: "auto"}}>
       <header>
         <Header />
       </header>
       <main>
+        
         <Routes>
           <Route path="/" element={<Home />}></Route>
           {isLoggedIn && <Route path="/" element={<Home />}></Route>}{" "}
@@ -34,8 +40,14 @@ function App() {
           <Route path="/Seller/:id" element={<Seller />}></Route>
           <Route path="/new" element={<New />}></Route>
           <Route path="/user/:id" element={<Userprofile/>}></Route>
-        </Routes>
+          <Route path="/Admin" element={<Admin/>}></Route>
+          <Route path="/dashboard" element={<Dashboard/>}></Route>
+          <Route path="/addproducts" element={<AddProducts/>}></Route>
+        </Routes>  
       </main>
+      <header>
+        <Footer/>
+      </header>
       </div>
     </React.Fragment>
   );

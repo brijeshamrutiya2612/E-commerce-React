@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 // import { userRegister } from "../redux/reducers/userReducer";
 // import shop from "./login_bck.jpg";
 import axios from 'axios';
-import Header from "./Header";
 
 const Register = () => {
   // const dispatch = useDispatch();

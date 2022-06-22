@@ -6,8 +6,8 @@ import { getTotals, removerFromCart } from "../store/CartSlice";
 import { getData } from "../store/ProductsSlice";
 
 
-axios.defaults.withCredentials = true;
-let firstRender = true;
+// axios.defaults.withCredentials = true;
+// let firstRender = true;
 
 const Finalpayment = () => {
   const users = useSelector((state) => state.userlogin.isLoggedIn);
@@ -30,39 +30,39 @@ const Finalpayment = () => {
   };
 
 
-  const refreshToken = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/refresh", {
-        withCredentials: true,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  const sendRequest = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/user", {
-        withCredentials: true,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  useEffect(() => {
-    if (firstRender) {
-      firstRender = false;
-      sendRequest().then((data) => setUser(data.user));
-    }
-    let interval = setInterval(() => {
-      refreshToken().then((data) => setUser(data.user));
-    }, 1000 * 29);
-    return () => clearInterval(interval);
-  }, []);
+  // const refreshToken = async () => {
+  //   const res = await axios
+  //     .get("http://localhost:5000/api/refresh", {
+  //       withCredentials: true,
+  //     })
+  //     .catch((err) => console.log(err));
+  //   const data = await res.data;
+  //   return data;
+  // };
+  // const sendRequest = async () => {
+  //   const res = await axios
+  //     .get("http://localhost:5000/api/user", {
+  //       withCredentials: true,
+  //     })
+  //     .catch((err) => console.log(err));
+  //   const data = await res.data;
+  //   return data;
+  // };
+  // useEffect(() => {
+  //   if (firstRender) {
+  //     firstRender = false;
+  //     sendRequest().then((data) => setUser(data.user));
+  //   }
+  //   let interval = setInterval(() => {
+  //     refreshToken().then((data) => setUser(data.user));
+  //   }, 1000 * 29);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   
   return (
-    <div>
-      <div className="pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
+    <div className="pt-5">
+      <div className="pt-5 pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
         <div>
           <div className="">
             <h2 className="pt-3">Final Payment</h2>
@@ -76,7 +76,7 @@ const Finalpayment = () => {
               <tr>
                 <th>Items</th>
                 <th colSpan={3}>Description</th>
-                <th style={{ textAlign: "right" }}>Price</th>
+                <th style={{ textAlign: "center" }}>Price</th>
                 <th style={{ textAlign: "center" }}>Qty</th>
                 <th style={{ textAlign: "right" }}>Total</th>
               </tr>

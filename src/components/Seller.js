@@ -1,14 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Button, Card,  Container } from "react-bootstrap";
+import { Button, Card, Carousel, Col, Container, Row } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Rating } from "react-simple-star-rating";
 import Header from "./Header";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import "./Home.css";
 import { FaCartArrowDown, FaCartPlus } from "react-icons/fa";
 import { addToCart } from "../store/CartSlice";
-
+import { getData } from "../store/ProductsSlice";
 
 const Seller = (prop) => {
   const [student, setStudents] = useState([]);
@@ -17,23 +17,32 @@ const Seller = (prop) => {
   const { id } = useParams();
   const final = useNavigate();
   const dispatch = useDispatch();
+   const { getProd } = useSelector((state) => state.products);
+  // console.log(getProd);
+  const [user, setUser] = useState();
+
   useEffect(() => {
+    dispatch(getData());
     async function getAllStudent() {
       try {
         const student = await axios.get(
-          `https://fakestoreapi.com/products/${id}`,{
-            withCredentials:false
+          `https://fakestoreapi.com/products/${id}`,
+          {
+            withCredentials: false,
           }
         );
         setStudents(student.data);
 
-        const rate = await axios.get(`https://fakestoreapi.com/products/${id}`,{
-          withCredentials:false
-        });
+        const rate = await axios.get(
+          `https://fakestoreapi.com/products/${id}`,
+          {
+            withCredentials: false,
+          }
+        );
         setRate(rate.data.rating);
 
-        const all = await axios.get("https://fakestoreapi.com/products/",{
-          withCredentials:false
+        const all = await axios.get("https://fakestoreapi.com/products/", {
+          withCredentials: false,
         });
         setAll(all.data);
 
@@ -50,24 +59,36 @@ const Seller = (prop) => {
   }, [id]);
 
   const send = (student) => {
-     dispatch(addToCart(student));
-  };
-  const finalBuy = () =>{
     dispatch(addToCart(student));
-    final("/Addtocart")
-  }
+  };
+  const finalBuy = () => {
+    dispatch(addToCart(student));
+    final("/Addtocart");
+  };
+  const [index, setIndex] = useState(0);
+
+  const handleSelect = (selectedIndex, e) => {
+    setIndex(selectedIndex);
+  };
   return (
     <>
-      <div className="d-flex" style={{backgroundColor:"white"}}>
+      <div
+        className="container d-flex"
+        style={{
+          backgroundColor: "white",
+          paddingTop: "8em",
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
         <div className="row">
-          <div className="d-flex justify-content-center">
-            <Card className="card" style={{ border: "none", width: "20rem" }}>
+          <div className="d-flex justify-content-center" style={{width:"35rem"}}>
+            <Card className="card" style={{ border: "none"}}>
               <Card.Img
                 variant="top"
                 className="card-item"
                 style={{
-                  height: "auto",
-                  maxHeight: "250px",
+                  maxHeight: "400px",
                   width: "auto",
                   maxWidth: "500px",
                   minWidth: "100px",
@@ -77,93 +98,171 @@ const Seller = (prop) => {
             </Card>
           </div>
 
-          <div key={student.id} className="col justify-content-center" >
-            <h5>
+          <div key={student.id} className="col justify-content-center">
+            <h2>
               <u>{student.title}</u>
-            </h5>
+            </h2>
             <Rating ratingValue={rate.rate * 20} size={20}></Rating>
             <small style={{ marginTop: "10px" }}> ({rate.count}) Rating</small>
-            <p>Price: &#x20B9;{student.price}</p>
+            <p>Price: ${student.price}</p>
             <p>Category: {student.category}</p>
             <p>
               <b>Description:</b> {student.description}
             </p>
             <Button
               variant="warning"
-              className="d-flex justify-content-center"
+              className="col mb-2 d-flex justify-content-center"
               onClick={() => send(student)}
             >
-              <FaCartArrowDown className="my-1 d-flex justify-content-center" />&#x2003;
-              Add to Cart
+              <FaCartArrowDown className="my-1 d-flex justify-content-center" />
+              &#x2003; Add to Cart
             </Button>
             <Button
               variant="success"
-              className="d-flex justify-content-center"
+              className="col d-flex justify-content-center"
               onClick={() => finalBuy(student)}
             >
-              <FaCartPlus className="my-1 d-flex justify-content-center" />&#x2003;&#x2003;
-              Buy Now
-              
+              <FaCartPlus className="my-1 d-flex justify-content-center" />
+              &#x2003;&#x2003; Buy Now
             </Button>
           </div>
         </div>
       </div>
-      <div className="d-flex" style={{backgroundColor:"white"}}>
+      <div className="container col-lg-15">
+          <h3 className="pt-5 pb-5 col-lg-5">Related Products</h3>
         <div className="row">
-          <Container style={{ borderTop: "1px solid" }}>
-            <h3>Related Products</h3>
-            {all.map((item,i) => {
-              return (
-                <>
-                  <div key={i} className="d-flex">
-                    <Link
-                      to={`/Seller/${item.id}`}
-                      style={{ color: "black", textDecoration: "none" }}
-                    >
-                      <div className="row">
-                        <div className="justify-content-center">
-                          <Card className="card" style={{border:"none"}}>
-                            <Card.Img
-                              variant="top"
-                              style={{
-                                overflow: "hidden",
-                                maxWidth: "200px",
-                                boxShadow: "1px 1px 15px #343A40",
-                                margin: "5px",
-                                borderRadius: "20px",
-                                transitionDuration: "3s",
-                              }}
-                              src={item.image}
-                            />
-                          </Card>
-                        </div>
-                        <div className="col justify-content-center">
-                          <h5>
-                            <u>{item.title}</u>
-                          </h5>
-                          <Rating
-                            ratingValue={item.rating.rate * 20}
-                            size={20}
-                          ></Rating>
-                          <small style={{ marginTop: "10px" }}>
-                            ({item.rating.count}) Rating
-                          </small>
-                          <p>Price: &#x20B9;{item.price}</p>
-                          <p>Category: {item.category}</p>
-                          <p>
-                            <b>Description:</b> {item.description}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                </>
-              );
-            })}
-          </Container>
+          {all.map((item, i) => {
+            return (
+              <div
+                key={i}
+                className="col-lg-3 col-sm-6 my-3 d-flex justify-content-center"
+              >
+                <Link to={`/Seller/${item.id}`}>
+                  <Card
+                    className="card card-item"
+                    key={i}
+                    style={{
+                      overflow: "hidden",
+                      maxWidth: "500px",
+                      boxShadow: "1px 1px 15px #343A40",
+                      margin: "5px",
+                      transitionDuration: "3s",
+                    }}
+                  >
+                    <Container>
+                      <Row>
+                        <Col xs={30} sm={4} md={4}>
+                          <Card.Img
+                            variant="center"
+                            src={item.image}
+                            style={{
+                              marginTop: "1em",
+                              height: "250px",
+                              maxHeight: "250px",
+                              width: "300px",
+                              maxWidth: "200px",
+                              textAlign: "center",
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                    </Container>
+                    <Card.Body style={{ textAlign: "center", color: "black" }}>
+                      <Card.Title
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        {item.title.substring(0, 20)}
+                      </Card.Title>
+                      <Card.Title
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        $ {item.price}
+                      </Card.Title>
+                      <Card.Text
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        {item.category.toUpperCase()}
+                      </Card.Text>
+                      <Button className="btn-sm" variant="dark">
+                        Shop now &#x2192;
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </div>
 
+
+
+      <div className="">
+          <h3 className="pt-5 pb-5 col-lg-5">Also may you like</h3>
+        <div className="row">
+          {getProd.map((item, i) => {
+            return (
+              <div
+                key={i}
+                className="col-lg-3 col-sm-6 my-3 d-flex justify-content-center"
+              >
+                <Link to={`/Seller/${item.id}`}>
+                  <Card
+                    className="card card-item"
+                    key={i}
+                    style={{
+                      overflow: "hidden",
+                      maxWidth: "500px",
+                      boxShadow: "1px 1px 15px #343A40",
+                      margin: "5px",
+                      transitionDuration: "3s",
+                    }}
+                  >
+                    <Container>
+                      <Row>
+                        <Col xs={10} sm={4} md={4}>
+                          <Card.Img
+                            variant="center"
+                            src={item.image}
+                            style={{
+                              marginTop: "1em",
+                              height: "250px",
+                              maxHeight: "250px",
+                              width: "300px",
+                              maxWidth: "200px",
+                              textAlign: "center",
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                    </Container>
+                    <Card.Body style={{ textAlign: "center", color: "black" }}>
+                      <Card.Title
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        {item.title.substring(0, 20)}
+                      </Card.Title>
+                      <Card.Title
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        $ {item.price}
+                      </Card.Title>
+                      <Card.Text
+                        style={{ textAlign: "center", color: "black" }}
+                      >
+                        {item.category.toUpperCase()}
+                      </Card.Text>
+                      <Button className="btn-sm" variant="dark">
+                        Shop now &#x2192;
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </>
   );
 };

@@ -48,7 +48,7 @@ const Addtocart = () => {
 
   return (
     <div>
-      <div className="my-5 pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
+      <div className="pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
         <div className="pt-4">
         <Button variant="outline-warning" className="btn" onClick={cntShop}>
           <strong>&#x2190;Continue Shopping</strong>
@@ -113,7 +113,7 @@ const Addtocart = () => {
         </Table>
         <div className="col-md-15 text-right">
           <div className="demo-content bg-alt pt-2">
-            Subtotal: ${cart.cartTotalAmount}
+          Subtotal: ${cart.cartTotalAmount}
           </div>
         </div>
         <div className="col-md-5 my-4">

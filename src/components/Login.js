@@ -12,6 +12,8 @@ import ShoppingBag from "@mui/icons-material/ShoppingBag";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const users = useSelector(state => state.user);
+  console.log(users)
   const [emails, setEmail] = useState({
     email: "",
     password: "",
@@ -22,6 +24,7 @@ const Login = () => {
       .post("http://localhost:5000/api/login", {
         email: emails.email,
         password: emails.password,
+        withCredential:true
       })
       .catch((err) => console.log(err));
     const data = await res.data;
@@ -33,8 +36,7 @@ const Login = () => {
 
     sendRequest()
       .then(() => dispatch(loginActions.login()))
-      .then(() => home("/"));
-
+      .then(() => home(`/`));
     // const { email, password } = emails;
     // if (email === "") {
     //   alert("Plz Enter Email");

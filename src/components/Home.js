@@ -5,6 +5,8 @@ import { Button, Card, Carousel, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getData } from "../store/ProductsSlice";
+import Footer from "./Footer";
+
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -30,19 +32,19 @@ const Home = () => {
           height: "auto",
         }}
       >
-        <h1 className="container p-3 d-flex justify-content-center">
-          Welcome {user && user.firstname} to Mart
-        </h1>
-        <h3 className="container p-4 d-flex justify-content-center">
+        <h3 className="container p-4 d-flex justify-content-center"
+        style={{
+          lineHeight:"2em"
+        }}>
           Your Choice is in Our Place
         </h3>
         <Carousel
           style={{
             overflow: "hidden",
-            boxShadow: "1px 1px 15px #343A40",
+            boxShadow: "1px 1px 1px 18px #FFFFFF",
             margin: "25px",
             borderRadius: "20px",
-            backgroundColor: "white",
+            backgroundColor: "#FFFFFF",
           }}
           activeIndex={index}
           onSelect={handleSelect}
@@ -80,7 +82,6 @@ const Home = () => {
                         maxWidth: "500px",
                         boxShadow: "1px 1px 15px #343A40",
                         margin: "5px",
-                        borderRadius: "20px",
                         transitionDuration: "3s",
                       }}
                     >
@@ -118,7 +119,7 @@ const Home = () => {
                         <Card.Text
                           style={{ textAlign: "center", color: "black" }}
                         >
-                          {item.description.substring(0, 20)}...
+                          {item.category.toUpperCase()}
                         </Card.Text>
                         <Button className="btn-sm" variant="dark">
                           Shop now &#x2192;
