@@ -10,7 +10,7 @@ import {
   Navbar,
   NavDropdown,
 } from "react-bootstrap";
-import { Tab } from "@mui/material";
+import { Box, Tab } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginActions } from "../store/loginSlice";
@@ -19,7 +19,6 @@ import WomanIcon from "@mui/icons-material/Woman";
 import ManIcon from "@mui/icons-material/Man";
 import axios from "axios";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
-
 
 axios.defaults.withCredentials = true;
 let firstRender = true;
@@ -91,31 +90,43 @@ function Header() {
   };
 
   return (
-    <div id="myHeader"
-    style={{
-      paddingBottom:"7em"
-    }}>
+    <div
+      id="myHeader"
+      style={{
+        paddingBottom: "7em",
+      }}
+    >
       <div
         style={{
           minWidth: "500px",
           // maxWidth:"1140px",
           width: "100%",
-          backgroundColor: "#fff",
+          // backgroundColor: "#fff",
           height: "52px",
           lineHeight: "52px",
-          display: "block",
-          position: "fixed",
+
           zIndex: "40",
         }}
       >
-        <Navbar bg="light" expand="lg">
+        <Navbar
+          fixed="top"
+          bg="light"
+          expand="lg"
+          sx={{
+            background:
+              "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(11,117,158,1) 29%, rgba(0,212,255,1) 100%)",
+          }}
+          style={{
+            boxShadow: "1px 1px 10px #343A40",
+          }}
+        >
           <Container>
             <Navbar.Brand onClick={home}>
               <ShoppingBag style={{ fontSize: "50px", color: "#14657C" }} />{" "}
               MART
             </Navbar.Brand>
-            <Navbar.Toggle aria-controls="navbarScroll" />
-            <Navbar.Collapse id="navbarScroll">
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
               <Nav
                 className="me-auto"
                 style={{ maxHeight: "500px" }}
@@ -125,7 +136,10 @@ function Header() {
                   {list.map((item, i) => {
                     return (
                       <NavDropdown.Item key={i}>
-                        <Link to={`/products/category/${item}`} style={{ color: "#000000" }}>
+                        <Link
+                          to={`/products/category/${item}`}
+                          style={{ color: "#000000" }}
+                        >
                           {item.toUpperCase()}
                         </Link>
                       </NavDropdown.Item>
@@ -159,6 +173,7 @@ function Header() {
                     to="/login"
                     LinkComponent={Link}
                     label="Login"
+                    variant="contained"
                     style={{ color: "#14657C" }}
                   />
                   &#x2002;

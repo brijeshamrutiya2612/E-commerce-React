@@ -26,29 +26,22 @@ const Seller = (prop) => {
     async function getAllStudent() {
       try {
         const student = await axios.get(
-          `https://fakestoreapi.com/products/${id}`,
-          {
-            withCredentials: false,
-          }
+          `http://localhost:5000/api/products/${id}`,
         );
-        setStudents(student.data);
+        console.log(student)
+        setStudents(student.data.products);
 
         const rate = await axios.get(
-          `https://fakestoreapi.com/products/${id}`,
-          {
-            withCredentials: false,
-          }
+          `http://localhost:5000/api/products/${id}`,
         );
         setRate(rate.data.rating);
 
-        const all = await axios.get("https://fakestoreapi.com/products/", {
-          withCredentials: false,
-        });
-        setAll(all.data);
+        const all = await axios.get("http://localhost:5000/api/products/");
+        setAll(all.data.products);
 
-        const Product = all.data;
+        const Product = all;
         const newProduct = Product.filter((p) => {
-          return p.category == student.data.category;
+          return p.data.products.itemCategory == student.data.products.itemCategory;
         });
         setAll(newProduct);
       } catch (error) {
@@ -76,7 +69,7 @@ const Seller = (prop) => {
         className="container d-flex"
         style={{
           backgroundColor: "white",
-          paddingTop: "8em",
+          paddingTop: "2em",
           position: "relative",
           zIndex: 1,
         }}
@@ -98,16 +91,16 @@ const Seller = (prop) => {
             </Card>
           </div>
 
-          <div key={student.id} className="col justify-content-center">
+          <div key={student._id} className="col justify-content-center">
             <h2>
-              <u>{student.title}</u>
+              <u>{student.itemName}</u>
             </h2>
-            <Rating ratingValue={rate.rate * 20} size={20}></Rating>
-            <small style={{ marginTop: "10px" }}> ({rate.count}) Rating</small>
-            <p>Price: ${student.price}</p>
-            <p>Category: {student.category}</p>
+            {/* <Rating ratingValue={rate.rate * 20} size={20}></Rating> */}
+            {/* <small style={{ marginTop: "10px" }}> ({rate.count}) Rating</small> */}
+            <p>Price: ${student.itemPrice}</p>
+            <p>Category: {student.itemCategory}</p>
             <p>
-              <b>Description:</b> {student.description}
+              <b>Description:</b> {student.itemDescription}
             </p>
             <Button
               variant="warning"
@@ -131,13 +124,15 @@ const Seller = (prop) => {
       <div className="container col-lg-15">
           <h3 className="pt-5 pb-5 col-lg-5">Related Products</h3>
         <div className="row">
-          {all.map((item, i) => {
+          
+          
+          {!all ? "No Related Data" : all.map((item, i) => {
             return (
               <div
                 key={i}
                 className="col-lg-3 col-sm-6 my-3 d-flex justify-content-center"
               >
-                <Link to={`/Seller/${item.id}`}>
+                <Link to={`/Seller/${item._id}`}>
                   <Card
                     className="card card-item"
                     key={i}
@@ -171,7 +166,7 @@ const Seller = (prop) => {
                       <Card.Title
                         style={{ textAlign: "center", color: "black" }}
                       >
-                        {item.title.substring(0, 20)}
+                        {item.title}
                       </Card.Title>
                       <Card.Title
                         style={{ textAlign: "center", color: "black" }}
@@ -181,7 +176,7 @@ const Seller = (prop) => {
                       <Card.Text
                         style={{ textAlign: "center", color: "black" }}
                       >
-                        {item.category.toUpperCase()}
+                        {item.category}
                       </Card.Text>
                       <Button className="btn-sm" variant="dark">
                         Shop now &#x2192;
@@ -206,7 +201,7 @@ const Seller = (prop) => {
                 key={i}
                 className="col-lg-3 col-sm-6 my-3 d-flex justify-content-center"
               >
-                <Link to={`/Seller/${item.id}`}>
+                <Link to={`/Seller/${item._id}`}>
                   <Card
                     className="card card-item"
                     key={i}
@@ -240,7 +235,7 @@ const Seller = (prop) => {
                       <Card.Title
                         style={{ textAlign: "center", color: "black" }}
                       >
-                        {item.title.substring(0, 20)}
+                        {item.title}
                       </Card.Title>
                       <Card.Title
                         style={{ textAlign: "center", color: "black" }}
@@ -250,7 +245,7 @@ const Seller = (prop) => {
                       <Card.Text
                         style={{ textAlign: "center", color: "black" }}
                       >
-                        {item.category.toUpperCase()}
+                        {item.category}
                       </Card.Text>
                       <Button className="btn-sm" variant="dark">
                         Shop now &#x2192;

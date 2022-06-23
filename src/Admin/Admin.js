@@ -38,10 +38,10 @@ function Admin() {
   }
 
   return (
-    <div className="container col-lg-5 my-4 justify-content-center">
-      <Button className="col-lg-2 mr-3" variant="success" onClick={goDashboard}>Dashboard</Button>
-      <Button className="col-lg-2 mr-3" variant="success" onClick={goAddproducts}>Add Products</Button>
-      <Button className="col-lg-2 mr-3" variant="success">Users</Button>
+    <div className="container col-lg-6 my-4 justify-content-center">
+      <Button className="col-lg-3 mr-3 my-2" variant="success" onClick={goDashboard}>Dashboard</Button>
+      <Button className="col-lg-4 mr-3 my-2" variant="success" onClick={goAddproducts}>Add Products</Button>
+      <Button className="col-lg-3 mr-3 my-2" variant="success">Users</Button>
     </div>
   );
 }

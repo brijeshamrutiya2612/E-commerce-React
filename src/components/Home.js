@@ -11,7 +11,7 @@ import Footer from "./Footer";
 const Home = () => {
   const dispatch = useDispatch();
   const { getProd } = useSelector((state) => state.products);
-  // console.log(getProd);
+  console.log(getProd);
   const [user, setUser] = useState();
 
   useEffect(() => {
@@ -32,6 +32,7 @@ const Home = () => {
           height: "auto",
         }}
       >
+       
         <h3 className="container p-4 d-flex justify-content-center"
         style={{
           lineHeight:"2em"
@@ -56,10 +57,10 @@ const Home = () => {
                   className="d-block mx-auto d-flex justify-content-center"
                   style={{ height: "350px" }}
                   src={item.image}
-                  alt={item.category}
+                  alt={item.itemCategory}
                 />
                 <Carousel.Caption style={{ color: "black" }}>
-                  <h3>{item.title}</h3>
+                  <h3>{item.itemName}</h3>
                 </Carousel.Caption>
               </Carousel.Item>
             );
@@ -73,7 +74,7 @@ const Home = () => {
                   key={i}
                   className="col-lg-4 col-md-5 col-sm-6 my-3 d-flex justify-content-center"
                 >
-                  <Link to={`/Seller/${item.id}`}>
+                  <Link to={`/Seller/${item._id}`}>
                     <Card
                       className="card card-item"
                       key={i}
@@ -109,17 +110,17 @@ const Home = () => {
                         <Card.Title
                           style={{ textAlign: "center", color: "black" }}
                         >
-                          {item.title.substring(0, 20)}
+                          {item.itemDescriptions}
                         </Card.Title>
                         <Card.Title
                           style={{ textAlign: "center", color: "black" }}
                         >
-                          $ {item.price}
+                          $ {item.itemPrice}
                         </Card.Title>
                         <Card.Text
                           style={{ textAlign: "center", color: "black" }}
                         >
-                          {item.category.toUpperCase()}
+                          {item.itemCategory.toUpperCase()}
                         </Card.Text>
                         <Button className="btn-sm" variant="dark">
                           Shop now &#x2192;

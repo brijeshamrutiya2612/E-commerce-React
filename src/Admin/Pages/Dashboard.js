@@ -13,33 +13,41 @@ import { useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getData, getCategory } from "../../store/ProductsSlice";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const dispatch = useDispatch();
+  const nav = useNavigate();
   const { getProd } = useSelector((state) => state.products);
   const [list, setList] = React.useState([]);
   useEffect(() => {
     dispatch(getData());
     async function getAllStudent() {
-        try {
-          const listProduct = await axios.get(
-            "https://fakestoreapi.com/products/categories",{
-                withCredentials:false
-            }
-          );
-          setList(listProduct.data);
-        } catch (error) {
-          console.log("Problem");
-        }
+      try {
+        const listProduct = await axios.get(
+          "https://fakestoreapi.com/products/categories",
+          {
+            withCredentials: false,
+          }
+        );
+        setList(listProduct.data);
+      } catch (error) {
+        console.log("Problem");
       }
-      getAllStudent();
+    }
+    getAllStudent();
   }, []);
-  
+  const bckDash = () => {
+    nav("/admin");
+  };
   return (
-    <div className="container col-lg-5">
+    <div className="container col-lg-5 my-4">
       <Typography variant="h3" className="my-3">
         Dashboard
       </Typography>
+      <Button variant="outline-warning" className="btn" onClick={bckDash}>
+        <strong>&#x2190; Back</strong>
+      </Button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableBody>
