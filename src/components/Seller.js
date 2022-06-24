@@ -28,20 +28,20 @@ const Seller = (prop) => {
         const student = await axios.get(
           `http://localhost:5000/api/products/${id}`,
         );
-        console.log(student)
         setStudents(student.data.products);
 
-        const rate = await axios.get(
-          `http://localhost:5000/api/products/${id}`,
-        );
-        setRate(rate.data.rating);
+        // const rate = await axios.get(
+        //   `http://localhost:5000/api/products/${id}`,
+        // );
+        // setRate(rate.data.rating);
 
         const all = await axios.get("http://localhost:5000/api/products/");
+        console.log(all.data.products)
         setAll(all.data.products);
 
-        const Product = all;
+        const Product = all.data.products;
         const newProduct = Product.filter((p) => {
-          return p.data.products.itemCategory == student.data.products.itemCategory;
+          return p.itemCategory == student.data.products.itemCategory;
         });
         setAll(newProduct);
       } catch (error) {
@@ -97,7 +97,7 @@ const Seller = (prop) => {
             </h2>
             {/* <Rating ratingValue={rate.rate * 20} size={20}></Rating> */}
             {/* <small style={{ marginTop: "10px" }}> ({rate.count}) Rating</small> */}
-            <p>Price: ${student.itemPrice}</p>
+            <p>Price: &#x20B9;{student.itemPrice}</p>
             <p>Category: {student.itemCategory}</p>
             <p>
               <b>Description:</b> {student.itemDescription}
@@ -166,18 +166,13 @@ const Seller = (prop) => {
                       <Card.Title
                         style={{ textAlign: "center", color: "black" }}
                       >
-                        {item.title}
+                        {item.itemName}
                       </Card.Title>
                       <Card.Title
                         style={{ textAlign: "center", color: "black" }}
                       >
-                        $ {item.price}
+                        &#x20B9; {item.itemPrice}
                       </Card.Title>
-                      <Card.Text
-                        style={{ textAlign: "center", color: "black" }}
-                      >
-                        {item.category}
-                      </Card.Text>
                       <Button className="btn-sm" variant="dark">
                         Shop now &#x2192;
                       </Button>
@@ -193,7 +188,7 @@ const Seller = (prop) => {
 
 
       <div className="">
-          <h3 className="pt-5 pb-5 col-lg-5">Also may you like</h3>
+          <h3 className="d-flex pt-5 pb-5">Also may you like</h3>
         <div className="row">
           {getProd.map((item, i) => {
             return (
@@ -235,18 +230,13 @@ const Seller = (prop) => {
                       <Card.Title
                         style={{ textAlign: "center", color: "black" }}
                       >
-                        {item.title}
+                        {item.itemName}
                       </Card.Title>
                       <Card.Title
                         style={{ textAlign: "center", color: "black" }}
                       >
-                        $ {item.price}
+                        &#x20B9; {item.itemPrice}
                       </Card.Title>
-                      <Card.Text
-                        style={{ textAlign: "center", color: "black" }}
-                      >
-                        {item.category}
-                      </Card.Text>
                       <Button className="btn-sm" variant="dark">
                         Shop now &#x2192;
                       </Button>

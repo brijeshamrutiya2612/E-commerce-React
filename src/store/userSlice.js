@@ -10,10 +10,10 @@ const initialState = {
 
 export const getUserData = createAsyncThunk("getUser/getUserData", async () => {
   try {
-    const response = await axios.get("http://localhost:5000/api/user", {
-      withCredentials: true,
+    const response = await axios.get("http://localhost:5000/api/user",{
+      withCredentials: true
     });
-    // console.log(response.data)
+    console.log(response)
     return response.data;
   } catch (error) {
     console.log(error);

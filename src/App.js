@@ -16,6 +16,7 @@ import Footer from "./components/Footer";
 import Admin from "./Admin/Admin";
 import Dashboard from "./Admin/Pages/Dashboard";
 import AddProducts from "./Admin/Pages/AddProducts";
+import User from "./Admin/Pages/User"
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
           <Route path="/Admin" element={<Admin/>}></Route>
           <Route path="/dashboard" element={<Dashboard/>}></Route>
           <Route path="/addproducts" element={<AddProducts/>}></Route>
+          <Route path="/user" element={<User/>}></Route>
         </Routes>  
       </main>
       <header>

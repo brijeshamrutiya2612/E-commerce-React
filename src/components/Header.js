@@ -26,57 +26,67 @@ let firstRender = true;
 function Header() {
   const dispatch = useDispatch();
   const nav = useNavigate();
+  const { getProd } = useSelector((state) => state.products);
+  console.log(getProd)
   const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
   const cart = useSelector((state) => state.cart);
-  // const { getProd } = useSelector((state) => state.products);
   const [list, setList] = useState([]);
   const [user, setUser] = useState([]);
+  const [filter, setFilter] = useState([]);
 
-  const refreshToken = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/refresh")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return localStorage.setItem("user", JSON.stringify(data));
-  };
-  const sendRequest = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/user")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return localStorage.setItem("user", JSON.stringify(data));
-  };
+  // const refreshToken = async () => {
+  //   const res = await axios
+  //     .get("http://localhost:5000/api/refresh")
+  //     .catch((err) => console.log(err));
+  //   const data = await res.data;
+  //   return localStorage.setItem("user", JSON.stringify(data));
+  // };
+  // const sendRequest = async () => {
+  //   const res = await axios
+  //     .get("http://localhost:5000/api/user")
+  //     .catch((err) => console.log(err));
+  //   const data = await res.data;
+  //   return localStorage.setItem("user", JSON.stringify(data));
+  // };
+  useEffect(()=>{
+    const  getUnique = (arr, index) => {
+  
+      const unique = getProd.map(e => e[index]).map((e, i, final) => final.indexOf(e) === i && i)
+      
+           // eliminate the dead keys & store unique objects
+          .filter(e => arr[e]).map(e => arr[e]);      
+    
+       return unique;
+    }
+    console.log(getUnique(getProd,'itemCategory'))
+    setFilter(getUnique(getProd,'itemCategory'))
+  },[getProd])
   useEffect(() => {
     async function getAllStudent() {
       try {
         const listProduct = await axios.get(
-          "https://fakestoreapi.com/products/categories",
-          {
-            withCredentials: false,
-          }
+          "http://localhost:5000/api/products"
         );
-        setList(listProduct.data);
+        setList(listProduct.data.products);
       } catch (error) {
         console.log("Problem");
       }
     }
     getAllStudent();
   }, []);
-  useEffect(() => {
-    if (firstRender) {
-      firstRender = false;
-      sendRequest().then((data) => setUser(data.user));
-    }
-    let interval = setInterval(() => {
-      refreshToken().then((data) => setUser(data.user));
-    }, 1000 * 29);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   if (firstRender) {
+  //     firstRender = false;
+  //     sendRequest().then((data) => setUser(data.user));
+  //   }
+  //   let interval = setInterval(() => {
+  //     refreshToken().then((data) => setUser(data.user));
+  //   }, 1000 * 29);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const sendLogoutReq = async () => {
-    const res = await axios.post("http://localhost:5000/api/logout", null, {
-      withCredentials: true,
-    });
+    const res = await axios.post("http://localhost:5000/api/logout", null);
     if (res.status == 200) {
       return res;
     }
@@ -88,7 +98,7 @@ function Header() {
   const home = () => {
     nav("/");
   };
-
+  
   return (
     <div
       id="myHeader"
@@ -114,12 +124,12 @@ function Header() {
           expand="lg"
           sx={{
             background:
-              "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(11,117,158,1) 29%, rgba(0,212,255,1) 100%)",
+            "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(11,117,158,1) 29%, rgba(0,212,255,1) 100%)",
           }}
           style={{
             boxShadow: "1px 1px 10px #343A40",
           }}
-        >
+          >
           <Container>
             <Navbar.Brand onClick={home}>
               <ShoppingBag style={{ fontSize: "50px", color: "#14657C" }} />{" "}
@@ -133,26 +143,25 @@ function Header() {
                 navbarScroll
               >
                 <NavDropdown title="PRODUCTS" id="basic-nav-dropdown">
-                  {list.map((item, i) => {
-                    return (
+                  {filter.map((item,i)=>{
+                    return(
                       <NavDropdown.Item key={i}>
                         <Link
-                          to={`/products/category/${item}`}
+                          to="/"
                           style={{ color: "#000000" }}
-                        >
-                          {item.toUpperCase()}
+                          >
+                          {item.itemCategory.toUpperCase()}
                         </Link>
                       </NavDropdown.Item>
-                    );
-                  })}
-
+                            )
+                        })}
                   {/* <NavDropdown.Divider /> */}
                 </NavDropdown>
               </Nav>
               <Form className="d-flex mx-auto mb-2">
                 <Form.Control
                   type="search"
-                  placeholder="Search"
+                  placeholder="Search by product, category..."
                   className="me-2 mt-2"
                   aria-label="Search"
                 />

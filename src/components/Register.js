@@ -113,9 +113,9 @@ const Register = () => {
           height: "auto",
         }}
       >
-        <div className="container col-lg-5 col-md-15 justify-content-center">
+        <div className="container col-lg-5 my-5 col-md-15 justify-content-center">
           <form>
-            <Container className="pt-5 justify-content-center">
+            <Container className="pt-1 justify-content-center">
               <div
                 className="container justify-content-center"
                 style={{
@@ -240,6 +240,7 @@ const Register = () => {
                       className="ml-4 col-md-11 justify-content-center"
                       variant="contained"
                       onClick={signIn}
+                      style={{backgroundColor:"#14657C"}}
                     >
                       Sign Up
                       {/* {register.registerStatus === "pending"

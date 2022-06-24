@@ -61,12 +61,18 @@ const Finalpayment = () => {
 
   
   return (
-    <div className="pt-5">
-      <div className="pt-5 pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
+    <div className="pt-1">
+      <div className="pt-1 pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
         <div>
           <div className="">
             <h2 className="pt-3">Final Payment</h2>
-            <h4 className="my-4">Your Cart Items</h4>
+            <h4 className="my-4">Your Cart Items {cart.cartItems.length} and Qty {cart.cartTotalQuntity}
+            {/* {cart.cartItems.map((item, i) => {
+                return (
+                  item.cartTotalQuntity.length
+                  )
+            })} */}
+            </h4>
           </div>
           {/* <Button variant="outline-warning" className="btn" onClick={cntShop}>
           <strong>&#x2190;Continue Shopping</strong>
@@ -99,12 +105,12 @@ const Finalpayment = () => {
                         X
                       </Button>
                     </td>
-                    <td style={{ textAlign: "center" }}>${item.price}</td>
+                    <td style={{ textAlign: "center" }}>&#x20B9; {item.itemPrice}</td>
                     <td style={{ textAlign: "center" }}>
                       <span className="mx-2">{item.cartQuantity}</span>
                     </td>
                     <td style={{ textAlign: "right" }}>
-                      ${item.price * item.cartQuantity}
+                      ${item.itemPrice * item.cartQuantity}
                     </td>
                   </tr>
                 );
@@ -138,7 +144,7 @@ const Finalpayment = () => {
           <p>{user && user.address3}</p>
           <div className="text-center">
             <Button variant="success" size="lg" onClick={successInfo}>
-              Your Total Amount <b>${Math.floor(gTotal)}</b> to Pay
+              Your Total Amount <b>&#x20B9;{Math.floor(gTotal)}</b> to Pay
             </Button>
           </div>
         </div>

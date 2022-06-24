@@ -5,7 +5,7 @@ import {
     combineReducers,
   } from "@reduxjs/toolkit";
   import axios from "axios";
-
+import { toast } from "react-toastify";
   
 
    const baseURL = "https://fakestoreapi.com/products";
@@ -21,7 +21,7 @@ export const cartSlice = createSlice({
     reducers: {
       addToCart(state, action) {
         const itemIndex = state.cartItems.findIndex(
-          (item) => item.id === action.payload.id
+          (item) => item._id === action.payload._id
         );
         if (itemIndex >= 0) {
           state.cartItems[itemIndex].cartQuantity += 1;
@@ -32,7 +32,7 @@ export const cartSlice = createSlice({
       },
       removerFromCart(state, action) {
         const nextCartItems = state.cartItems.filter(
-          (cartItem) => cartItem.id !== action.payload.id
+          (cartItem) => cartItem._id !== action.payload._id
         );
         state.cartItems = nextCartItems;
   
@@ -48,17 +48,17 @@ export const cartSlice = createSlice({
         },
       decreseCart(state, action) {
         const itemIndex = state.cartItems.findIndex(
-          (cartItem) => cartItem.id === action.payload.id
+          (cartItem) => cartItem._id === action.payload._id
         );
         if (state.cartItems[itemIndex].cartQuantity > 1) {
           state.cartItems[itemIndex].cartQuantity -= 1;
   
-          // toast.info(`Decreased ${action.payload.title} cart quantity`, {
-          //   position: "bottom-left",
-          // });
+          toast.info(`Decreased ${action.payload.title} cart quantity`, {
+            position: "bottom-left",
+          });
         } else if (state.cartItems[itemIndex].cartQuantity === 1) {
           const nextCartItems = state.cartItems.filter(
-            (cartItem) => cartItem.id !== action.payload.id
+            (cartItem) => cartItem._id !== action.payload._id
           );
   
           state.cartItems = nextCartItems;
@@ -70,8 +70,8 @@ export const cartSlice = createSlice({
       getTotals(state,action){
         let {total, quantity} = state.cartItems.reduce(
           (cartTotal, cartItem) => {
-            const {price, cartQuantity} = cartItem;
-            const itemTotal = price * cartQuantity;
+            const {itemPrice, cartQuantity} = cartItem;
+            const itemTotal = itemPrice * cartQuantity;
   
             cartTotal.total += itemTotal
             cartTotal.quantity += cartQuantity
