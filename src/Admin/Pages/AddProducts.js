@@ -37,7 +37,7 @@ function AddProducts() {
       }
     }
     getAllStudent();
-  }, []);
+  }, [list]);
   const sendRequest = async () => {
     const res = await axios.post("http://localhost:5000/api/products/add", {
       itemCategory: add.itemCategory,

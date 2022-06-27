@@ -10,11 +10,9 @@ const initialState = {
 
 export const getUserData = createAsyncThunk("getUser/getUserData", async () => {
   try {
-    const response = await axios.get("http://localhost:5000/api/user",{
-      withCredentials: true
-    });
-    console.log(response)
-    return response.data;
+    const response = await axios.get("http://localhost:5000/api/users");
+    console.log(response.data.users)
+    return response.data.users;
   } catch (error) {
     console.log(error);
     return error.response.data;

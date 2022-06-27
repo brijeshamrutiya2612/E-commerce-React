@@ -32,59 +32,59 @@ function Footer() {
   const [list, setList] = useState([]);
   const [user, setUser] = useState([]);
 
-  const refreshToken = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/refresh")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return localStorage.setItem("user", JSON.stringify(data));
-  };
-  const sendRequest = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/user")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return localStorage.setItem("user", JSON.stringify(data));
-  };
-  useEffect(() => {
-    async function getAllStudent() {
-      try {
-        const listProduct = await axios.get(
-          "https://fakestoreapi.com/products/categories",
-          {
-            withCredentials: false,
-          }
-        );
-        setList(listProduct.data);
-      } catch (error) {
-        console.log("Problem");
-      }
-    }
-    getAllStudent();
-  }, []);
-  useEffect(() => {
-    if (firstRender) {
-      firstRender = false;
-      sendRequest().then((data) => setUser(data.user));
-    }
-    let interval = setInterval(() => {
-      refreshToken().then((data) => setUser(data.user));
-    }, 1000 * 29);
-    return () => clearInterval(interval);
-  }, []);
+  // const refreshToken = async () => {
+  //   const res = await axios
+  //     .get("http://localhost:5000/api/refresh")
+  //     .catch((err) => console.log(err));
+  //   const data = await res.data;
+  //   return localStorage.setItem("user", JSON.stringify(data));
+  // };
+  // const sendRequest = async () => {
+  //   const res = await axios
+  //     .get("http://localhost:5000/api/user")
+  //     .catch((err) => console.log(err));
+  //   const data = await res.data;
+  //   return localStorage.setItem("user", JSON.stringify(data));
+  // };
+  // useEffect(() => {
+  //   async function getAllStudent() {
+  //     try {
+  //       const listProduct = await axios.get(
+  //         "https://fakestoreapi.com/products/categories",
+  //         {
+  //           withCredentials: false,
+  //         }
+  //       );
+  //       setList(listProduct.data);
+  //     } catch (error) {
+  //       console.log("Problem");
+  //     }
+  //   }
+  //   getAllStudent();
+  // }, []);
+  // useEffect(() => {
+  //   if (firstRender) {
+  //     firstRender = false;
+  //     sendRequest().then((data) => setUser(data.user));
+  //   }
+  //   let interval = setInterval(() => {
+  //     refreshToken().then((data) => setUser(data.user));
+  //   }, 1000 * 29);
+  //   return () => clearInterval(interval);
+  // }, []);
 
-  const sendLogoutReq = async () => {
-    const res = await axios.post("http://localhost:5000/api/logout", null, {
-      withCredentials: true,
-    });
-    if (res.status == 200) {
-      return res;
-    }
-    return new Error("Unable to Logout. Please try again");
-  };
-  const handleLogout = () => {
-    sendLogoutReq().then(() => dispatch(loginActions.logout()));
-  };
+  // const sendLogoutReq = async () => {
+  //   const res = await axios.post("http://localhost:5000/api/logout", null, {
+  //     withCredentials: true,
+  //   });
+  //   if (res.status == 200) {
+  //     return res;
+  //   }
+  //   return new Error("Unable to Logout. Please try again");
+  // };
+  // const handleLogout = () => {
+  //   sendLogoutReq().then(() => dispatch(loginActions.logout()));
+  // };
   const home = () => {
     nav("/");
   };
@@ -98,29 +98,30 @@ function Footer() {
           width: "100%",
           backgroundColor: "#fff",
           height: "52px",
-          position: "relative",
+          position: "absolute",
         }}
       >
         <Navbar bg="light" expand="lg">
           <Container>
-            <Navbar.Brand
-              onClick={home}
-              className="container d-flex justify-content-center"
-            >
-              
+            <Navbar.Brand className="container d-flex justify-content-center">
               <ShoppingBag
+                onClick={home}
                 style={{
                   fontSize: "80px",
                   textAlign: "center",
                   color: "#14657C",
                 }}
               />
-              <span style={{
-                fontSize: "30px",
+              <span
+                style={{
+                  fontSize: "30px",
                   textAlign: "center",
                   color: "#14657C",
-                  lineHeight:"3em"
-                }}>MART</span>
+                  lineHeight: "3em",
+                }}
+              >
+                MART
+              </span>
             </Navbar.Brand>
           </Container>
         </Navbar>

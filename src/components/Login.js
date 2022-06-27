@@ -19,12 +19,11 @@ const Login = () => {
     password: "",
   });
  
-  const sendRequest = async () => {
+  const sendRequest = async (type="login") => {
     const res = await axios
-      .post("http://localhost:5000/api/login", {
+      .post(`http://localhost:5000/api/${type}`, {
         email: emails.email,
         password: emails.password,
-        withCredential:true
       })
       .catch((err) => console.log(err));
     const data = await res.data;
@@ -36,7 +35,7 @@ const Login = () => {
 
     sendRequest()
       .then(() => dispatch(loginActions.login()))
-      .then(() => home(`/`));
+      .then(() => home('/'));
     // const { email, password } = emails;
     // if (email === "") {
     //   alert("Plz Enter Email");

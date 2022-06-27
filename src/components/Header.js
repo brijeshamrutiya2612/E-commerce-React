@@ -27,12 +27,12 @@ function Header() {
   const dispatch = useDispatch();
   const nav = useNavigate();
   const { getProd } = useSelector((state) => state.products);
-  console.log(getProd)
-  const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
+  const {isLoggedIn} = useSelector((state) => state.userlogin);
   const cart = useSelector((state) => state.cart);
   const [list, setList] = useState([]);
   const [user, setUser] = useState([]);
   const [filter, setFilter] = useState([]);
+  const [search, setSearch] = useState([]);
 
   // const refreshToken = async () => {
   //   const res = await axios
@@ -41,13 +41,13 @@ function Header() {
   //   const data = await res.data;
   //   return localStorage.setItem("user", JSON.stringify(data));
   // };
-  // const sendRequest = async () => {
-  //   const res = await axios
-  //     .get("http://localhost:5000/api/user")
-  //     .catch((err) => console.log(err));
-  //   const data = await res.data;
-  //   return localStorage.setItem("user", JSON.stringify(data));
-  // };
+  const sendRequest = async () => {
+    const res = await axios
+      .get("http://localhost:5000/api/users")
+      .catch((err) => console.log(err));
+    const data = await res.data;
+    return localStorage.setItem("user", JSON.stringify(data));
+  };
   useEffect(()=>{
     const  getUnique = (arr, index) => {
   
@@ -58,7 +58,6 @@ function Header() {
     
        return unique;
     }
-    console.log(getUnique(getProd,'itemCategory'))
     setFilter(getUnique(getProd,'itemCategory'))
   },[getProd])
   useEffect(() => {
@@ -74,16 +73,16 @@ function Header() {
     }
     getAllStudent();
   }, []);
-  // useEffect(() => {
-  //   if (firstRender) {
-  //     firstRender = false;
-  //     sendRequest().then((data) => setUser(data.user));
-  //   }
+   useEffect(() => {
+    if (firstRender) {
+      firstRender = false;
+      sendRequest().then((data) => setUser(data.user));
+    }
   //   let interval = setInterval(() => {
   //     refreshToken().then((data) => setUser(data.user));
   //   }, 1000 * 29);
   //   return () => clearInterval(interval);
-  // }, []);
+   }, []);
 
   const sendLogoutReq = async () => {
     const res = await axios.post("http://localhost:5000/api/logout", null);
@@ -98,7 +97,9 @@ function Header() {
   const home = () => {
     nav("/");
   };
-  
+  const handleSearch = () =>{
+    nav(`/products/category/${search}`)
+  }  
   return (
     <div
       id="myHeader"
@@ -147,7 +148,7 @@ function Header() {
                     return(
                       <NavDropdown.Item key={i}>
                         <Link
-                          to="/"
+                          to={`/products/category/${item.itemCategory}`}
                           style={{ color: "#000000" }}
                           >
                           {item.itemCategory.toUpperCase()}
@@ -164,8 +165,9 @@ function Header() {
                   placeholder="Search by product, category..."
                   className="me-2 mt-2"
                   aria-label="Search"
+                  onChange={(e)=>setSearch(e.target.value)}
                 />
-                <Button variant="outline-success" className="ml-2">
+                <Button onClick={handleSearch} variant="outline-success" className="ml-2">
                   Search
                 </Button>
                 <Button variant="outline-danger" className="ml-2">

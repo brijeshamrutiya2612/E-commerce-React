@@ -11,16 +11,17 @@ import Finalpayment from "./components/Finalpayment";
 import { useSelector } from "react-redux";
 import Header from "./components/Header";
 import New from "./components/New";
-import Userprofile from "./components/Userprofile";
+import Userprofile from "./Admin/UserPage/Userprofile";
 import Footer from "./components/Footer";
 import Admin from "./Admin/Admin";
 import Dashboard from "./Admin/Pages/Dashboard";
 import AddProducts from "./Admin/Pages/AddProducts";
 import User from "./Admin/Pages/User"
+import UserDashboard from "./Admin/UserPage/UserDashboard";
 
 
 function App() {
-  const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
+  const isLoggedIn = useSelector((state) => state.userlogin);
   console.log(isLoggedIn);
   return (
     <React.Fragment>
@@ -45,6 +46,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard/>}></Route>
           <Route path="/addproducts" element={<AddProducts/>}></Route>
           <Route path="/user" element={<User/>}></Route>
+          <Route path="/ud" element={<UserDashboard/>}></Route>
         </Routes>  
       </main>
       <header>

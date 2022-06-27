@@ -73,7 +73,7 @@ const Addtocart = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Item</TableCell>
-                <TableCell colSpan={2}>Item Description</TableCell>
+                <TableCell colSpan={3}>Item Description</TableCell>
                 <TableCell>Item Price</TableCell>
                 <TableCell>Item Qty</TableCell>
                 <TableCell align="right">Item Total</TableCell>
@@ -93,11 +93,14 @@ const Addtocart = () => {
                         style={{
                           minWidth: "100px",
                           maxWidth: "200px",
+                          float:"left",
+                          marginRight:"12px"
                         }}
                         src={item.image}
                         alt=""
                       />
                     </TableCell>
+                      <TableCell align="left"><b>{item.itemName}</b><br/><b>{item.itemDescription}</b></TableCell>
                     <TableCell align="left">
                       <Button
                         variant="danger"

@@ -3,7 +3,7 @@ import { Button, Container } from "react-bootstrap";
 import { Tab } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { loginActions } from "../store/loginSlice";
+import { loginActions } from "../../store/loginSlice";
 import axios from "axios";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HomeIcon from "@mui/icons-material/Home";
@@ -141,7 +141,7 @@ const Userprofile = () => {
                     fontSize: "20px",
                     color: "black",
                   }}
-                  to="/"
+                  to="/ud"
                 >
                   <strong>Dashboard</strong>
                 </Link>
