@@ -98,7 +98,7 @@ function Footer() {
           width: "100%",
           backgroundColor: "#fff",
           height: "52px",
-          position: "absolute",
+          position: "fixed",
         }}
       >
         <Navbar bg="light" expand="lg">

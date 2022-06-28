@@ -34,20 +34,20 @@ function Header() {
   const [filter, setFilter] = useState([]);
   const [search, setSearch] = useState([]);
 
-  // const refreshToken = async () => {
+  // // const refreshToken = async () => {
+  // //   const res = await axios
+  // //     .get("http://localhost:5000/api/refresh")
+  // //     .catch((err) => console.log(err));
+  // //   const data = await res.data;
+  // //   return localStorage.setItem("user", JSON.stringify(data));
+  // // };
+  // const sendRequest = async () => {
   //   const res = await axios
-  //     .get("http://localhost:5000/api/refresh")
+  //     .get("http://localhost:5000/api/users")
   //     .catch((err) => console.log(err));
   //   const data = await res.data;
   //   return localStorage.setItem("user", JSON.stringify(data));
   // };
-  const sendRequest = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/users")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return localStorage.setItem("user", JSON.stringify(data));
-  };
   useEffect(()=>{
     const  getUnique = (arr, index) => {
   
@@ -73,17 +73,6 @@ function Header() {
     }
     getAllStudent();
   }, []);
-   useEffect(() => {
-    if (firstRender) {
-      firstRender = false;
-      sendRequest().then((data) => setUser(data.user));
-    }
-  //   let interval = setInterval(() => {
-  //     refreshToken().then((data) => setUser(data.user));
-  //   }, 1000 * 29);
-  //   return () => clearInterval(interval);
-   }, []);
-
   const sendLogoutReq = async () => {
     const res = await axios.post("http://localhost:5000/api/logout", null);
     if (res.status == 200) {

@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
-import { Tab, Typography } from "@mui/material";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Tab,
+  Typography,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginActions } from "../../store/loginSlice";
@@ -9,98 +16,49 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import HomeIcon from "@mui/icons-material/Home";
 import HistoryIcon from "@mui/icons-material/History";
 import LogoutIcon from "@mui/icons-material/Logout";
+import LoginIcon from "@mui/icons-material/Login";
 import { Grid, Paper, styled, Input } from "@mui/material";
+import { getData } from "../../store/ProductsSlice";
+import { ChevronCompactLeft } from "react-bootstrap-icons";
 // import shop from "./login_bck.jpg";
 
-let firstRender = true;
-axios.defaults.withCredentials = true;
+// let firstRender = true;
+// axios.defaults.withCredentials = true;
 
-const Userprofile = () => {
+const UserPurchase = () => {
   const dispatch = useDispatch();
   const nav = useNavigate();
-  const users = useSelector((state) => state.user);
-  console.log(users);
-  const { isLoggedIn } = useSelector((state) => state.userlogin);
-  // const cart = useSelector((state) => state.cart);
-  // const { getProd } = useSelector((state) => state.products);
-  const [value, setValue] = useState();
-  const [user, setUser] = useState([]);
+  const id = localStorage.getItem("userId");
+  const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
+  const [uProd, setUprod] = useState([]);
 
-  const refreshToken = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/refresh")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
   const sendRequest = async () => {
     const res = await axios
-      .get("http://localhost:5000/api/user")
+      .get(`http://localhost:5000/api/userproducts/user/${id}`)
       .catch((err) => console.log(err));
-    const data = await res.data;
+    const data = await res.data.UserProducts;
+    console.log(data);
     return data;
   };
+
   useEffect(() => {
-    if (firstRender) {
-      firstRender = false;
-      sendRequest().then((data) => setUser(data.user));
-    }
-    let interval = setInterval(() => {
-      refreshToken().then((data) => setUser(data.user));
-    }, 1000 * 29);
-    return () => clearInterval(interval);
-  }, []);
+     sendRequest().then(data=> setUprod(data))
+ }, []);
+console.log(uProd)
 
-  const sendLogoutReq = async () => {
-    const res = await axios.post("http://localhost:5000/api/logout", null, {
-      withCredentials: true,
-    });
-    if (res.status == 200) {
-      return res;
-    }
-    return new Error("Unable to Logout. Please try again");
-  };
-  const handleLogout = () => {
-    sendLogoutReq().then(() => dispatch(loginActions.logout()));
-  };
-  const home = () => {
-    nav("/");
-  };
-  const sign = useNavigate();
+ //   const sendLogoutReq = async () => {
+//     const res = await axios.post("http://localhost:5000/api/logout", null, {
+//       withCredentials: true,
+//     });
+//     if (res.status == 200) {
+//       return res;
+//     }
+//     return new Error("Unable to Logout. Please try again");
+//   };
+//   const handleLogout = () => {
+//     sendLogoutReq().then(() => dispatch(loginActions.logout()));
+//   };
 
-  const [registers, setRegister] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-    address1: "",
-    address2: "",
-    address3: "",
-    phone: "",
-    age: "",
-  });
-  // console.log(registers);
-  const sendUpdateRequest = async () => {
-    const res = await axios
-      .post("http://localhost:5000/api/signup", {
-        firstname: registers.firstname,
-        lastname: registers.lastname,
-        email: registers.email,
-        password: registers.password,
-        address1: registers.address1,
-        address2: registers.address2,
-        address3: registers.address3,
-        phone: registers.phone,
-        age: registers.age,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  const signIn = async (e) => {
-    e.preventDefault();
-    sendRequest().then(() => sign("/login"));
-  };
   const Item = styled(Paper)(({ theme }) => ({
     // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     ...theme.typography.body2,
@@ -117,21 +75,18 @@ const Userprofile = () => {
 
   return (
     <>
-      
       <div className="pl-3 container d-flex">
-      <Typography className="d-flex pl-5" style={{ fontSize: "40px" }}>
-        Welcome,
-      </Typography>
+        <Typography className="d-flex pl-5" style={{ fontSize: "40px" }}>
+          Welcome,
+        </Typography>
       </div>
       <div className="pl-3 my-4 d-flex">
         <div className="row">
           <div
             style={{
-              height: "52px",
-              lineHeight: "52px",
               height: "auto",
-              margin: "auto",
               width: "auto",
+              lineHeight: "52px",
             }}
           >
             <Grid container spacing={1}>
@@ -181,10 +136,10 @@ const Userprofile = () => {
                 <Item>
                   {isLoggedIn && (
                     <>
-                      <LogoutIcon style={{ float: "left" }} />
+                      <LogoutIcon />
                       &#x2003;
                       <Link
-                        onClick={handleLogout}
+                        // onClick={handleLogout}
                         style={{
                           lineHeight: "1.2em",
                           fontSize: "20px",
@@ -200,10 +155,55 @@ const Userprofile = () => {
               </Grid>
             </Grid>
           </div>
+          <div className="col">
+            <div
+              style={{
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                width: "auto",
+                height: "auto",
+              }}
+            >
+              <div className="row mx-auto pl-5">
+                {/* {uProd.map((item, i)=>{
+                    return(
+                    <Card
+                      className="col ml-3 col-md-12 my-4"
+                      sx={{ maxWidth: 345 }}
+                      style={{ paddingLeft: "2em" }}
+                    >
+                      <CardMedia
+                        style={{
+                          height: "8em",
+                          width: "auto",
+                          margin: "auto",
+                        }}
+                        component="img"
+                        image=""
+                        alt="green iguana"
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {item.itemName}
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                          &#x20B9;
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Button size="small">Share</Button>
+                        <Button size="small">Learn More</Button>
+                      </CardActions>
+                    </Card>
+                  );
+                })} */}
+                </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-export default Userprofile;
+export default UserPurchase;

@@ -12,48 +12,25 @@ import ShoppingBag from "@mui/icons-material/ShoppingBag";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const users = useSelector(state => state.user);
-  console.log(users)
+  const nav = useNavigate();
   const [emails, setEmail] = useState({
     email: "",
     password: "",
   });
- 
-  const sendRequest = async (type="login") => {
-    const res = await axios
-      .post(`http://localhost:5000/api/${type}`, {
-        email: emails.email,
-        password: emails.password,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  const home = useNavigate();
-  const homeComponent = (e) => {
+ const sendRequest = async () =>{
+  const res = await axios.post("http://localhost:5000/api/login",{
+    email: emails.email,
+    password: emails.password
+  }).catch (err => console.log(err))
+  const data = await res.data
+  return data;
+ }
+  
+ const handleSubmit = (e) =>{
     e.preventDefault();
-
-    sendRequest()
-      .then(() => dispatch(loginActions.login()))
-      .then(() => home('/'));
-    // const { email, password } = emails;
-    // if (email === "") {
-    //   alert("Plz Enter Email");
-    // } else if (password === "") {
-    //   alert("Plz Enter Password");
-    // }
-
-    // const payload = users.loginUser.find(
-    //   (user) => user.email === emails.email && user.password === emails.password
-    //   );
-
-    //   if (payload) {
-    //     home("/");
-    //   } else {
-    //     alert("Wrong credential !!");
-    //   }
-    // setEmail("");
-  };
+    console.log(emails)
+    sendRequest().then((data)=>localStorage.setItem("userId", data.user._id)).then(()=>dispatch(loginActions.login())).then(()=>nav("/")).then(data=>console.log(data))
+ }
 
   return (
     <div
@@ -120,7 +97,7 @@ const Login = () => {
                     className="container col-md-11 justify-content-center"
                     variant="contained"
                     style={{backgroundColor:"#14657C"}}
-                    onClick={homeComponent}
+                    onClick={handleSubmit}
                   >
                     LOGIN
                   </Button>

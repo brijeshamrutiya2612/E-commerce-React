@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTotals, removerFromCart } from "../store/CartSlice";
 import { getData } from "../store/ProductsSlice";
 
-
 // axios.defaults.withCredentials = true;
 // let firstRender = true;
 
@@ -16,6 +15,7 @@ const Finalpayment = () => {
   const cart = useSelector((state) => state.cart);
   const tax = (cart.cartTotalAmount * 23) / 100;
   const gTotal = cart.cartTotalAmount + tax;
+
   useEffect(() => {
     dispatch(getTotals());
   }, [cart]);
@@ -23,12 +23,36 @@ const Finalpayment = () => {
   useEffect(() => {
     dispatch(getData());
   }, []);
+  console.log(cart.cartItems);
+  console.log(cart.cartItems.map((item) => item.itemCategory));
 
-  const successInfo = () => {};
+  const sendRequest = async () => {
+    const res = await axios
+      .post("http://localhost:5000/api/userproducts/add", 
+      {
+        itemCategory: cart.cartItems.map(item =>{ return (item.itemCategory)}),
+        itemName: cart.cartItems.map(item =>{ return (item.itemName)}),
+        itemPrice: cart.cartItems.map(item =>{ return (item.itemPrice)}),
+        itemQty: cart.cartItems.map(item =>{ return (item.cartQuantity)}),
+        itemUnit: cart.cartItems.map(item =>{ return (item.itemUnit)}),
+        itemDescription: cart.cartItems.map(item =>{ return (item.itemDescription)}),
+        image: cart.cartItems.map(item =>{ return (item.image)}),
+        user: localStorage.getItem('userId'),
+      })
+      .catch((err) => console.log(err));
+    const data = await res.data;
+    console.log(data);
+    return data;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendRequest().then((data) => console.log(data));
+  };
+
   const handleRemove = (item) => {
     dispatch(removerFromCart(item));
   };
-
 
   // const refreshToken = async () => {
   //   const res = await axios
@@ -59,19 +83,15 @@ const Finalpayment = () => {
   //   return () => clearInterval(interval);
   // }, []);
 
-  
   return (
     <div className="pt-1">
       <div className="pt-1 pl-5 pr-5" style={{ backgroundColor: "#FFFFFF" }}>
         <div>
           <div className="">
-            <h2 className="pt-3">Final Payment</h2>
-            <h4 className="my-4">Your Cart Items {cart.cartItems.length} and Qty {cart.cartTotalQuntity}
-            {/* {cart.cartItems.map((item, i) => {
-                return (
-                  item.cartTotalQuntity.length
-                  )
-            })} */}
+            <h2 className="pt-3">Final Payment </h2>
+            <h4 className="my-4">
+              Your Cart Items {cart.cartItems.length} and Qty{" "}
+              {cart.cartTotalQuntity}
             </h4>
           </div>
           {/* <Button variant="outline-warning" className="btn" onClick={cntShop}>
@@ -105,7 +125,9 @@ const Finalpayment = () => {
                         X
                       </Button>
                     </td>
-                    <td style={{ textAlign: "center" }}>&#x20B9; {item.itemPrice}</td>
+                    <td style={{ textAlign: "center" }}>
+                      &#x20B9; {item.itemPrice}
+                    </td>
                     <td style={{ textAlign: "center" }}>
                       <span className="mx-2">{item.cartQuantity}</span>
                     </td>
@@ -143,7 +165,7 @@ const Finalpayment = () => {
           <p>{user && user.address2}</p>
           <p>{user && user.address3}</p>
           <div className="text-center">
-            <Button variant="success" size="lg" onClick={successInfo}>
+            <Button variant="success" size="lg" onClick={handleSubmit}>
               Your Total Amount <b>&#x20B9;{Math.floor(gTotal)}</b> to Pay
             </Button>
           </div>

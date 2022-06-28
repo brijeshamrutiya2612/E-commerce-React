@@ -9,6 +9,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import HomeIcon from "@mui/icons-material/Home";
 import HistoryIcon from "@mui/icons-material/History";
 import LogoutIcon from "@mui/icons-material/Logout";
+import LoginIcon from '@mui/icons-material/Login';
 import { Grid, Paper, styled, Input } from "@mui/material";
 // import shop from "./login_bck.jpg";
 
@@ -62,6 +63,9 @@ const Userprofile = () => {
   };
   const handleLogout = () => {
     sendLogoutReq().then(() => dispatch(loginActions.logout()));
+  };
+  const handleLogIn = () => {
+    nav("/login");
   };
   const home = () => {
     nav("/");
@@ -132,6 +136,20 @@ const Userprofile = () => {
           </sapn>
           <Grid container spacing={1}>
             <Grid item xs={9} md={15}>
+            <Item>
+                <HomeIcon style={{ float: "left" }} />
+                &#x2003;
+                <Link
+                  style={{
+                    lineHeight: "1.2em",
+                    fontSize: "20px",
+                    color: "black",
+                  }}
+                  to="/"
+                >
+                  <strong>Home</strong>
+                </Link>
+              </Item>
               <Item>
                 <DashboardIcon style={{ float: "left" }} />
                 &#x2003;
@@ -147,20 +165,6 @@ const Userprofile = () => {
                 </Link>
               </Item>
               <Item>
-                <HomeIcon style={{ float: "left" }} />
-                &#x2003;
-                <Link
-                  style={{
-                    lineHeight: "1.2em",
-                    fontSize: "20px",
-                    color: "black",
-                  }}
-                  to="/"
-                >
-                  <strong>Home</strong>
-                </Link>
-              </Item>
-              <Item>
                 <HistoryIcon style={{ float: "left" }} />
                 &#x2003;
                 <Link
@@ -169,7 +173,7 @@ const Userprofile = () => {
                     fontSize: "20px",
                     color: "black",
                   }}
-                  to="/"
+                  to="/u_purchase"
                 >
                   <strong>Purchase History</strong>
                 </Link>

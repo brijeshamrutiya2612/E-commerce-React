@@ -18,10 +18,11 @@ import Dashboard from "./Admin/Pages/Dashboard";
 import AddProducts from "./Admin/Pages/AddProducts";
 import User from "./Admin/Pages/User"
 import UserDashboard from "./Admin/UserPage/UserDashboard";
+import UserPurchase from "./Admin/UserPage/UserPurchase";
 
 
 function App() {
-  const isLoggedIn = useSelector((state) => state.userlogin);
+  const {isLoggedIn} = useSelector((state) => state.userlogin);
   console.log(isLoggedIn);
   return (
     <React.Fragment>
@@ -47,6 +48,7 @@ function App() {
           <Route path="/addproducts" element={<AddProducts/>}></Route>
           <Route path="/user" element={<User/>}></Route>
           <Route path="/ud" element={<UserDashboard/>}></Route>
+          <Route path="/u_purchase" element={<UserPurchase/>}></Route>
         </Routes>  
       </main>
       <header>
