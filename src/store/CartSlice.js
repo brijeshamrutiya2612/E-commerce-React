@@ -8,9 +8,6 @@ import {
 import { toast } from "react-toastify";
   
 
-   const baseURL = "https://fakestoreapi.com/products";
-//  const baseURL = "http://localhost:3333/user";
-
 export const cartSlice = createSlice({
     name: "cart",
     initialState:{
@@ -22,13 +19,15 @@ export const cartSlice = createSlice({
       addToCart(state, action) {
         const itemIndex = state.cartItems.findIndex(
           (item) => item._id === action.payload._id
-        );
+          );
+          console.log(itemIndex)
         if (itemIndex >= 0) {
-          state.cartItems[itemIndex].cartQuantity += 1;
+          state.cartItems[itemIndex].quantity += 1;
         } else {
-          const tempProduct = { ...action.payload, cartQuantity: 1 };
+          const tempProduct = { ...action.payload, quantity: 1 };
           state.cartItems.push(tempProduct);
         }
+        // localStorage.setItem('cartItem', JSON.stringify(itemIndex))
       },
       removerFromCart(state, action) {
         const nextCartItems = state.cartItems.filter(
@@ -50,13 +49,14 @@ export const cartSlice = createSlice({
         const itemIndex = state.cartItems.findIndex(
           (cartItem) => cartItem._id === action.payload._id
         );
-        if (state.cartItems[itemIndex].cartQuantity > 1) {
-          state.cartItems[itemIndex].cartQuantity -= 1;
+        console.log(itemIndex)
+        if (state.cartItems[itemIndex] > 1) {
+          state.cartItems[itemIndex] -= 1;
   
           toast.info(`Decreased ${action.payload.title} cart quantity`, {
             position: "bottom-left",
           });
-        } else if (state.cartItems[itemIndex].cartQuantity === 1) {
+        } else if (state.cartItems[itemIndex] === 1) {
           const nextCartItems = state.cartItems.filter(
             (cartItem) => cartItem._id !== action.payload._id
           );
@@ -70,11 +70,11 @@ export const cartSlice = createSlice({
       getTotals(state,action){
         let {total, quantity} = state.cartItems.reduce(
           (cartTotal, cartItem) => {
-            const {itemPrice, cartQuantity} = cartItem;
-            const itemTotal = itemPrice * cartQuantity;
+            const {itemPrice, quantity} = cartItem;
+            const itemTotal = itemPrice * quantity;
   
             cartTotal.total += itemTotal
-            cartTotal.quantity += cartQuantity
+            cartTotal.quantity += quantity
   
             return cartTotal;
           },

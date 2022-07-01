@@ -23,24 +23,26 @@ const Finalpayment = () => {
   useEffect(() => {
     dispatch(getData());
   }, []);
-  console.log(cart.cartItems);
+  let a = cart;
+  console.log(a);
   console.log(cart.cartItems.map((item) => item.itemCategory));
 
   const sendRequest = async () => {
     const res = await axios
-      .post("http://localhost:5000/api/userproducts/add", 
-      {
-        itemCategory: cart.cartItems.map(item =>{ return (item.itemCategory)}),
-        itemName: cart.cartItems.map(item =>{ return (item.itemName)}),
-        itemPrice: cart.cartItems.map(item =>{ return (item.itemPrice)}),
-        itemQty: cart.cartItems.map(item =>{ return (item.cartQuantity)}),
-        itemUnit: cart.cartItems.map(item =>{ return (item.itemUnit)}),
-        itemDescription: cart.cartItems.map(item =>{ return (item.itemDescription)}),
-        image: cart.cartItems.map(item =>{ return (item.image)}),
-        user: localStorage.getItem('userId'),
+      .post("http://localhost:5000/api/userproducts/add", {
+        
+          itemCategory: cart.cartItems.map((item) =>{ return item.itemCategory}),
+          itemName: cart.cartItems.map((item) =>{ return item.itemName}),
+          itemPrice: cart.cartItems.map((item) =>{ return item.itemPrice}),
+          itemQty: cart.cartItems.map((item) =>{ return item.itemQty}),
+          itemUnit: cart.cartItems.map((item) =>{ return item.itemUnit}),
+          itemDescription: cart.cartItems.map((item) =>{ return item.itemDescription}),
+          image: cart.cartItems.map((item) =>{ return item.image}),
+        
+        user: localStorage.getItem("userId"),
       })
       .catch((err) => console.log(err));
-    const data = await res.data;
+    const data =  res.data;
     console.log(data);
     return data;
   };

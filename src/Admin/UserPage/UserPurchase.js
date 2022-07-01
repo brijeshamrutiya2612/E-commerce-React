@@ -36,28 +36,28 @@ const UserPurchase = () => {
     const res = await axios
       .get(`http://localhost:5000/api/userproducts/user/${id}`)
       .catch((err) => console.log(err));
-    const data = await res.data.UserProducts;
+    const data = await res.data.UserProducts.UserProducts;
     console.log(data);
     return data;
   };
 
   useEffect(() => {
-     sendRequest().then(data=> setUprod(data))
- }, []);
-console.log(uProd)
+    sendRequest().then((data) => setUprod(data));
+  }, []);
+  console.log(uProd);
 
- //   const sendLogoutReq = async () => {
-//     const res = await axios.post("http://localhost:5000/api/logout", null, {
-//       withCredentials: true,
-//     });
-//     if (res.status == 200) {
-//       return res;
-//     }
-//     return new Error("Unable to Logout. Please try again");
-//   };
-//   const handleLogout = () => {
-//     sendLogoutReq().then(() => dispatch(loginActions.logout()));
-//   };
+  //   const sendLogoutReq = async () => {
+  //     const res = await axios.post("http://localhost:5000/api/logout", null, {
+  //       withCredentials: true,
+  //     });
+  //     if (res.status == 200) {
+  //       return res;
+  //     }
+  //     return new Error("Unable to Logout. Please try again");
+  //   };
+  //   const handleLogout = () => {
+  //     sendLogoutReq().then(() => dispatch(loginActions.logout()));
+  //   };
 
   const Item = styled(Paper)(({ theme }) => ({
     // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -165,8 +165,10 @@ console.log(uProd)
               }}
             >
               <div className="row mx-auto pl-5">
-                {/* {uProd.map((item, i)=>{
-                    return(
+                {uProd.map((item, i) => {
+                  console.log(item);
+
+                  return (
                     <Card
                       className="col ml-3 col-md-12 my-4"
                       sx={{ maxWidth: 345 }}
@@ -179,7 +181,7 @@ console.log(uProd)
                           margin: "auto",
                         }}
                         component="img"
-                        image=""
+                        image={item.image}
                         alt="green iguana"
                       />
                       <CardContent>
@@ -187,7 +189,7 @@ console.log(uProd)
                           {item.itemName}
                         </Typography>
                         <Typography variant="body1" color="text.secondary">
-                          &#x20B9;
+                          &#x20B9; {item.itemPrice}
                         </Typography>
                       </CardContent>
                       <CardActions>
@@ -196,8 +198,8 @@ console.log(uProd)
                       </CardActions>
                     </Card>
                   );
-                })} */}
-                </div>
+                })}
+              </div>
             </div>
           </div>
         </div>

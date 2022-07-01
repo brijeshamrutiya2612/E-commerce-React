@@ -1,35 +1,51 @@
 import { Button, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginActions } from "../store/loginSlice";
 // import shop from "./login_bck.jpg";
 import axios from "axios";
 import Header from "./Header";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
+import { Store } from "../store/Context";
+import { toast, ToastContainer } from "react-toastify";
 
 
 const Login = () => {
+
+  const {search} = useLocation();
+  const redirectInUrl = new URLSearchParams(search).get('redirect');
+  const redirect = redirectInUrl ? redirectInUrl : '/';
   const dispatch = useDispatch();
   const nav = useNavigate();
   const [emails, setEmail] = useState({
     email: "",
     password: "",
   });
- const sendRequest = async () =>{
-  const res = await axios.post("http://localhost:5000/api/login",{
-    email: emails.email,
-    password: emails.password
-  }).catch (err => console.log(err))
-  const data = await res.data
-  return data;
- }
-  
- const handleSubmit = (e) =>{
-    e.preventDefault();
-    console.log(emails)
-    sendRequest().then((data)=>localStorage.setItem("userId", data.user._id)).then(()=>dispatch(loginActions.login())).then(()=>nav("/")).then(data=>console.log(data))
+  const {state, dispatch: ctxDispatch} = useContext(Store);
+  const {userInfo} = state;
+ useEffect(()=>{
+  if(userInfo){
+    nav(redirect);
+  } 
+},[nav,redirect,userInfo])
+ const handleSubmit = async (e) =>{
+     e.preventDefault();
+     try{
+       const res = await axios.post("http://localhost:5000/api/login",{      
+         email: emails.email,
+         password: emails.password
+       })
+       const data = await res.data
+       ctxDispatch({type: 'USER_SIGNIN', payload: data})
+       localStorage.setItem('userInfo', JSON.stringify(data))
+       nav(redirect || '/');
+       return data;
+     }catch(err){
+        toast.error("Invalid email or password");
+     }
+    //sendRequest().then((data)=>localStorage.setItem("userId", data._id)).then(()=>dispatch(loginActions.login())).then(()=>nav("/")).then(data=>console.log(data))
  }
 
   return (
@@ -39,9 +55,10 @@ const Login = () => {
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         width: "auto",
-        height: "937px",
+        height: "auto",
       }}
     >
+      <ToastContainer position="top-center" limit={1}/>
       <div className="container pt-5 col-md-15 justify-content-center">
         <Container
           className="justify-content-center"
@@ -103,7 +120,7 @@ const Login = () => {
                   </Button>
                 </div>
                 <p>
-                  Not a member? <Link to="/register">Sign Up</Link>
+                  Not a member? <Link to={`/register?redirect=${redirect}`}>Create Your Account</Link>
                 </p>
               </div>
             </div>
