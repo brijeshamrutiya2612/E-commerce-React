@@ -20,26 +20,16 @@ import {
 } from "@mui/material";
 import { Store } from "../store/Context";
 import axios from "axios";
+import CheckOutSteps from "./CheckOutSteps";
 
 const Addtocart = () => {
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { cartItems },
+    userInfo
   } = state;
-  const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
-  const dis = useDispatch();
   const nav = useNavigate();
-  const {id} = useParams();
-
-  useEffect(() => {
-    dis(getTotals());
-  }, []);
-
-  const onMinus = async (item, quantity) => {
-//    dis(decrese(item));
-    //ctxDispatch({type:'CART_ADD_ITEM', payload: {...item, quantity},})
-  };
   const onPlus = async (item,quantity) => {
     const student = await axios.get(
       `http://localhost:5000/api/products/${item._id}`,
@@ -52,28 +42,20 @@ const Addtocart = () => {
     ctxDispatch({type:'CART_ADD_ITEM', payload: {...item, quantity},})
     // dis(addToCart(item));
   };
-  const handleRemove = (item) => {
-    ctxDispatch({type:'CART_REMOVE_ITEM', payload: item})
-  };
-  
-  const cartClear = (cartItems) => {
-    ctxDispatch({type:'CART_CLEAR', payload: cartItems})
-  };
-  const cntShop = () => {
-    nav("/");
-  };
   const payment = () => {
-    nav("/finalPayment");
+    nav("/shipping");
   };
   const login = () => {
     nav("/login");
   };
+  
 
   return (
     <div>
+      <CheckOutSteps step1></CheckOutSteps>
       <div className="pl-5 pr-5 my-4" style={{ backgroundColor: "#FFFFFF" }}>
         <div>
-          <Button variant="outline-success" className="btn" onClick={cntShop}>
+          <Button variant="outline-success" className="btn">
             <strong>&#x2190;Continue Shopping</strong>
           </Button>
         </div>
@@ -145,7 +127,7 @@ const Addtocart = () => {
                           <Button
                             variant="danger"
                             className="btn btn-sm"
-                            onClick={() => handleRemove(item)}
+                            
                           >
                             <i className="fas fa-trash"></i>
                           </Button>
@@ -186,7 +168,6 @@ const Addtocart = () => {
           <Button
             variant="outline-danger"
             className="text-left btn"
-            onClick={cartClear(cartItems)}
           >
             <strong>Clear Cart</strong>
           </Button>
@@ -198,7 +179,6 @@ const Addtocart = () => {
               <Button
                 variant="outline-success"
                 className="text-left btn"
-                onClick={cntShop}
               >
                 <strong>&#x2190;Continue Shopping</strong>
               </Button>
@@ -206,7 +186,7 @@ const Addtocart = () => {
           </div>
           <div className="col-md-6 text-right">
             <div className="demo-content bg-alt">
-              {!isLoggedIn ? (
+               {!userInfo ? (
                 <Button onClick={login} variant="success" className="btn">
                   Login
                 </Button>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { Tab } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,17 +11,25 @@ import HistoryIcon from "@mui/icons-material/History";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from '@mui/icons-material/Login';
 import { Grid, Paper, styled, Input } from "@mui/material";
+import { Store } from "../../store/Context";
 // import shop from "./login_bck.jpg";
 
 let firstRender = true;
 axios.defaults.withCredentials = true;
 
 const Userprofile = () => {
+
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const {
+    cart: { cartItems },
+    userInfo
+  } = state;
+
   const dispatch = useDispatch();
   const nav = useNavigate();
   const users = useSelector((state) => state.user);
   console.log(users);
-  const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
+  
   // const cart = useSelector((state) => state.cart);
   // const { getProd } = useSelector((state) => state.products);
   const [value, setValue] = useState();
@@ -123,7 +131,7 @@ const Userprofile = () => {
     <>
       <div className="container"></div>
       <div className="pt-1"></div>
-      <div className="row">
+      <div className="row my-4 small-container">
         <div
           style={{
             height: "52px",
@@ -179,7 +187,7 @@ const Userprofile = () => {
                 </Link>
               </Item>
               <Item>
-                {isLoggedIn && (
+                {userInfo && (
                   <>
                     <LogoutIcon style={{ float: "left" }} />
                     &#x2003;
@@ -231,7 +239,7 @@ const Userprofile = () => {
                         type="text"
                         variant="standard"
                         name="name.firstname"
-                        value={user.firstname}
+                        value={userInfo.firstname}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -246,7 +254,7 @@ const Userprofile = () => {
                         label="Lastname"
                         variant="standard"
                         name="name.lastname"
-                        value={user.lastname}
+                        value={userInfo.lastname}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -272,7 +280,7 @@ const Userprofile = () => {
                         label="Email"
                         name="email"
                         variant="standard"
-                        value={user.email}
+                        value={userInfo.email}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -287,7 +295,7 @@ const Userprofile = () => {
                         label="Password"
                         type="password"
                         variant="standard"
-                        value={user.password}
+                        value={userInfo.password}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -302,7 +310,7 @@ const Userprofile = () => {
                         label="Address1"
                         type="text"
                         variant="standard"
-                        value={user.address1}
+                        value={userInfo.address1}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -317,7 +325,7 @@ const Userprofile = () => {
                         label="Address2"
                         type="text"
                         variant="standard"
-                        value={user.address2}
+                        value={userInfo.address2}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -332,7 +340,7 @@ const Userprofile = () => {
                         label="Address3"
                         type="text"
                         variant="standard"
-                        value={user.address3}
+                        value={userInfo.address3}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -347,7 +355,7 @@ const Userprofile = () => {
                         label="Mobile:"
                         type="number"
                         variant="standard"
-                        value={user.phone}
+                        value={userInfo.phone}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -360,7 +368,7 @@ const Userprofile = () => {
                         label="Age:"
                         type="number"
                         variant="standard"
-                        value={user.age}
+                        value={userInfo.age}
                         onChange={(e) =>
                           setRegister({
                             ...registers,
@@ -371,30 +379,16 @@ const Userprofile = () => {
                       <div className="my-5 justify-content-center">
                         <Button
                           className="ml-4 col-md-11 justify-content-center"
-                          variant="contained"
+                          variant="warning"
                           onClick={signIn}
                         >
-                          Sign Up
-                          {/* {register.registerStatus === "pending"
-                        ? "Submitting"
-                        : "Register"} */}
+                          Update Profile
                         </Button>
-                        {/* {register.registerStatus === "rejected" ? (
-                      <p>{register.registerError}</p>
-                    ) : null} */}
                       </div>
-                      <p>
-                        Have an account? <Link to="/Login">Log in</Link>
-                      </p>
                     </div>
                   </div>
                 </Container>
               </form>
-              {/* {register.map((item, i)=>{
-      return(
-        <p key={i}>{item.firstname}</p>
-      )
-    })} */}
             </div>
           </div>
         </div>

@@ -64,137 +64,152 @@ function Home() {
 
   return (
     <>
-      {loading ? (
-        <div className="container">
-          <Spinner animation="border" role="status">
-          </Spinner>
-        </div>
-      ) : error ? (
-        <div>{error}</div>
-      ) : (
-        <>
-          <div>
-            <div
-              style={{
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                width: "auto",
-                height: "auto",
-              }}
-            >
-              <h3
-                className="container p-4 d-flex justify-content-center"
+      <div
+        style={{
+          display: "flex",
+          
+        }}
+      >
+        {loading ? (
+          <div className="container pt-5">
+            <Spinner animation="border" role="status"></Spinner>
+          </div>
+        ) : error ? (
+          <div>{error}</div>
+        ) : (
+          <>
+            <div>
+              <div
                 style={{
-                  lineHeight: "2em",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  width: "auto",
+                  height: "auto",
                 }}
               >
-                Your Choice is in Our Place
-              </h3>
+                <h3
+                  className="container p-4 d-flex justify-content-center"
+                  style={{
+                    lineHeight: "2em",
+                  }}
+                >
+                  Your Choice is in Our Place
+                </h3>
 
-              <Carousel
-                fade
-                style={{
-                  boxShadow: "1px 1px 1px 18px #FFFFFF",
-                  margin: "25px",
-                  borderRadius: "20px",
-                  background:
-                    "linear-gradient(180deg, rgba(63,94,251,1) 0%, rgba(70,252,222,1) 100%)",
-                }}
-                activeIndex={index}
-                onSelect={handleSelect}
-              >
-                {getProd.map((item, i) => {
-                  return (
-                    <Carousel.Item
-                      key={i}
-                      style={{ height: "520px" }}
-                      interval={2000}
-                    >
-                      <img
-                        className="d-block w-10 mx-auto justify-content-center my-5"
-                        style={{ height: "350px" }}
-                        src={item.image}
-                        alt={item.itemCategory}
-                      />
-                      <Carousel.Caption style={{ color: "black" }}>
-                        <h3>{item.itemName}</h3>
-                        <h3>{item.itemCategory.toUpperCase()}</h3>
-                      </Carousel.Caption>
-                    </Carousel.Item>
-                  );
-                })}
-              </Carousel>
-              <div className="container">
-                <div className="row">
+                <Carousel
+                  fade
+                  style={{
+                    boxShadow: "1px 1px 1px 18px #FFFFFF",
+                    margin: "25px",
+                    borderRadius: "20px",
+                    background:
+                      "linear-gradient(180deg, rgba(63,94,251,1) 0%, rgba(70,252,222,1) 100%)",
+                  }}
+                  activeIndex={index}
+                  onSelect={handleSelect}
+                >
                   {getProd.map((item, i) => {
                     return (
-                      <div
+                      <Carousel.Item
                         key={i}
-                        className="col-lg-4 col-md-5 col-sm-6 my-3 d-flex justify-content-center"
+                        style={{ height: "520px" }}
+                        interval={2000}
                       >
-                        <Link to={`/Seller/${item._id}`}>
-                          <Card
-                            className="card card-item"
-                            key={i}
-                            style={{
-                              overflow: "hidden",
-                              maxWidth: "500px",
-                              boxShadow: "1px 1px 15px #343A40",
-                              margin: "5px",
-                              transitionDuration: "3s",
-                            }}
-                          >
-                            <Container>
-                              <Row>
-                                <Col xs={30} sm={4} md={4}>
-                                  <Card.Img
-                                    variant="center"
-                                    src={item.image}
-                                    style={{
-                                      marginTop: "1em",
-                                      height: "250px",
-                                      maxHeight: "250px",
-                                      width: "300px",
-                                      maxWidth: "200px",
-                                      textAlign: "center",
-                                    }}
-                                  />
-                                </Col>
-                              </Row>
-                            </Container>
-                            <Card.Body
-                              style={{ textAlign: "center", color: "black" }}
-                            >
-                              <Card.Title
-                                style={{ textAlign: "center", color: "black" }}
-                              >
-                                {item.itemName}
-                              </Card.Title>
-                              <Card.Title
-                                style={{ textAlign: "center", color: "black" }}
-                              >
-                                &#x20B9; {item.itemPrice}
-                              </Card.Title>
-                              <Card.Text
-                                style={{ textAlign: "center", color: "black" }}
-                              >
-                                {item.itemCategory.toUpperCase()}
-                              </Card.Text>
-                              <Button className="btn-sm btn-c" variant="dark">
-                                Shop now &#x2192;
-                              </Button>
-                            </Card.Body>
-                          </Card>
-                        </Link>
-                      </div>
+                        <img
+                          className="d-block w-10 mx-auto justify-content-center my-5"
+                          style={{ height: "350px" }}
+                          src={item.image}
+                          alt={item.itemCategory}
+                        />
+                        <Carousel.Caption style={{ color: "black" }}>
+                          <h3>{item.itemName}</h3>
+                          <h3>{item.itemCategory.toUpperCase()}</h3>
+                        </Carousel.Caption>
+                      </Carousel.Item>
                     );
                   })}
+                </Carousel>
+                <div className="container">
+                  <div className="row">
+                    {getProd.map((item, i) => {
+                      return (
+                        <div
+                          key={i}
+                          className="col-lg-4 col-md-5 col-sm-6 my-3 d-flex justify-content-center"
+                        >
+                          <Link to={`/Seller/${item._id}`}>
+                            <Card
+                              className="card card-item"
+                              key={i}
+                              style={{
+                                overflow: "hidden",
+                                maxWidth: "500px",
+                                boxShadow: "1px 1px 15px #343A40",
+                                margin: "5px",
+                                transitionDuration: "3s",
+                              }}
+                            >
+                              <Container>
+                                <Row>
+                                  <Col xs={30} sm={4} md={4}>
+                                    <Card.Img
+                                      variant="center"
+                                      src={item.image}
+                                      style={{
+                                        marginTop: "1em",
+                                        height: "250px",
+                                        maxHeight: "250px",
+                                        width: "300px",
+                                        maxWidth: "200px",
+                                        textAlign: "center",
+                                      }}
+                                    />
+                                  </Col>
+                                </Row>
+                              </Container>
+                              <Card.Body
+                                style={{ textAlign: "center", color: "black" }}
+                              >
+                                <Card.Title
+                                  style={{
+                                    textAlign: "center",
+                                    color: "black",
+                                  }}
+                                >
+                                  {item.itemName}
+                                </Card.Title>
+                                <Card.Title
+                                  style={{
+                                    textAlign: "center",
+                                    color: "black",
+                                  }}
+                                >
+                                  &#x20B9; {item.itemPrice}
+                                </Card.Title>
+                                <Card.Text
+                                  style={{
+                                    textAlign: "center",
+                                    color: "black",
+                                  }}
+                                >
+                                  {item.itemCategory.toUpperCase()}
+                                </Card.Text>
+                                <Button className="btn-sm btn-c" variant="dark">
+                                  Shop now &#x2192;
+                                </Button>
+                              </Card.Body>
+                            </Card>
+                          </Link>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </>
   );
 }

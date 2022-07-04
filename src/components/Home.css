@@ -13,3 +13,12 @@
 Link{
     background-color:darkgreen
 }
+.checkout-steps > div{
+  border-radius: 0.2rem solid #a0a0aa;
+  color: #a0a0aa;
+}
+
+.checkout-steps > div.active {
+  border-bottom: 0.2rem solid #f08000;
+  color: #f08000;
+}

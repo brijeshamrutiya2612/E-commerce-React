@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 // import { userRegister } from "../redux/reducers/userReducer";
 // import shop from "./login_bck.jpg";
 import axios from 'axios';
+import { toast, ToastContainer } from "react-toastify";
 
 const Register = () => {
   // const dispatch = useDispatch();
@@ -19,12 +20,14 @@ const Register = () => {
     lastname: "",
     email: "",
     password: "",
+    cPassword: "",
     address1: "",
     address2: "",
     address3: "",
     phone: "",
     age: "",
   });
+  
   // console.log(registers);
   const sendRequest = async () =>{
     const res = await axios.post("http://localhost:5000/api/signup",{
@@ -43,7 +46,11 @@ const Register = () => {
   }
   const signIn = async (e) => {
     e.preventDefault();
-    sendRequest().then(()=>sign("/login"));
+    if(registers.password !== registers.cPassword){
+      toast.error("Password do not match");
+      return;
+    }
+    // sendRequest().then(()=>sign("/login"));
     
 
 
@@ -114,6 +121,7 @@ const Register = () => {
         }}
       >
         <div className="container col-lg-5 my-5 col-md-15 justify-content-center">
+        <ToastContainer position="top-bottom" limit={1}/>
           <form>
             <Container className="pt-1 justify-content-center">
               <div
@@ -177,9 +185,22 @@ const Register = () => {
                     className="ml-4 col-md-11 my-3 justify-content-center"
                     label="Password"
                     type="password"
+                    name="password"
                     variant="outlined"
                     onChange={(e) =>
                       setRegister({ ...registers, password: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="container col-md-15 justify-content-center">
+                  <TextField
+                    className="ml-4 col-md-11 my-3 justify-content-center"
+                    label="confirm Password"
+                    type="password"
+                    variant="outlined"
+                    name="cPassword"
+                    onChange={(e) =>
+                      setRegister({ ...registers, cPassword: e.target.value })
                     }
                   />
                 </div>

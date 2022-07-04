@@ -87,6 +87,8 @@ function Header() {
   const handleLogout = () => {
     ctxDispatch({type: 'USER_SIGNOUT'});
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMethod');
   };
   const home = () => {
     nav("/");
@@ -107,7 +109,7 @@ function Header() {
           // backgroundColor: "#fff",
           height: "52px",
           lineHeight: "52px",
-
+          position:"sticky",
           zIndex: "40",
         }}
       >
@@ -182,7 +184,7 @@ function Header() {
                     id="navbarScrollingDropdown"
                   >
                     <NavDropdown.Item>
-                      <Link to={`/user/${user._id}`}>Dashboard</Link>
+                      <Link to={`/user/${userInfo._id}`}>Dashboard</Link>
                     </NavDropdown.Item>
                     <NavDropdown.Item href="#action4">
                       Your Cart

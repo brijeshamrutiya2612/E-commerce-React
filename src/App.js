@@ -9,7 +9,6 @@ import Addtocart from "./components/Addtocart";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Finalpayment from "./components/Finalpayment";
-import { useSelector } from "react-redux";
 import Header from "./components/Header";
 import New from "./components/New";
 import Userprofile from "./Admin/UserPage/Userprofile";
@@ -22,6 +21,9 @@ import UserDashboard from "./Admin/UserPage/UserDashboard";
 import UserPurchase from "./Admin/UserPage/UserPurchase";
 import { Container } from "react-bootstrap";
 import { Store } from "./store/Context";
+import ShippingAddress from "./components/ShippingAddress";
+import { ToastContainer } from "react-toastify";
+import Payment from "./components/Payment";
 
 function App() {
   const { state } = useContext(Store);
@@ -37,7 +39,7 @@ function App() {
             <Header />
           </Container>
         </header>
-        <main>
+        <main className="pt-5">
           <Container>
             <Routes>
               <Route path="/" element={<Home />}></Route>
@@ -50,6 +52,8 @@ function App() {
               ></Route>
               <Route path="/addToCart" element={<Addtocart />}></Route>
               <Route path="/Finalpayment" element={<Finalpayment />}></Route>
+              <Route path="/shipping" element={<ShippingAddress/>}></Route>
+              <Route path="/Payment" element={<Payment/>}></Route>
               <Route path="/Seller/:id" element={<Seller />}></Route>
               <Route path="/new" element={<New />}></Route>
               <Route path="/user/:id" element={<Userprofile />}></Route>
