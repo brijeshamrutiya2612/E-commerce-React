@@ -10,7 +10,7 @@ const Payment = () => {
     const {
         cart:{
             shippingAddress, paymentMethod
-        }
+        },
     } = state;
     const navigate = useNavigate();
     const [paymentMethodName, setPaymentMethod] = useState(

@@ -12,8 +12,8 @@ const initialState = {
       ? JSON.parse(localStorage.getItem("shippingAddress"))
       : {},
     paymentMethod: localStorage.getItem("paymentMethod")
-      ? JSON.parse(localStorage.getItem("paymentMethod"))
-      : '',
+      ? localStorage.getItem("paymentMethod")
+      : "",
     cartItems: localStorage.getItem("cartItems")
       ? JSON.parse(localStorage.getItem("cartItems"))
       : [],
@@ -54,10 +54,8 @@ function reducer(state, action) {
       };
     }
     case "CART_CLEAR":
-      {
-        state.cartItems = localStorage.clear("cartItems");
-      }
-      break;
+      return { ...state, cart: { ...state.cart, cartItems: [] } };
+      
     case "USER_SIGNIN": {
       return { ...state, userInfo: action.payload };
     }
@@ -65,10 +63,10 @@ function reducer(state, action) {
       return {
         ...state,
         userInfo: null,
-        cart: { cartItems: [], shippingAddress: {}, paymentMethod:'' },
+        cart: { cartItems: [], shippingAddress: {}, paymentMethod: "" },
       };
     }
-    case 'SAVE_SHIPPING_ADDRESS':
+    case "SAVE_SHIPPING_ADDRESS":
       return {
         ...state,
         cart: {

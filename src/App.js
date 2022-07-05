@@ -24,6 +24,7 @@ import { Store } from "./store/Context";
 import ShippingAddress from "./components/ShippingAddress";
 import { ToastContainer } from "react-toastify";
 import Payment from "./components/Payment";
+import OrderScreen from "./components/OrderScreen";
 
 function App() {
   const { state } = useContext(Store);
@@ -54,6 +55,7 @@ function App() {
               <Route path="/Finalpayment" element={<Finalpayment />}></Route>
               <Route path="/shipping" element={<ShippingAddress/>}></Route>
               <Route path="/Payment" element={<Payment/>}></Route>
+              <Route path="/order/:id" element={<OrderScreen/>}></Route>
               <Route path="/Seller/:id" element={<Seller />}></Route>
               <Route path="/new" element={<New />}></Route>
               <Route path="/user/:id" element={<Userprofile />}></Route>

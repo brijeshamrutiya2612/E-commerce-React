@@ -1,119 +1,92 @@
-import { Box } from "@mui/material";
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { Button, Card, Col, Row, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import {
+  Button,
+  Card,
+  Col,
+  ListGroup,
+  Row,
+  Spinner,
+  Table,
+} from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getTotals, removerFromCart } from "../store/CartSlice";
 import { Store } from "../store/Context";
 import { getData } from "../store/ProductsSlice";
 import CheckOutSteps from "./CheckOutSteps";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 
-// axios.defaults.withCredentials = true;
-// let firstRender = true;
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "CREATE_REQUEST":
+      return { ...state, loading: true };
+    case "CREATE_SUCCESS":
+      return { ...state, loading: false };
+    case "CREATE_FAIL":
+      return { ...state, loading: false };
+    default:
+      return state;
+  }
+};
 
-const Finalpayment = () => {
+function Finalpayment() {
+  const navigate = useNavigate();
+  const [{ loading, error }, dispatch] = useReducer(reducer, {
+    loading: false,
+    error: "",
+  });
+
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { cartItems, shippingAddress, paymentMethod },
+    userInfo
   } = state;
-  const sub = cartItems.reduce((a, c) => a + c.itemPrice * c.quantity, 0);
-  const text = cartItems.reduce(
-    (a, c) => Math.floor(a + (c.itemPrice * c.quantity * 2) / 100),
-    0
+  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
+  cartItems.itemPrice = round2(
+    cartItems.reduce((a, c) => a + c.quantity * c.itemPrice, 0)
   );
-  console.log(shippingAddress);
-  const final = sub + text;
-  const ship = final + 100;
-
-  const users = useSelector((state) => state.userlogin.isLoggedIn);
-  const dispatch = useDispatch();
-  const nav = useNavigate();
-  const [user, setUser] = useState();
-  // const cart = useSelector((state) => state.cart);
-  // const tax = (cart.cartTotalAmount * 23) / 100;
-  // const gTotal = cart.cartTotalAmount + tax;
-
-  // useEffect(() => {
-  //   dispatch(getTotals());
-  // }, [cart]);
+  cartItems.shippingPrice = cartItems.itemPrice > 1000 ? round2(0) : round2(10);
+  cartItems.taxPrice = round2(0.15 * cartItems.itemPrice);
+  cartItems.totalPrice =
+  cartItems.itemPrice + cartItems.shippingPrice + cartItems.taxPrice;
+  console.log(cartItems.shippingPrice)
 
   useEffect(() => {
-    dispatch(getData());
-  }, []);
-  // let a = cart;
-  // console.log(a);
-  // console.log(cart.cartItems.map((item) => item.itemCategory));
+   if(!paymentMethod){
+    navigate('/payment')
+   }
+  }, [paymentMethod,navigate]);
+  
+  const handleSubmit = async () => {
+    try{
 
-  // const sendRequest = async () => {
-  //   const res = await axios
-  //     .post("http://localhost:5000/api/userproducts/add", {
-  //       itemCategory: cart.cartItems.map((item) => {
-  //         return item.itemCategory;
-  //       }),
-  //       itemName: cart.cartItems.map((item) => {
-  //         return item.itemName;
-  //       }),
-  //       itemPrice: cart.cartItems.map((item) => {
-  //         return item.itemPrice;
-  //       }),
-  //       itemQty: cart.cartItems.map((item) => {
-  //         return item.itemQty;
-  //       }),
-  //       itemUnit: cart.cartItems.map((item) => {
-  //         return item.itemUnit;
-  //       }),
-  //       itemDescription: cart.cartItems.map((item) => {
-  //         return item.itemDescription;
-  //       }),
-  //       image: cart.cartItems.map((item) => {
-  //         return item.image;
-  //       }),
-
-  //       user: localStorage.getItem("userId"),
-  //     })
-  //     .catch((err) => console.log(err));
-  //   const data = res.data;
-  //   console.log(data);
-  //   return data;
-  // };
-
-  const handleSubmit = (e) => {
-    nav("/shipping");
+      dispatch({type: 'CREATE_REQUEST'});
+      const {data} = await axios.post(
+        "http://localhost:5000/api/orders",
+        {
+          orderItems: cartItems,
+          shippingAddress: shippingAddress.registers,
+          paymentMethod: paymentMethod,
+          itemPrice: cartItems.itemPrice,
+          shippingPrice:cartItems.shippingPrice,
+          taxPrice: cartItems.taxPrice,
+          totalPrice: cartItems.totalPrice,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+        );
+        ctxDispatch({ type: "CART_CLEAR" });
+        dispatch({ type: "CREATE_SUCCESS" });
+        localStorage.removeItem("cartItems");
+        navigate(`/order/${data.order._id}`)
+      } catch(err){
+        dispatch({type: 'CREATE_FAIL'})
+        toast.error(err)
+      }
   };
-
-  const handleRemove = (item) => {
-    dispatch(removerFromCart(item));
-  };
-
-  // const refreshToken = async () => {
-  //   const res = await axios
-  //     .get("http://localhost:5000/api/refresh", {
-  //       withCredentials: true,
-  //     })
-  //     .catch((err) => console.log(err));
-  //   const data = await res.data;
-  //   return data;
-  // };
-  // const sendRequest = async () => {
-  //   const res = await axios
-  //     .get("http://localhost:5000/api/user", {
-  //       withCredentials: true,
-  //     })
-  //     .catch((err) => console.log(err));
-  //   const data = await res.data;
-  //   return data;
-  // };
-  // useEffect(() => {
-  //   if (firstRender) {
-  //     firstRender = false;
-  //     sendRequest().then((data) => setUser(data.user));
-  //   }
-  //   let interval = setInterval(() => {
-  //     refreshToken().then((data) => setUser(data.user));
-  //   }, 1000 * 29);
-  //   return () => clearInterval(interval);
-  // }, []);
 
   return (
     <div className="container pt-1">
@@ -140,138 +113,127 @@ const Finalpayment = () => {
               <Card.Body>
                 <Card.Title>Payment</Card.Title>
                 <Card.Text>
-                  <strong>Method:</strong> 
+                  <strong>Method:</strong> {paymentMethod}
                 </Card.Text>
                 <Link to="/Payment">Edit</Link>
               </Card.Body>
             </Card>
           </Col>
         </Row>
-        <h4 className="my-4">
-          Your Cart Items {cartItems.length} and Qty{" "}
-          {cartItems.reduce((a, c) => a + c.quantity, 0)}
-        </h4>
-      </div>
-      <Row>
-        <Col md={9}>
-          <div style={{ backgroundColor: "#FFFFFF" }}>
-            <div>
-              <Table striped className="my-4">
-                <thead>
-                  <tr>
-                    <th>Items</th>
-                    <th colSpan={3}>Description</th>
-                    <th style={{ textAlign: "center" }}>Price</th>
-                    <th style={{ textAlign: "center" }}>Qty</th>
-                    <th style={{ textAlign: "right" }}>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cartItems.map((item, i) => {
-                    return (
-                      <tr key={i}>
-                        <td>{i + 1}</td>
-                        <td>
-                          <img
-                            style={{ width: "4rem" }}
-                            src={item.image}
-                            alt=""
-                          />
-                        </td>
-                        <td>{item.title}</td>
-                        <td>
+        <Row>
+          <Col sm={8}>
+            Your Cart Items {cartItems.length} and Qty{" "}
+            {cartItems.reduce((a, c) => a + c.quantity, 0)}
+            <Table striped className="my-4">
+              <thead>
+                <tr>
+                  <th>Items</th>
+                  <th colSpan={2}>Description</th>
+                  <th style={{ textAlign: "center" }}>Price</th>
+                  <th style={{ textAlign: "center" }}>Qty</th>
+                  <th style={{ textAlign: "right" }}>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cartItems.map((item, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>{i + 1}</td>
+                      <td>
+                        <img
+                          style={{ width: "4rem" }}
+                          src={item.image}
+                          alt=""
+                        />
+                      </td>
+                      <td>
+                        <strong>{item.itemName}</strong>
+                        <br />
+                        {item.itemDescription}
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        &#x20B9; {item.itemPrice}
+                      </td>
+                      <td style={{ textAlign: "center" }}>
+                        <span className="mx-2">{item.quantity}</span>
+                      </td>
+                      <td style={{ textAlign: "right" }}>
+                        ${item.itemPrice * item.quantity}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Col>
+          <Col>
+            <Card className="mb-3">
+              <Card.Body>
+                <Card.Text>
+                  <ListGroup variant="flush">
+                    <ListGroup.Item>
+                      <Row>
+                        <Col sm={7}>
+                          Subtotal (
+                          {cartItems.reduce((a, c) => a + c.quantity, 0)} items)
+                          :
+                        </Col>
+                        <Col className="text-right">
+                          {" "}
+                          &#x20B9;{" "}
+                          {cartItems.reduce(
+                            (a, c) => a + c.itemPrice * c.quantity,
+                            0
+                          )}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>Tax:</Col>
+                        <Col className="text-right">
+                          &#x20B9; {Math.floor(cartItems.taxPrice)}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                      <>
+                        <ListGroup.Item>
+                          <Row>
+                            <Col sm={9}>Shipping Charge:</Col>
+                            <Col className="text-right">&#x20B9; {cartItems.shippingPrice}</Col>
+                          </Row>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <Row>
+                            <Col>Grand Total:</Col>
+                            <Col className="text-right">
+                              &#x20B9; {Math.floor(cartItems.totalPrice)}
+                            </Col>
+                          </Row>
+                        </ListGroup.Item>
+                      </>
+                    <div className="text-right">
+                      <div className="demo-content bg-alt">
+                        <div className="text-center my-4">
                           <Button
-                            variant="danger"
-                            className="btn btn-sm"
-                            onClick={() => handleRemove(item)}
+                            variant="warning"
+                            size="md"
+                            type="button"
+                            onClick={handleSubmit}
                           >
-                            X
+                            Total Amount <b>&#x20B9;{Math.floor(cartItems.totalPrice)}</b> to
+                            Pay
                           </Button>
-                        </td>
-                        <td style={{ textAlign: "center" }}>
-                          &#x20B9; {item.itemPrice}
-                        </td>
-                        <td style={{ textAlign: "center" }}>
-                          <span className="mx-2">{item.quantity}</span>
-                        </td>
-                        <td style={{ textAlign: "right" }}>
-                          ${item.itemPrice * item.quantity}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table>
-
-              <div className="col-md-5 my-4">
-                {/* <Button
-            variant="outline-danger"
-            className="text-left btn"
-            onClick={cartClear}
-          >
-            <strong>Clear Cart</strong>
-          </Button> */}
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-md-6">
-                <div className="demo-content">
-                  {/* <Button
-                variant="outline-warning"
-                className="text-left btn"
-                onClick={cntShop}
-                >
-                <strong>&#x2190;Continue Shopping</strong>
-            </Button> */}
-                </div>
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col>
-          {" "}
-          <div className="col-md-15 text-left mt-4">
-            <div className="demo-content bg-alt">
-              Subtotal: ({cartItems.reduce((a, c) => a + c.quantity, 0)} items)
-              : &#x20B9;{" "}
-              {cartItems.reduce((a, c) => a + c.itemPrice * c.quantity, 0)}
-            </div>
-          </div>
-          <div className="col-md-15 text-left">
-            <div className="demo-content bg-alt">
-              Tax: &#x20B9; {Math.floor(text)}
-            </div>
-          </div>
-          <div className="col-md-15 text-left">
-            <div className="demo-content bg-alt">
-              {cartItems.reduce((a, c) => a + c.itemPrice * c.quantity, 0) >
-              10000 ? (
-                <div className="col-md-15 text-left">
-                  <div className="demo-content bg-alt">
-                    Grand Total: &#x20B9; {Math.floor(final)}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="col-md-15 text-left">
-                    <div className="demo-content bg-alt">
-                      Shipping Charge: &#x20B9; 100
-                      <br />
-                      Grand Total: &#x20B9; {Math.floor(final + 100)}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
-              <div className="text-left my-4">
-                <Button variant="warning" size="md" onClick={handleSubmit}>
-                  Your Total Amount <b>&#x20B9;{Math.floor(final)}</b> to Pay
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Col>
-      </Row>
+                  </ListGroup>
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 };
