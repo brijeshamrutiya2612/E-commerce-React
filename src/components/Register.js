@@ -1,20 +1,12 @@
 import { Button, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-// import { userRegister } from "../redux/reducers/userReducer";
-// import shop from "./login_bck.jpg";
 import axios from 'axios';
 import { toast, ToastContainer } from "react-toastify";
 
 const Register = () => {
-  // const dispatch = useDispatch();
-  // const users = useSelector((state) => state.users);
-  // const register = useSelector((state) => state.register);
-
-  const sign = useNavigate();
-  
+  const sign = useNavigate();  
   const [registers, setRegister] = useState({
     firstname: "",
     lastname: "",

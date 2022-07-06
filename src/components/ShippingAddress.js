@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Helmet from "helmet";
-import { Box, Container, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { Store } from "../store/Context";
 import { useNavigate } from "react-router-dom";
@@ -8,12 +8,10 @@ import CheckOutSteps from "./CheckOutSteps";
 import { HelmetProvider } from "react-helmet-async";
 
 const ShippingAddress = () => {
-  const [change, setChange] = useState(false);
-
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart:{shippingAddress},userInfo } = state;
+  const { userInfo } = state;
   const navigate = useNavigate();
-  const [registers, setRegister] = useState(shippingAddress || {
+  const [registers, setRegister] = useState({
     firstname: "",
     lastname: "",
     address1: "",
@@ -21,9 +19,6 @@ const ShippingAddress = () => {
     address3: "",
     phone: "",
   });
-  const chngAdrs = () => {
-    setChange(true);
-  };
   useEffect(()=>{
     if(!userInfo){
         navigate('/signin?redirect=/shipping')
@@ -151,7 +146,7 @@ const ShippingAddress = () => {
 
 export default ShippingAddress;
 
-{
+
   /* <Box
   className="mt-5"
   style={{
@@ -198,4 +193,4 @@ export default ShippingAddress;
     </h1>
   </>
 ) : null} */
-}
+

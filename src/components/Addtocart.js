@@ -1,13 +1,6 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { Button, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  addToCart,
-  clearCart,
-  getTotals,
-  removerFromCart,
-} from "../store/CartSlice";
+import { useNavigate } from "react-router-dom";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import {
   Paper,

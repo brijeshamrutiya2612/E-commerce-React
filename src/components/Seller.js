@@ -3,19 +3,14 @@ import React, { useContext, useEffect, useReducer, useState } from "react";
 import {
   Button,
   Card,
-  Carousel,
   Col,
   Container,
   Row,
   Spinner,
 } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Rating } from "react-simple-star-rating";
-import Header from "./Header";
-import { useDispatch, useSelector } from "react-redux";
 import "./Home.css";
 import { FaCartArrowDown, FaCartPlus } from "react-icons/fa";
-import { addToCart } from "../store/CartSlice";
 import { getData } from "../store/ProductsSlice";
 import { Store } from "../store/Context";
 
@@ -41,7 +36,6 @@ function Seller() {
   // const dispatch = useDispatch();
   // const { getProd } = useSelector((state) => state.products);
   // const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
@@ -57,12 +51,11 @@ function Seller() {
       }
     };
     fetchData();
-  }, []);
+  }, [id]);
   const [student, setStudents] = useState([]);
-  const [rate, setRate] = useState([]);
   const [all, setAll] = useState([]);
   const final = useNavigate();
-  const [user, setUser] = useState();
+  
 
   useEffect(() => {
     dispatch(getData());
@@ -84,7 +77,7 @@ function Seller() {
 
         const Product = all.data.products;
         const newProduct = Product.filter((p) => {
-          return p.itemCategory == student.data.products.itemCategory;
+          return p.itemCategory === student.data.products.itemCategory;
         });
         setAll(newProduct);
       } catch (error) {
@@ -107,11 +100,6 @@ function Seller() {
     const quantity = existItem ? existItem.quantity + 1 : 1;
     ctxDispatch({ type: "CART_ADD_ITEM", payload: { ...getProd, quantity } });
     final("/addtocart");
-  };
-  const [index, setIndex] = useState(0);
-
-  const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
   };
   return (
     <>

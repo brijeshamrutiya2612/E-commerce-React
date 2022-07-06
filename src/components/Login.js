@@ -1,12 +1,9 @@
 import { Button, TextField } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { loginActions } from "../store/loginSlice";
-// import shop from "./login_bck.jpg";
 import axios from "axios";
-import Header from "./Header";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
 import { Store } from "../store/Context";
 import { toast, ToastContainer } from "react-toastify";

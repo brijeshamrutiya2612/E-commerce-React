@@ -1,23 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
-  Badge,
+  
   Button,
   Container,
-  Dropdown,
+  
   Form,
-  FormControl,
+  
   Nav,
   Navbar,
   NavDropdown,
-  ToastContainer,
+  
 } from "react-bootstrap";
-import { Box, Tab } from "@mui/material";
+import { Tab } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { loginActions } from "../store/loginSlice";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import WomanIcon from "@mui/icons-material/Woman";
-import ManIcon from "@mui/icons-material/Man";
 import axios from "axios";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
 import { Store } from "../store/Context";
@@ -29,9 +26,7 @@ function Header() {
   const dispatch = useDispatch();
   const nav = useNavigate();
   const { getProd } = useSelector((state) => state.products);
-  // const cart = useSelector((state) => state.cart);
   const [list, setList] = useState([]);
-  const [user, setUser] = useState([]);
   const [filter, setFilter] = useState([]);
   const [search, setSearch] = useState([]);
 

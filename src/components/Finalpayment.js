@@ -5,15 +5,12 @@ import {
   Col,
   ListGroup,
   Row,
-  Spinner,
   Table,
 } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../store/Context";
-import { getData } from "../store/ProductsSlice";
 import CheckOutSteps from "./CheckOutSteps";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 const reducer = (state, action) => {
@@ -45,11 +42,11 @@ function Finalpayment() {
   cartItems.itemPrice = round2(
     cartItems.reduce((a, c) => a + c.quantity * c.itemPrice, 0)
   );
-  cartItems.shippingPrice = cartItems.itemPrice > 1000 ? round2(0) : round2(10);
+  cartItems.shippingPrice = cartItems.itemPrice > 500 ? round2(0) : round2(10);
   cartItems.taxPrice = round2(0.15 * cartItems.itemPrice);
   cartItems.totalPrice =
   cartItems.itemPrice + cartItems.shippingPrice + cartItems.taxPrice;
-  console.log(cartItems.shippingPrice)
+  
 
   useEffect(() => {
    if(!paymentMethod){

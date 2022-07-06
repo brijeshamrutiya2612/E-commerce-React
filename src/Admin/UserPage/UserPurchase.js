@@ -1,63 +1,55 @@
-import React, { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Button, Container, Spinner } from "react-bootstrap";
 import {
   Card,
   CardActions,
   CardContent,
   CardMedia,
-  Tab,
   Typography,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { loginActions } from "../../store/loginSlice";
 import axios from "axios";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HomeIcon from "@mui/icons-material/Home";
 import HistoryIcon from "@mui/icons-material/History";
 import LogoutIcon from "@mui/icons-material/Logout";
-import LoginIcon from "@mui/icons-material/Login";
-import { Grid, Paper, styled, Input } from "@mui/material";
-import { getData } from "../../store/ProductsSlice";
-import { ChevronCompactLeft } from "react-bootstrap-icons";
-// import shop from "./login_bck.jpg";
+import { Grid, Paper, styled } from "@mui/material";
+import { Store } from "../../store/Context";
 
-// let firstRender = true;
-// axios.defaults.withCredentials = true;
-
+function reducer(state, action) {
+  switch (action.type) {
+    case "FETCH_REQUEST":
+      return { ...state, loading: true, error: "" };
+    case "FETCH_SUCCESS":
+      return { ...state, loading: false, orders: action.payload, error: "" };
+    case "FETCH_FAIL":
+      return { ...state, loading: false, error: action.payload };
+  }
+}
 const UserPurchase = () => {
-  const dispatch = useDispatch();
-  const nav = useNavigate();
-  const id = localStorage.getItem("userId");
-  const isLoggedIn = useSelector((state) => state.userlogin.isLoggedIn);
-  const [uProd, setUprod] = useState([]);
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  const navigate = useNavigate()
+  const [{ loading, error, orders }, dispatch] = useReducer(reducer, {
+    loading: true,
+    error: "",
+  });
 
-  const sendRequest = async () => {
-    const res = await axios
-      .get(`http://localhost:5000/api/userproducts/user/${id}`)
-      .catch((err) => console.log(err));
-    const data = await res.data.UserProducts.UserProducts;
-    console.log(data);
-    return data;
-  };
-
-  useEffect(() => {
-    sendRequest().then((data) => setUprod(data));
-  }, []);
-  console.log(uProd);
-
-  //   const sendLogoutReq = async () => {
-  //     const res = await axios.post("http://localhost:5000/api/logout", null, {
-  //       withCredentials: true,
-  //     });
-  //     if (res.status == 200) {
-  //       return res;
-  //     }
-  //     return new Error("Unable to Logout. Please try again");
-  //   };
-  //   const handleLogout = () => {
-  //     sendLogoutReq().then(() => dispatch(loginActions.logout()));
-  //   };
+  useEffect(()=>{
+    const fetchdata = async () =>{
+      dispatch({type: 'FETCH_REQUEST'});
+      try{
+        const {data} = await axios.get(`http://localhost:5000/api/orders/mine`,{
+          headers:{authorization:`Bearer ${userInfo.token}`}
+        })
+        dispatch({type: 'FETCH_SUCCESS', payload: data});
+      }catch(err){
+        dispatch({type:'FETCH_FAIL', payload: err})
+      }
+    }
+    fetchdata();
+  },[userInfo])
 
   const Item = styled(Paper)(({ theme }) => ({
     // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -75,71 +67,36 @@ const UserPurchase = () => {
 
   return (
     <>
-      <div className="pl-3 container d-flex">
-        <Typography className="d-flex pl-5" style={{ fontSize: "40px" }}>
-          Welcome,
-        </Typography>
-      </div>
-      <div className="pl-3 my-4 d-flex">
-        <div className="row">
-          <div
-            style={{
-              height: "auto",
-              width: "auto",
-              lineHeight: "52px",
-            }}
-          >
-            <Grid container spacing={1}>
-              <Grid item xs={9} md={15}>
-                <Item>
-                  <HomeIcon />
-                  &#x2003;
-                  <Link
-                    style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
-                      color: "black",
-                    }}
-                    to="/"
-                  >
-                    <strong>Home</strong>
-                  </Link>
-                </Item>
-                <Item>
-                  <DashboardIcon />
-                  &#x2003;
-                  <Link
-                    style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
-                      color: "black",
-                    }}
-                    to="/ud"
-                  >
-                    <strong>Dashboard</strong>
-                  </Link>
-                </Item>
-                <Item>
-                  <HistoryIcon />
-                  &#x2003;
-                  <Link
-                    style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
-                      color: "black",
-                    }}
-                    to="/u_purchase"
-                  >
-                    <strong>Purchase History</strong>
-                  </Link>
-                </Item>
-                <Item>
-                  {isLoggedIn && (
-                    <>
-                      <LogoutIcon />
+      {loading ? (
+        <>
+          <div className="container pt-5">
+            <Spinner animation="border" role="status"></Spinner>
+          </div>
+        </>
+      ) : error ? (
+        <div>{error}</div>
+      ) : (
+        <>
+          <div className="pl-3 container d-flex">
+            <Typography className="d-flex pl-5" style={{ fontSize: "40px" }}>
+              Welcome,
+            </Typography>
+          </div>
+          <div className="pl-3 my-4 d-flex">
+            <div className="row">
+              <div
+                style={{
+                  height: "auto",
+                  width: "auto",
+                  lineHeight: "52px",
+                }}
+              >
+                <Grid container spacing={1}>
+                  <Grid item xs={9} md={15}>
+                    <Item>
+                      <HomeIcon />
                       &#x2003;
                       <Link
-                        // onClick={handleLogout}
                         style={{
                           lineHeight: "1.2em",
                           fontSize: "20px",
@@ -147,63 +104,131 @@ const UserPurchase = () => {
                         }}
                         to="/"
                       >
-                        <strong>Logout</strong>
+                        <strong>Home</strong>
                       </Link>
-                    </>
-                  )}
-                </Item>
-              </Grid>
-            </Grid>
-          </div>
-          <div className="col">
-            <div
-              style={{
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                width: "auto",
-                height: "auto",
-              }}
-            >
-              <div className="row mx-auto pl-5">
-                {uProd.map((item, i) => {
+                    </Item>
+                    <Item>
+                      <DashboardIcon />
+                      &#x2003;
+                      <Link
+                        style={{
+                          lineHeight: "1.2em",
+                          fontSize: "20px",
+                          color: "black",
+                        }}
+                        to="/ud"
+                      >
+                        <strong>Dashboard</strong>
+                      </Link>
+                    </Item>
+                    <Item>
+                      <HistoryIcon />
+                      &#x2003;
+                      <Link
+                        style={{
+                          lineHeight: "1.2em",
+                          fontSize: "20px",
+                          color: "black",
+                        }}
+                        to="/u_purchase"
+                      >
+                        <strong>Purchase History</strong>
+                      </Link>
+                    </Item>
+                    <Item>
+                      {userInfo && (
+                        <>
+                          <LogoutIcon />
+                          &#x2003;
+                          <Link
+                            // onClick={handleLogout}
+                            style={{
+                              lineHeight: "1.2em",
+                              fontSize: "20px",
+                              color: "black",
+                            }}
+                            to="/"
+                          >
+                            <strong>Logout</strong>
+                          </Link>
+                        </>
+                      )}
+                    </Item>
+                  </Grid>
+                </Grid>
+              </div>
+              <div className="col">
+                <div
+                  style={{
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                    width: "auto",
+                    height: "auto",
+                  }}
+                >
+                  <div className="row mx-auto pl-5">
+                    {orders.map((item, i) => {
                   console.log(item);
-
+                  
                   return (
                     <Card
-                      className="col ml-3 col-md-12 my-4"
+                    className="col ml-3 col-md-12 my-4"
                       sx={{ maxWidth: 345 }}
                       style={{ paddingLeft: "2em" }}
                     >
-                      <CardMedia
-                        style={{
-                          height: "8em",
-                          width: "auto",
-                          margin: "auto",
-                        }}
-                        component="img"
-                        image={item.image}
-                        alt="green iguana"
-                      />
+                      {item.orderItems.map((item,i)=>{
+                        return(
+                          <>
+                          <CardMedia
+                            style={{
+                              height: "8em",
+                              width: "auto",
+                              margin: "auto",
+                            }}
+                            component="img"
+                            image={item.image}
+                            alt="green iguana"
+                          />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                          {item.itemName}
+                        {item.itemName}
                         </Typography>
-                        <Typography variant="body1" color="text.secondary">
-                          &#x20B9; {item.itemPrice}
+                      </CardContent>
+                      </>
+                        )
+                      })}
+                      <CardContent>
+                        <Typography variant="h5" color="text.secondary">
+                        Amount  &#x20B9; {item.totalPrice.toFixed(2)}
+                        </Typography>
+                        <Typography gutterBottom variant="h5" color="text.secondary">
+                        Date: {item.createdAt.substring(0,10)}
+                        </Typography>
+                        <p>Id: {item._id}</p>
+                        <Typography gutterBottom variant="h5" color="text.secondary">
+                        Paid at: {item.isPaid ? item.paidAt.substring(0,10) : "No"}
+                        </Typography>
+                        <Typography gutterBottom variant="h5" color="text.secondary">
+                        Delivered at: {item.isDelivered ? item.deliveredAt.substring(0,10): 'No'}
                         </Typography>
                       </CardContent>
                       <CardActions>
-                        <Button size="small">Share</Button>
-                        <Button size="small">Learn More</Button>
+                        <Button size="small" variant="danger">Delete</Button>
+                        <Button size="small" variant="success">Repeat</Button>
+                        <Button size="small" variant="warning" onClick={()=>{
+                          navigate(`/order/${item._id}`)
+                        }}>Detail</Button>
                       </CardActions>
                     </Card>
                   );
                 })}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 };

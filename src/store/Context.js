@@ -1,4 +1,3 @@
-import { createSlice } from "@reduxjs/toolkit";
 import { createContext, useReducer } from "react";
 
 export const Store = createContext();
@@ -46,7 +45,7 @@ function reducer(state, action) {
       );
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
       return {
-        ...state,
+        ...state, 
         cart: {
           ...state.cart,
           cartItems,

@@ -1,9 +1,12 @@
-import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useContext, useEffect, useReducer } from "react";
 import { Card, Col, ListGroup, Row, Spinner, Table } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { Store } from "../store/Context";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { toast, ToastContainer } from "react-toastify";
+import { Box } from "@mui/material";
+import {Helmet} from "react-helmet"
 
 function reducer(state, action) {
   switch (action.type) {
@@ -13,6 +16,18 @@ function reducer(state, action) {
       return { ...state, loading: false, order: action.payload, error: "" };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
+
+    // PAYPAL
+
+    case "PAY_REQUEST":
+      return { ...state, loadingPay: true };
+    case "PAY_SUCCESS":
+      return { ...state, loadingPay: false, successPay: true };
+    case "PAY_FAIL":
+      return { ...state, loadingPay: false };
+    case "PAY_RESET":
+      return { ...state, loadingPay: false, successPay: false };
+
     default:
       return state;
   }
@@ -20,14 +35,62 @@ function reducer(state, action) {
 
 const OrderScreen = () => {
   const { state } = useContext(Store);
-  const { userInfo } = state;
-  const { id: orderId } = useParams();
+  const {
+    cart: { cartItems },
+    userInfo,
+  } = state;
+  const params = useParams();
+  const { id: orderId } = params;
   const navigate = useNavigate();
-  const [{ loading, error, order }, dispatch] = useReducer(reducer, {
-    loading: true,
-    order: {},
-    error: "",
-  });
+  const [{ loading, error, order, successPay, loadingPay }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      order: {},
+      error: "",
+      successPay: false,
+      loadingPay: false,
+    });
+
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+  function createOrder(data, action) {
+    return action.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: order.totalPrice.toFixed(2) },
+          },
+        ],
+      })
+      .then((orderId) => {
+        return orderId;
+      });
+  }
+  function onApprove(data, action) {
+    return action.order.capture().then(async function (details) {
+      try {
+        dispatch({ type: "PAY_REQUEST" });
+        const { data } = await axios.put(
+          `http://localhost:5000/api/orders/${order._id}/pay`,
+          details,
+          {
+            headers: {
+              authorization: `Bearer ${userInfo.token}`
+            },
+          }
+        );
+        dispatch({ type: "PAY_SUCESS", payload: data });
+        toast.success("Order is Paid");
+      } catch (err) {
+        dispatch({ type: "PAY_FAIL", payload: err });
+        toast.error(err);
+      }
+    });
+  }
+
+  function onError(error) {
+    toast.error(error);
+  }
   useEffect(() => {
     const fetchOrder = async () => {
       try {
@@ -46,34 +109,66 @@ const OrderScreen = () => {
     if (!userInfo) {
       return navigate("/login");
     }
-    if (!order._id || (order._id && order._id !== orderId)) {
+    if (!order._id || successPay || (order._id && order._id !== orderId)) {
       fetchOrder();
+      if (successPay) {
+        dispatch({ type: "PAY_RESET" });
+      }
+    } else {
+      const loadPayPalScript = async () => {
+        const { data: clientId } = await axios.get(
+          "http://localhost:5000/api/keys/paypal",
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        paypalDispatch({
+          type: "resetOptions",
+          value: {
+            "client-id": clientId,
+            currency: "USD",
+          },
+        });
+        paypalDispatch({ type: "setLoadingStatus", value: "pending" });
+      };
+      loadPayPalScript();
     }
-  }, [order, userInfo, orderId, navigate]);
-  return (
+  }, [order, userInfo, orderId, navigate, paypalDispatch, successPay]);
+
+  console.log(order.orderItems);
+  console.log(order.shippingAddress);
+
+  return loading ? (
+    <div className="container pt-5">
+      <Spinner animation="border" role="status"></Spinner>
+    </div>
+  ) : error ? (
+    "Something Went Wrong"
+  ) : (
     <>
-      <p>Hello</p>
       <div>
+        <Helmet>
+          <title>Order Summary</title>
+        </Helmet>
         <h1 className="my-3">Order {orderId}</h1>
+        <ToastContainer position="top-center" limit={1}/>
         <Row>
           <Col md={8}>
             <Card className="mb-3">
               <Card.Body>
                 <Card.Title>Shipping Address</Card.Title>
                 <Card.Text>
-                  <strong>Name:</strong>{" "}
-                  {/* {order.shippingAddress.firstname}{" "}
+                  <strong>Name:</strong> {order.shippingAddress.firstname}
                   {order.shippingAddress.lastname}
                   <br />
-                  <strong>Address:</strong>{" "}
-                  {order.shippingAddress.address1}{" "}
+                  <strong>Address:</strong> {order.shippingAddress.address1}{" "}
                   {order.shippingAddress.address2}{" "}
-                  {order.shippingAddress.address3} */}
+                  {order.shippingAddress.address3}
                 </Card.Text>
                 {order.isDelivered ? (
-                  <Box variant="success">Delivered at {order.deliveredAt}</Box>
+                  <Box style={{textAlign:"center", backgroundColor:"#5ac95a",padding:"10px",border:"1px solid",borderRadius:"65px"}}><strong>Delivered at {order.deliveredAt}</strong></Box>
                 ) : (
-                  <Box variant="danger">Not Delivered</Box>
+                  <Box  style={{textAlign:"center", backgroundColor:"#d65e68",padding:"10px",border:"1px solid",borderRadius:"65px"}}><strong>Not Delivered</strong></Box>
                 )}
               </Card.Body>
             </Card>
@@ -84,14 +179,14 @@ const OrderScreen = () => {
                   <strong>Method:</strong> {order.paymentMethod}
                 </Card.Text>
                 {order.isPaid ? (
-                  <Box variant="success">Paid at {order.paidAt}</Box>
+                  <Box style={{textAlign:"center", backgroundColor:"#5ac95a",padding:"10px",border:"1px solid",borderRadius:"65px"}}><strong>Paid at {order.paidAt}</strong></Box>
                 ) : (
-                  <Box variant="danger">Not Paid</Box>
+                  <Box style={{backgroundColor:"#d65e68",padding:"10px",border:"1px solid",borderRadius:"65px"}}><strong>Not Paid</strong></Box>
                 )}
               </Card.Body>
             </Card>{" "}
-            {/* Your Cart Items {order.orderItems.length} and Qty{" "}
-            {order.orderItems.reduce((a, c) => a + c.quantity, 0)} */}
+            Your Cart Items {order.orderItems.length} and Qty{" "}
+            {order.orderItems.reduce((a, c) => a + c.quantity, 0)}
             <Table striped className="my-4">
               <thead>
                 <tr>
@@ -142,27 +237,47 @@ const OrderScreen = () => {
                   <ListGroup.Item>
                     <Row>
                       <Col>Items</Col>
-                      <Col>${order.itemPrice.toFixed(2)}</Col>
+                      <Col>&#x20B9;{order.itemPrice}</Col>
                     </Row>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Row>
                       <Col>Shipping</Col>
-                      <Col>${order.shippingPrice.toFixed(2)}</Col>
+                      <Col>&#x20B9;{order.shippingPrice}</Col>
                     </Row>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Row>
                       <Col>Tax</Col>
-                      <Col>${order.taxPrice.toFixed(2)}</Col>
+                      <Col>&#x20B9;{order.taxPrice}</Col>
                     </Row>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Row>
                       <Col>Order Total</Col>
-                      <Col>${order.totalPrice.toFixed(2)}</Col>
+                      <Col>&#x20B9;{order.totalPrice}</Col>
                     </Row>
                   </ListGroup.Item>
+                  {!order.isPaid && (
+                    <ListGroup.Item>
+                      {isPending ? (
+                        <div className="container pt-5">
+                          <Spinner animation="border" role="status"></Spinner>
+                        </div>
+                      ) : (
+                        <PayPalButtons
+                          createOrder={createOrder}
+                          onApprove={onApprove}
+                          onError={onError}
+                        ></PayPalButtons>
+                      )}
+                      {loadingPay && (
+                        <div className="container pt-5">
+                          <Spinner animation="border" role="status"></Spinner>
+                        </div>
+                      )}
+                    </ListGroup.Item>
+                  )}
                 </ListGroup>
               </Card.Body>
             </Card>

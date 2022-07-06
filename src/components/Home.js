@@ -1,13 +1,10 @@
 import React, { useEffect, useReducer, useState } from "react";
-import Header from "./Header";
 import axios from "axios";
 import {
   Button,
   Card,
   Col,
   Container,
-  Form,
-  Navbar,
   Row,
   Spinner,
 } from "react-bootstrap";
@@ -34,9 +31,6 @@ function Home() {
     loading: true,
     error: "",
   });
-  // const dispatch = useDispatch();
-  // const { getProd } = useSelector((state) => state.products);
-  // const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState([]);
   const [index, setIndex] = useState(0);
 
