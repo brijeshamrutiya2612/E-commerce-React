@@ -1,398 +1,171 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
-import { Tab } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { loginActions } from "../../store/loginSlice";
+import React, { useContext, useReducer, useState } from "react";
+import { Button, Container,  } from "react-bootstrap";
 import axios from "axios";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import HomeIcon from "@mui/icons-material/Home";
-import HistoryIcon from "@mui/icons-material/History";
-import LogoutIcon from "@mui/icons-material/Logout";
-import LoginIcon from '@mui/icons-material/Login';
-import { Grid, Paper, styled, Input } from "@mui/material";
+import { Input } from "@mui/material";
 import { Store } from "../../store/Context";
-// import shop from "./login_bck.jpg";
+import SideBar from "./SideBar";
+import {toast,ToastContainer} from 'react-toastify'
+import { getError } from "../../utils";
 
-let firstRender = true;
-axios.defaults.withCredentials = true;
+function reducer(state, action) {
+  switch (action.type) {
+    case "UPDATE_REQUEST":
+      return { ...state, loadingUpdate: true, error: "" };
+    case "UPDATE_SUCCESS":
+      return { ...state, loadingUpdate: false};
+    case "UPDATE_FAIL":
+      return { ...state, loadingUpdate: false};
+
+      default:
+        return state;
+  }
+}
 
 const Userprofile = () => {
-
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const {
-    cart: { cartItems },
-    userInfo
-  } = state;
-
-  const dispatch = useDispatch();
-  const nav = useNavigate();
-  const users = useSelector((state) => state.user);
-  console.log(users);
-  
-  // const cart = useSelector((state) => state.cart);
-  // const { getProd } = useSelector((state) => state.products);
-  const [value, setValue] = useState();
-  const [user, setUser] = useState([]);
-
-  const refreshToken = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/refresh")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  const sendRequest = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/user")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  useEffect(() => {
-    if (firstRender) {
-      firstRender = false;
-      sendRequest().then((data) => setUser(data.user));
-    }
-    let interval = setInterval(() => {
-      refreshToken().then((data) => setUser(data.user));
-    }, 1000 * 29);
-    return () => clearInterval(interval);
-  }, []);
-
-  const sendLogoutReq = async () => {
-    const res = await axios.post("http://localhost:5000/api/logout", null, {
-      withCredentials: true,
-    });
-    if (res.status == 200) {
-      return res;
-    }
-    return new Error("Unable to Logout. Please try again");
-  };
-  const handleLogout = () => {
-    sendLogoutReq().then(() => dispatch(loginActions.logout()));
-  };
-  const handleLogIn = () => {
-    nav("/login");
-  };
-  const home = () => {
-    nav("/");
-  };
-  const sign = useNavigate();
-
-  const [registers, setRegister] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-    address1: "",
-    address2: "",
-    address3: "",
-    phone: "",
-    age: "",
+  const { userInfo } = state;
+  const [{ loadingUpdate }, dispatch] = useReducer(reducer, {
+    loadingUpdate: false,
   });
-  // console.log(registers);
-  const sendUpdateRequest = async () => {
-    const res = await axios
-      .post("http://localhost:5000/api/signup", {
-        firstname: registers.firstname,
-        lastname: registers.lastname,
-        email: registers.email,
-        password: registers.password,
-        address1: registers.address1,
-        address2: registers.address2,
-        address3: registers.address3,
-        phone: registers.phone,
-        age: registers.age,
-      })
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  const signIn = async (e) => {
-    e.preventDefault();
-    sendRequest().then(() => sign("/login"));
-  };
-  const Item = styled(Paper)(({ theme }) => ({
-    // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    backgroundColor: "white",
-    overflow: "hidden",
-    boxShadow: "1px 1px 15px #343A40",
-    opacity: 0.8,
-    marginLeft: "2em",
-    marginTop: "1em",
-    padding: "2em",
-
-    color: theme.palette.text.secondary,
-  }));
   
+    const [firstname, setFirstname] = useState(userInfo.firstname);
+    const [lastname, setLastname] = useState(userInfo.lastname);
+    const [email, setEmail] = useState(userInfo.email);
+    const [password, setPassword] = useState('');
+  
+  const sendUpdateRequest = async (e) => {
+    e.preventDefault();
+    try{
+      const {data} = await axios
+        .put("http://localhost:5000/api/profile", {
+          firstname,
+          lastname,
+          email,
+          password,
+        },
+        {
+          headers: {Authorization: `Bearer ${userInfo.token}`}
+        })
+        dispatch({
+          type: 'UPDATE_SUCCESS'
+        })  
+        ctxDispatch({type: 'USER_SIGNIN', payload: data});
+        localStorage.setItem('userInfo', JSON.stringify(data));
+        toast.success('User updated successfully');
+    }catch(err){
+      dispatch({type:'UPDATE_FAIL'})
+      toast.error(getError(err))
+    }
+  };
+
   return (
     <>
-      <div className="container"></div>
-      <div className="pt-1"></div>
-      <div className="row my-4 small-container">
-        <div
-          style={{
-            height: "52px",
-            lineHeight: "52px",
-            display: "block",
-          }}
-        >
-          <sapn className="pl-3" style={{ fontSize: "40px" }}>
-            User Profile
-          </sapn>
-          <Grid container spacing={1}>
-            <Grid item xs={9} md={15}>
-            <Item>
-                <HomeIcon style={{ float: "left" }} />
-                &#x2003;
-                <Link
-                  style={{
-                    lineHeight: "1.2em",
-                    fontSize: "20px",
-                    color: "black",
-                  }}
-                  to="/"
-                >
-                  <strong>Home</strong>
-                </Link>
-              </Item>
-              <Item>
-                <DashboardIcon style={{ float: "left" }} />
-                &#x2003;
-                <Link
-                  style={{
-                    lineHeight: "1.2em",
-                    fontSize: "20px",
-                    color: "black",
-                  }}
-                  to="/ud"
-                >
-                  <strong>Dashboard</strong>
-                </Link>
-              </Item>
-              <Item>
-                <HistoryIcon style={{ float: "left" }} />
-                &#x2003;
-                <Link
-                  style={{
-                    lineHeight: "1.2em",
-                    fontSize: "20px",
-                    color: "black",
-                  }}
-                  to="/u_purchase"
-                >
-                  <strong>Purchase History</strong>
-                </Link>
-              </Item>
-              <Item>
-                {userInfo && (
-                  <>
-                    <LogoutIcon style={{ float: "left" }} />
-                    &#x2003;
-                    <Link
-                    onClick={handleLogout}
-                      style={{
-                        lineHeight: "1.2em",
-                        fontSize: "20px",
-                        color: "black",
-                      }}
-                      to="/"
-                    >
-                      <strong>Logout</strong>
-                    </Link>
-                  </>
-                )}
-              </Item>
-            </Grid>
-          </Grid>
-        </div>
-        <div className="col">
-          <div
-            style={{
-              // backgroundImage: `url(${shop}`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              width: "auto",
-              height: "auto",
-            }}
-          >
-            <div className="container justify-content-center">
-              <form>
-                <Container className="pt-5 justify-content-center">
-                  <div
-                    className="container justify-content-center"
-                    style={{
-                      backgroundColor: "white",
-                      overflow: "hidden",
-                      boxShadow: "1px 1px 15px #343A40",
-                      borderRadius: "20px",
-                      opacity: 0.8,
-                    }}
-                  >
-                    <h2 className="container pt-4 ml-4 col-md-11">Profile</h2>
-                    <div className="container col-md-15 justify-content-center">
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        label="Firstname"
-                        type="text"
-                        variant="standard"
-                        name="name.firstname"
-                        value={userInfo.firstname}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            firstname: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="container col-md-15 justify-content-center">
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        label="Lastname"
-                        variant="standard"
-                        name="name.lastname"
-                        value={userInfo.lastname}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            lastname: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    {/* <div className="container col-md-15 justify-content-center">
-            <Input
-              className="ml-4 col-md-11 my-3 justify-content-center"
-              label="Username"
-              variant="outlined"
-              onChange={(e) =>
-                setRegister({ ...registers, username: e.target.value })
-              }
-            />
-          </div> */}
-                    <div className="container col-md-15 justify-content-center">
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        type="email"
-                        label="Email"
-                        name="email"
-                        variant="standard"
-                        value={userInfo.email}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            email: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="container col-md-15 justify-content-center">
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        label="Password"
-                        type="password"
-                        variant="standard"
-                        value={userInfo.password}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            password: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="container col-md-15 justify-content-center">
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        label="Address1"
-                        type="text"
-                        variant="standard"
-                        value={userInfo.address1}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            address1: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="container col-md-15 justify-content-center">
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        label="Address2"
-                        type="text"
-                        variant="standard"
-                        value={userInfo.address2}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            address2: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="container col-md-15 justify-content-center">
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        label="Address3"
-                        type="text"
-                        variant="standard"
-                        value={userInfo.address3}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            address3: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="container col-md-15 justify-content-center">
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        label="Mobile:"
-                        type="number"
-                        variant="standard"
-                        value={userInfo.phone}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            phone: e.target.value,
-                          })
-                        }
-                      />
-                      <Input
-                        className="ml-4 col-md-11 my-3 justify-content-center"
-                        label="Age:"
-                        type="number"
-                        variant="standard"
-                        value={userInfo.age}
-                        onChange={(e) =>
-                          setRegister({
-                            ...registers,
-                            age: e.target.value,
-                          })
-                        }
-                      />
-                      <div className="my-5 justify-content-center">
-                        <Button
-                          className="ml-4 col-md-11 justify-content-center"
-                          variant="warning"
-                          onClick={signIn}
-                        >
-                          Update Profile
-                        </Button>
+      {/* {loading ? (
+        <>
+          <div className="container pt-5">
+            <Spinner animation="border" role="status"></Spinner>
+          </div>
+        </>
+      ) : error ? (
+        <div>{error}</div>
+      ) : (
+        <> */}
+          <div className="row my-4 small-container">
+            <SideBar></SideBar>
+            <ToastContainer position="top-center" limit={1}/>
+            <div className="col">
+              <div
+                style={{
+                  // backgroundImage: `url(${shop}`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  width: "auto",
+                  height: "auto",
+                }}
+              >
+                <div className="container justify-content-center">
+                  <form>
+                    <Container className="pt-5 justify-content-center">
+                      <div
+                        className="container justify-content-center"
+                        style={{
+                          backgroundColor: "white",
+                          overflow: "hidden",
+                          boxShadow: "1px 1px 15px #343A40",
+                          borderRadius: "20px",
+                          opacity: 0.8,
+                        }}
+                      >
+                        <h2 className="container pt-4 ml-4 col-md-11">
+                          Profile
+                        </h2>
+                        <div className="container col-md-15 justify-content-center">
+                          <Input
+                            className="ml-4 col-md-11 my-3 justify-content-center"
+                            label="Firstname"
+                            type="text"
+                            variant="standard"
+                            value={firstname}
+                            onChange={(e) =>
+                              setFirstname(e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="container col-md-15 justify-content-center">
+                          <Input
+                            className="ml-4 col-md-11 my-3 justify-content-center"
+                            label="Lastname"
+                            variant="standard"
+                            value={lastname}
+                            onChange={(e) =>
+                              setLastname(e.target.value)
+                            }
+                          />
+                        </div>
+
+                        <div className="container col-md-15 justify-content-center">
+                          <Input
+                            className="ml-4 col-md-11 my-3 justify-content-center"
+                            type="email"
+                            label="Email"
+                            value={email}
+                            variant="standard"
+                            onChange={(e) =>
+                              setEmail(e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="container col-md-15 justify-content-center">
+                          <Input
+                            className="ml-4 col-md-11 my-3 justify-content-center"
+                            label="Password"
+                            type="password"
+                            variant="standard"
+                            onChange={(e) =>
+                              setPassword(e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="container col-md-15 justify-content-center">
+                          <div className="my-5 justify-content-center">
+                            <Button
+                              className="ml-4 col-md-11 justify-content-center"
+                              variant="warning"
+                              onClick={sendUpdateRequest}
+                            >
+                              Update Profile
+                            </Button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </Container>
-              </form>
+                    </Container>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        {/* </>
+      )} */}
     </>
   );
 };

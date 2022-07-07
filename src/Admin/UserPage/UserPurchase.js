@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
-import { Button, Container, Spinner } from "react-bootstrap";
+import React, { useContext, useEffect, useReducer } from "react";
+import { Button, Spinner } from "react-bootstrap";
 import {
   Card,
   CardActions,
@@ -7,15 +7,10 @@ import {
   CardMedia,
   Typography,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import HomeIcon from "@mui/icons-material/Home";
-import HistoryIcon from "@mui/icons-material/History";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { Grid, Paper, styled } from "@mui/material";
 import { Store } from "../../store/Context";
+import SideBar from "./SideBar";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -50,21 +45,6 @@ const UserPurchase = () => {
     }
     fetchdata();
   },[userInfo])
-
-  const Item = styled(Paper)(({ theme }) => ({
-    // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    backgroundColor: "white",
-    overflow: "hidden",
-    boxShadow: "1px 1px 15px #343A40",
-    opacity: 0.8,
-    marginLeft: "2em",
-    marginTop: "1em",
-    padding: "2em",
-
-    color: theme.palette.text.secondary,
-  }));
-
   return (
     <>
       {loading ? (
@@ -77,87 +57,11 @@ const UserPurchase = () => {
         <div>{error}</div>
       ) : (
         <>
-          <div className="pl-3 container d-flex">
-            <Typography className="d-flex pl-5" style={{ fontSize: "40px" }}>
-              Welcome,
-            </Typography>
-          </div>
+          
           <div className="pl-3 my-4 d-flex">
             <div className="row">
-              <div
-                style={{
-                  height: "auto",
-                  width: "auto",
-                  lineHeight: "52px",
-                }}
-              >
-                <Grid container spacing={1}>
-                  <Grid item xs={9} md={15}>
-                    <Item>
-                      <HomeIcon />
-                      &#x2003;
-                      <Link
-                        style={{
-                          lineHeight: "1.2em",
-                          fontSize: "20px",
-                          color: "black",
-                        }}
-                        to="/"
-                      >
-                        <strong>Home</strong>
-                      </Link>
-                    </Item>
-                    <Item>
-                      <DashboardIcon />
-                      &#x2003;
-                      <Link
-                        style={{
-                          lineHeight: "1.2em",
-                          fontSize: "20px",
-                          color: "black",
-                        }}
-                        to="/ud"
-                      >
-                        <strong>Dashboard</strong>
-                      </Link>
-                    </Item>
-                    <Item>
-                      <HistoryIcon />
-                      &#x2003;
-                      <Link
-                        style={{
-                          lineHeight: "1.2em",
-                          fontSize: "20px",
-                          color: "black",
-                        }}
-                        to="/u_purchase"
-                      >
-                        <strong>Purchase History</strong>
-                      </Link>
-                    </Item>
-                    <Item>
-                      {userInfo && (
-                        <>
-                          <LogoutIcon />
-                          &#x2003;
-                          <Link
-                            // onClick={handleLogout}
-                            style={{
-                              lineHeight: "1.2em",
-                              fontSize: "20px",
-                              color: "black",
-                            }}
-                            to="/"
-                          >
-                            <strong>Logout</strong>
-                          </Link>
-                        </>
-                      )}
-                    </Item>
-                  </Grid>
-                </Grid>
-              </div>
-              <div className="col">
+            <SideBar></SideBar>  
+              <div className="col my-5 col-md-15" style={{paddingLeft:"15em"}}>
                 <div
                   style={{
                     backgroundRepeat: "no-repeat",

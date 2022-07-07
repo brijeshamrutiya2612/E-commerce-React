@@ -4,7 +4,7 @@ import './Home.css'
 
 const CheckOutSteps = (props) => {
   return (
-    <div>
+    <div className='container my-3 pb-5'>
         <Row className='checkout-steps'>
             <Col className={props.step1 ? 'active' : ''}>Cart</Col>
             <Col className={props.step2 ? 'active' : ''}>Shipping</Col>

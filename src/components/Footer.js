@@ -20,9 +20,6 @@ import ManIcon from "@mui/icons-material/Man";
 import axios from "axios";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
 
-axios.defaults.withCredentials = true;
-let firstRender = true;
-
 function Footer() {
   const nav = useNavigate();
   const home = () => {
@@ -41,7 +38,7 @@ function Footer() {
           position: "absolute",
         }}
       >
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="light" expand="lg" style={{background:"linear-gradient(246deg, rgba(216,228,230,1) 47%, rgba(70,221,236,1) 100%)"}}>
           <Container>
             <Navbar.Brand className="container d-flex justify-content-center">
               <ShoppingBag
@@ -49,7 +46,6 @@ function Footer() {
                 style={{
                   fontSize: "80px",
                   textAlign: "center",
-                  color: "#14657C",
                 }}
               />
               <span

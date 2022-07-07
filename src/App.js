@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Home";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import Seller from "./components/Seller";
 import Search from "./components/Search";
 import Addtocart from "./components/Addtocart";
@@ -32,16 +32,17 @@ function App() {
   return (
     <React.Fragment>
       <div
-        style={{ margin: "auto" }}
-        className="d-flex flex-column site-container"
+        style={{
+          margin: "auto",
+        }}
       >
         <header>
           <Container>
-            <Header />
+            <Header/>
           </Container>
         </header>
         <main className="pt-5">
-          <Container>
+         
             <Routes>
               <Route path="/" element={<Home />}></Route>
               {userInfo && <Route path="/" element={<Home />}></Route>}{" "}
@@ -53,20 +54,20 @@ function App() {
               ></Route>
               <Route path="/addToCart" element={<Addtocart />}></Route>
               <Route path="/Finalpayment" element={<Finalpayment />}></Route>
-              <Route path="/shipping" element={<ShippingAddress/>}></Route>
-              <Route path="/Payment" element={<Payment/>}></Route>
-              <Route path="/order/:id" element={<OrderScreen/>}></Route>
+              <Route path="/shipping" element={<ShippingAddress />}></Route>
+              <Route path="/Payment" element={<Payment />}></Route>
+              <Route path="/order/:id" element={<OrderScreen />}></Route>
               <Route path="/Seller/:id" element={<Seller />}></Route>
               <Route path="/new" element={<New />}></Route>
-              <Route path="/user/:id" element={<Userprofile />}></Route>
               <Route path="/Admin" element={<Admin />}></Route>
               <Route path="/dashboard" element={<Dashboard />}></Route>
               <Route path="/addproducts" element={<AddProducts />}></Route>
               <Route path="/user" element={<User />}></Route>
-              <Route path="/ud" element={<UserDashboard />}></Route>
-              <Route path="/u_purchase" element={<UserPurchase />}></Route>
+              <Route path="/ud/:id" element={<UserDashboard />}></Route>
+              <Route path="/user/:id" element={<Userprofile />}></Route>
+              <Route path="/u_purchase/:id" element={<UserPurchase />}></Route>
             </Routes>
-          </Container>
+
         </main>
         <header>
           <Footer />

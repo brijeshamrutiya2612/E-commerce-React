@@ -32,16 +32,11 @@ const Search = () => {
   }
   const mediaTypes = pro
     .map((dataItem) => dataItem.itemCategory) // get all media types
-    .filter(
-      (mediaType, index, array) =>
-        array.indexOf(mediaType) === index
-    ); // filter out duplicates
-  
+    .filter((mediaType, index, array) => array.indexOf(mediaType) === index); // filter out duplicates
+
   const counts = mediaTypes.map((mediaType) => ({
     type: mediaType,
-    count: pro.filter(
-      (item) => item.itemCategory === mediaType
-    ).length,
+    count: pro.filter((item) => item.itemCategory === mediaType).length,
   }));
   return (
     <>
@@ -62,34 +57,33 @@ const Search = () => {
           >
             {search.toUpperCase()} Items ({search.length})
           </h3>
-          <div>
-            {pro
-              .filter((val) => {
-                if (search == "") {
-                  return val;
-                } else if (
-                  val.itemName.toLowerCase().includes(search.toLowerCase())
-                ) {
-                  let final = [{val}];
-                  console.log(final);
-                  return final;
-                } else if (
-                  val.itemCategory.toLowerCase().includes(search.toLowerCase())
-                ) {
-                  let final = [{val}];
-                  console.log(final);
-                  return final;
-                }
-              })
-              .map((val, i) => {
-                return (
-                  <>
-                    {val.length}
-                    <div
-                      key={i}
-                      className="col-lg-4 col-md-5 col-sm-6 my-3 d-flex justify-content-center"
-                    >
-                      <Link to={`/Seller/${val._id}`}>
+          <div className="container">
+            <div className="row">
+              {pro
+                .filter((val) => {
+                  if (search == "") {
+                    return val;
+                  } else if (
+                    val.itemName.toLowerCase().includes(search.toLowerCase())
+                  ) {
+                    let final = [{ val }];
+                    console.log(final);
+                    return final;
+                  } else if (
+                    val.itemCategory
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                  ) {
+                    let final = [{ val }];
+                    console.log(final);
+                    return final;
+                  }
+                })
+                .map((val, i) => {
+                  return (
+                    <>
+                      {val.length}
+                      <Link key={i} to={`/Seller/${val._id}`}>
                         <Card
                           className="card card-item"
                           key={i}
@@ -100,10 +94,10 @@ const Search = () => {
                             margin: "5px",
                             transitionDuration: "3s",
                           }}
-                        >
+                          >
                           <Container>
                             <Row>
-                              <Col xs={30} sm={4} md={4}>
+                              <Col xs={30} sm={4} md={4} className="col-lg-4 col-md-5 col-sm-6 my-3 d-flex justify-content-center">
                                 <Card.Img
                                   variant="center"
                                   src={val.image}
@@ -155,10 +149,10 @@ const Search = () => {
                           </Card.Body>
                         </Card>
                       </Link>
-                    </div>
-                  </>
-                );
-              })}
+                    </>
+                  );
+                })}
+            </div>
           </div>
           <div className="container">
             <div className="row">

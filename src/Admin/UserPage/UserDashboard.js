@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { Tab, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginActions } from "../../store/loginSlice";
 import axios from "axios";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import HomeIcon from "@mui/icons-material/Home";
-import HistoryIcon from "@mui/icons-material/History";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { Grid, Paper, styled, Input } from "@mui/material";
-// import shop from "./login_bck.jpg";
+import LogoutIcon from "@mui/icons-material/Logout";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import HistoryIcon from "@mui/icons-material/History";
+import PersonIcon from "@mui/icons-material/Person";
+import { Store } from "../../store/Context";
+import SideBar from "./SideBar";
 
 let firstRender = true;
 axios.defaults.withCredentials = true;
 
-const Userprofile = () => {
+const Userdashboard = () => {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo } = state;
+
   const dispatch = useDispatch();
   const nav = useNavigate();
   const users = useSelector((state) => state.user);
@@ -25,31 +29,6 @@ const Userprofile = () => {
   // const { getProd } = useSelector((state) => state.products);
   const [value, setValue] = useState();
   const [user, setUser] = useState([]);
-
-  const refreshToken = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/refresh")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  const sendRequest = async () => {
-    const res = await axios
-      .get("http://localhost:5000/api/user")
-      .catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  };
-  useEffect(() => {
-    if (firstRender) {
-      firstRender = false;
-      sendRequest().then((data) => setUser(data.user));
-    }
-    let interval = setInterval(() => {
-      refreshToken().then((data) => setUser(data.user));
-    }, 1000 * 29);
-    return () => clearInterval(interval);
-  }, []);
 
   const sendLogoutReq = async () => {
     const res = await axios.post("http://localhost:5000/api/logout", null, {
@@ -99,7 +78,6 @@ const Userprofile = () => {
   };
   const signIn = async (e) => {
     e.preventDefault();
-    sendRequest().then(() => sign("/login"));
   };
   const Item = styled(Paper)(({ theme }) => ({
     // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -117,93 +95,9 @@ const Userprofile = () => {
 
   return (
     <>
-      
-      <div className="pl-3 container d-flex">
-      <Typography className="d-flex pl-5" style={{ fontSize: "40px" }}>
-        Welcome,
-      </Typography>
-      </div>
-      <div className="pl-3 my-4 d-flex">
-        <div className="row">
-          <div
-            style={{
-              height: "52px",
-              lineHeight: "52px",
-              height: "auto",
-              margin: "auto",
-              width: "auto",
-            }}
-          >
-            <Grid container spacing={1}>
-              <Grid item xs={9} md={15}>
-                <Item>
-                  <HomeIcon />
-                  &#x2003;
-                  <Link
-                    style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
-                      color: "black",
-                    }}
-                    to="/"
-                  >
-                    <strong>Home</strong>
-                  </Link>
-                </Item>
-                <Item>
-                  <DashboardIcon />
-                  &#x2003;
-                  <Link
-                    style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
-                      color: "black",
-                    }}
-                    to="/ud"
-                  >
-                    <strong>Dashboard</strong>
-                  </Link>
-                </Item>
-                <Item>
-                  <HistoryIcon />
-                  &#x2003;
-                  <Link
-                    style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
-                      color: "black",
-                    }}
-                    to="/u_purchase"
-                  >
-                    <strong>Purchase History</strong>
-                  </Link>
-                </Item>
-                <Item>
-                  {isLoggedIn && (
-                    <>
-                      <LogoutIcon style={{ float: "left" }} />
-                      &#x2003;
-                      <Link
-                        onClick={handleLogout}
-                        style={{
-                          lineHeight: "1.2em",
-                          fontSize: "20px",
-                          color: "black",
-                        }}
-                        to="/"
-                      >
-                        <strong>Logout</strong>
-                      </Link>
-                    </>
-                  )}
-                </Item>
-              </Grid>
-            </Grid>
-          </div>
-        </div>
-      </div>
+     <SideBar></SideBar>
     </>
   );
 };
 
-export default Userprofile;
+export default Userdashboard;

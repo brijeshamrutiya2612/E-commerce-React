@@ -60,7 +60,7 @@ function Home() {
     <>
       <div
         style={{
-          display: "flex",
+          
           
         }}
       >
@@ -82,7 +82,7 @@ function Home() {
                 }}
               >
                 <h3
-                  className="container p-4 d-flex justify-content-center"
+                  className="p-4 d-flex justify-content-center"
                   style={{
                     lineHeight: "2em",
                   }}
@@ -94,10 +94,10 @@ function Home() {
                   fade
                   style={{
                     boxShadow: "1px 1px 1px 18px #FFFFFF",
-                    margin: "25px",
+                    
                     borderRadius: "20px",
                     background:
-                      "linear-gradient(180deg, rgba(63,94,251,1) 0%, rgba(70,252,222,1) 100%)",
+                    "linear-gradient(246deg, rgba(0,0,0,1) 27%, rgba(226,156,40,1) 28%);",
                   }}
                   activeIndex={index}
                   onSelect={handleSelect}
@@ -123,13 +123,13 @@ function Home() {
                     );
                   })}
                 </Carousel>
-                <div className="container">
+                <div >
                   <div className="row">
                     {getProd.map((item, i) => {
                       return (
                         <div
                           key={i}
-                          className="col-lg-4 col-md-5 col-sm-6 my-3 d-flex justify-content-center"
+                          className="col-lg-2 ml-5 my-3 d-flex justify-content-center"
                         >
                           <Link to={`/Seller/${item._id}`}>
                             <Card

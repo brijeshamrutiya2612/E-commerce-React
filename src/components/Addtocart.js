@@ -54,7 +54,7 @@ const Addtocart = () => {
         </div>
 
         <h2 style={{ textAlign: "center" }} className="pt-3 pb-5">
-          <ShoppingBagIcon style={{ fontSize: "50px", color: "#14657C" }} />{" "}
+          <ShoppingBagIcon style={{ fontSize: "50px" }} />{" "}
           Your Cart
         </h2>
 

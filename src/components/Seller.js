@@ -226,9 +226,9 @@ function Seller() {
                               >
                                 &#x20B9; {item.itemPrice}
                               </Card.Title>
-                              <Button className="btn-sm" variant="dark">
-                                Shop now &#x2192;
-                              </Button>
+                              <Button className="btn-sm btn-c" variant="dark">
+                                  Shop now &#x2192;
+                                </Button>
                             </Card.Body>
                           </Card>
                         </Link>
