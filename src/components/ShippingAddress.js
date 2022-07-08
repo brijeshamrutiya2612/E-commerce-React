@@ -19,41 +19,40 @@ const ShippingAddress = () => {
     address3: "",
     phone: "",
   });
-  useEffect(()=>{
-    if(!userInfo){
-        navigate('/signin?redirect=/shipping')
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login?redirect=/shipping");
     }
-  },[userInfo,navigate])
+  }, [userInfo, navigate]);
   const submitHandler = () => {
     ctxDispatch({
-      type: 'SAVE_SHIPPING_ADDRESS',
+      type: "SAVE_SHIPPING_ADDRESS",
       payload: {
         registers,
       },
     });
-    localStorage.setItem('shippingAddress', JSON.stringify({registers}))
-    navigate('/Payment')
+    localStorage.setItem("shippingAddress", JSON.stringify({ registers }));
+    navigate("/Payment");
   };
 
   return (
     <>
       <div>
-        <HelmetProvider>
-            <Helmet>
+        <Helmet>
           <title>Shipping Address</title>
-          </Helmet>
-        </HelmetProvider>
+        </Helmet>
+
         <CheckOutSteps step1 step2></CheckOutSteps>
-        <h1 className="my-3">Shipping Address</h1>
         <div
-          style={{
-            // backgroundImage: `url(${shop}`,
+        className="container mb-5"
+        style={{
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             width: "auto",
             height: "auto",
           }}
         >
+        <h1 className="my-3">Shipping Address</h1>
           <div className="my-2">
             <form>
               <div>
@@ -133,11 +132,11 @@ const ShippingAddress = () => {
               </div>
             </form>
           </div>
-        </div>
         <div className="text-left my-1">
           <Button variant="warning" size="sm" onClick={submitHandler}>
             Continue
           </Button>
+        </div>
         </div>
       </div>
     </>
@@ -146,8 +145,7 @@ const ShippingAddress = () => {
 
 export default ShippingAddress;
 
-
-  /* <Box
+/* <Box
   className="mt-5"
   style={{
     backgroundColor: "ButtonFace",
@@ -193,4 +191,3 @@ export default ShippingAddress;
     </h1>
   </>
 ) : null} */
-

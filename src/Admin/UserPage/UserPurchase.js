@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useReducer } from "react";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import {
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
+  Paper,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -25,26 +27,29 @@ function reducer(state, action) {
 const UserPurchase = () => {
   const { state } = useContext(Store);
   const { userInfo } = state;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [{ loading, error, orders }, dispatch] = useReducer(reducer, {
     loading: true,
     error: "",
   });
 
-  useEffect(()=>{
-    const fetchdata = async () =>{
-      dispatch({type: 'FETCH_REQUEST'});
-      try{
-        const {data} = await axios.get(`http://localhost:5000/api/orders/mine`,{
-          headers:{authorization:`Bearer ${userInfo.token}`}
-        })
-        dispatch({type: 'FETCH_SUCCESS', payload: data});
-      }catch(err){
-        dispatch({type:'FETCH_FAIL', payload: err})
+  useEffect(() => {
+    const fetchdata = async () => {
+      dispatch({ type: "FETCH_REQUEST" });
+      try {
+        const { data } = await axios.get(
+          `http://localhost:5000/api/orders/mine`,
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
+      } catch (err) {
+        dispatch({ type: "FETCH_FAIL", payload: err });
       }
-    }
+    };
     fetchdata();
-  },[userInfo])
+  }, [userInfo]);
   return (
     <>
       {loading ? (
@@ -57,11 +62,13 @@ const UserPurchase = () => {
         <div>{error}</div>
       ) : (
         <>
-          
-          <div className="pl-3 my-4 d-flex">
+          <div className="my-4 d-flex">
             <div className="row">
-            <SideBar></SideBar>  
-              <div className="col my-5 col-md-15" style={{paddingLeft:"15em"}}>
+              <SideBar></SideBar>
+              <div
+                className="col-lg-50 my-5"
+                style={{ paddingLeft: "5em"}}
+              >
                 <div
                   style={{
                     backgroundRepeat: "no-repeat",
@@ -70,62 +77,113 @@ const UserPurchase = () => {
                     height: "auto",
                   }}
                 >
-                  <div className="row mx-auto pl-5">
-                    {orders.map((item, i) => {
-                  console.log(item);
-                  
-                  return (
-                    <Card
-                    className="col ml-3 col-md-12 my-4"
-                      sx={{ maxWidth: 345 }}
-                      style={{ paddingLeft: "2em" }}
-                    >
-                      {item.orderItems.map((item,i)=>{
-                        return(
-                          <>
-                          <CardMedia
-                            style={{
-                              height: "8em",
-                              width: "auto",
-                              margin: "auto",
-                            }}
-                            component="img"
-                            image={item.image}
-                            alt="green iguana"
-                          />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                        {item.itemName}
-                        </Typography>
-                      </CardContent>
-                      </>
-                        )
-                      })}
-                      <CardContent>
-                        <Typography variant="h5" color="text.secondary">
-                        Amount  &#x20B9; {item.totalPrice.toFixed(2)}
-                        </Typography>
-                        <Typography gutterBottom variant="h5" color="text.secondary">
-                        Date: {item.createdAt.substring(0,10)}
-                        </Typography>
-                        <p>Id: {item._id}</p>
-                        <Typography gutterBottom variant="h5" color="text.secondary">
-                        Paid at: {item.isPaid ? item.paidAt.substring(0,10) : "No"}
-                        </Typography>
-                        <Typography gutterBottom variant="h5" color="text.secondary">
-                        Delivered at: {item.isDelivered ? item.deliveredAt.substring(0,10): 'No'}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small" variant="danger">Delete</Button>
-                        <Button size="small" variant="success">Repeat</Button>
-                        <Button size="small" variant="warning" onClick={()=>{
-                          navigate(`/order/${item._id}`)
-                        }}>Detail</Button>
-                      </CardActions>
-                    </Card>
-                  );
-                })}
+                  <div className="mx-auto pl-5">
+                    <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 750 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Item</TableCell>
+                            <TableCell colSpan={2}>Item Description</TableCell>
+                            <TableCell>Paid</TableCell>
+                            <TableCell>Delivered</TableCell>
+                            <TableCell>Date</TableCell>
+                            <TableCell align="right">Total Amount</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {orders.map((item, i) => {
+                            return (
+                              <TableRow
+                                key={i}
+                                sx={{
+                                  "&:last-child td, &:last-child th": {
+                                    border: 0,
+                                  },
+                                }}
+                              >
+                                <TableCell component="th" scope="row">
+                                  {i + 1}
+                                </TableCell>
+                                {item.orderItems.map((item, i) => {
+                                  return (
+                                    <>
+                                      <TableRow>
+                                        <TableCell
+                                          align="left"
+                                          style={{
+                                            width: "100px",
+
+                                            marginRight: "12px",
+                                          }}
+                                        >
+                                          <img
+                                            style={{
+                                              minWidth: "100px",
+                                              maxWidth: "200px",
+                                              width: "100px",
+                                              height: "150px",
+                                              float: "left",
+                                              marginTop: "1em",
+                                              marginRight: "12px",
+                                            }}
+                                            className="img-fluid"
+                                            src={item.image}
+                                            alt=""
+                                          />
+                                          <Button
+                                            className="my-2"
+                                            size="md"
+                                            variant="success"
+                                            onClick={() => {
+                                              navigate(`/seller/${item._id}`);
+                                            }}
+                                          >
+                                            Repeat
+                                          </Button>
+                                        </TableCell>
+                                      </TableRow>
+                                      <TableRow>
+                                        <TableCell align="left">
+                                          <b>{item.itemName}</b>
+                                        </TableCell>
+                                      </TableRow>
+                                    </>
+                                  );
+                                })}
+                                <TableCell align="left">
+                                  <Button
+                                    variant="danger"
+                                    className="btn btn-sm"
+                                  >
+                                    <i className="fas fa-trash"></i>
+                                  </Button>
+                                </TableCell>
+                                <TableCell align="left">
+                                  <span className="mx-2">
+                                    {item.isDelivered
+                                      ? item.deliveredAt.substring(0, 10)
+                                      : "No"}
+                                  </span>
+                                </TableCell>
+                                <TableCell align="left">
+                                  <span className="mx-2">
+                                    {item.isPaid
+                                      ? item.paidAt.substring(0, 10)
+                                      : "No"}
+                                  </span>
+                                </TableCell>
+                                <TableCell align="left">
+                                  {item.createdAt.substring(0, 10)}
+                                </TableCell>
+                                <TableCell align="right">
+                                  &#x20B9; {item.totalPrice.toFixed(2)}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </div>
                 </div>
               </div>

@@ -60,9 +60,7 @@ function Header() {
       <div
         style={{
           minWidth: "500px",
-          // maxWidth:"1140px",
-          width: "100%",
-          // backgroundColor: "#fff",
+          maxWidth: "100px",
           height: "52px",
           lineHeight: "52px",
           position: "sticky",
@@ -107,7 +105,7 @@ function Header() {
                 {/* <NavDropdown.Divider /> */}
               </NavDropdown>
                   </Nav>
-            <Form className="d-flex mx-auto mb-2">
+            <Form className="d-flex col-lg-3 mx-auto mb-2">
               <Form.Control
                 type="search"
                 placeholder="Search by product, category..."
@@ -117,28 +115,25 @@ function Header() {
                 />
               <Button
                 onClick={handleSearch}
-                variant="outline-success"
+                variant="success"
                 className="ml-2"
                 >
                 Search
               </Button>
-              <Button variant="outline-danger" className="ml-2">
-                Reset
-              </Button>
             </Form>
             <Link to="/addToCart">
-              <ShoppingCartOutlinedIcon />
-              {cart.cartItems.length}
+              <ShoppingCartOutlinedIcon style={{ color: "#000000" }} />
+              <span style={{ color: "#000000" }}>{cart.cartItems.length}</span>
             </Link>
             {userInfo ? (
               <>
                 <NavDropdown
-                  className="pr-5"
+                  style={{ color: "#000000" }}
                   title={userInfo.firstname}
                   id="navbarScrollingDropdown"
                   >
                   <NavDropdown.Item>
-                    <Link to={`/ud/${userInfo._id}`}>Dashboard</Link>
+                    <Link style={{ color: "#000000" }} to={`/ud/${userInfo._id}`}>Dashboard</Link>
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <Tab
@@ -146,7 +141,7 @@ function Header() {
                     to="/"
                     LinkComponent={Link}
                     label="Logout"
-                    style={{ color: "#14657C" }}
+                    style={{ color: "#000000" }}
                   />
                 </NavDropdown>
               </>
@@ -157,14 +152,14 @@ function Header() {
                   LinkComponent={Link}
                   label="Login"
                   variant="contained"
-                  style={{ color: "#14657C" }}
+                  style={{ color: "#000000" }}
                 />
                 &#x2002;
                 <Tab
                   to="/register"
                   LinkComponent={Link}
                   label="Signup"
-                  style={{ color: "#14657C" }}
+                  style={{ color: "#000000" }}
                   />
               </>
             )}
@@ -172,7 +167,7 @@ function Header() {
               to="/admin"
               LinkComponent={Link}
               label="Admin"
-              style={{ color: "#14657C" }}
+              style={{ color: "#000000" }}
               />
           </Navbar.Collapse>
         </Navbar>

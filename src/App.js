@@ -10,7 +10,6 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Finalpayment from "./components/Finalpayment";
 import Header from "./components/Header";
-import New from "./components/New";
 import Userprofile from "./Admin/UserPage/Userprofile";
 import Footer from "./components/Footer";
 import Admin from "./Admin/Admin";
@@ -25,6 +24,7 @@ import ShippingAddress from "./components/ShippingAddress";
 import { ToastContainer } from "react-toastify";
 import Payment from "./components/Payment";
 import OrderScreen from "./components/OrderScreen";
+import ProtectedRouter from "./components/ProtectedRouter";
 
 function App() {
   const { state } = useContext(Store);
@@ -38,36 +38,33 @@ function App() {
       >
         <header>
           <Container>
-            <Header/>
+            <Header />
           </Container>
         </header>
         <main className="pt-5">
-         
-            <Routes>
-              <Route path="/" element={<Home />}></Route>
-              {userInfo && <Route path="/" element={<Home />}></Route>}{" "}
-              <Route path="/login" element={<Login />}></Route>
-              <Route path="/register" element={<Register />}></Route>
-              <Route
-                path="/products/category/:search"
-                element={<Search />}
-              ></Route>
-              <Route path="/addToCart" element={<Addtocart />}></Route>
-              <Route path="/Finalpayment" element={<Finalpayment />}></Route>
-              <Route path="/shipping" element={<ShippingAddress />}></Route>
-              <Route path="/Payment" element={<Payment />}></Route>
-              <Route path="/order/:id" element={<OrderScreen />}></Route>
-              <Route path="/Seller/:id" element={<Seller />}></Route>
-              <Route path="/new" element={<New />}></Route>
-              <Route path="/Admin" element={<Admin />}></Route>
-              <Route path="/dashboard" element={<Dashboard />}></Route>
-              <Route path="/addproducts" element={<AddProducts />}></Route>
-              <Route path="/user" element={<User />}></Route>
-              <Route path="/ud/:id" element={<UserDashboard />}></Route>
-              <Route path="/user/:id" element={<Userprofile />}></Route>
-              <Route path="/u_purchase/:id" element={<UserPurchase />}></Route>
-            </Routes>
-
+          <Routes>
+            <Route path="/" element={<Home />}></Route>
+            {userInfo && <Route path="/" element={<Home />}></Route>}{" "}
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/register" element={<Register />}></Route>
+            <Route
+              path="/products/category/:search"
+              element={<Search />}
+            ></Route>
+            <Route path="/addToCart" element={<Addtocart />}></Route>
+            <Route path="/Finalpayment" element={<Finalpayment />}></Route>
+            <Route path="/shipping" element={<ShippingAddress />}></Route>
+            <Route path="/Payment" element={<ProtectedRouter><Payment /></ProtectedRouter>}></Route>
+            <Route path="/order/:id" element={<ProtectedRouter><OrderScreen /></ProtectedRouter>}></Route>
+            <Route path="/Seller/:id" element={<Seller />}></Route>
+            <Route path="/Admin" element={<Admin />}></Route>
+            <Route path="/dashboard" element={<Dashboard />}></Route>
+            <Route path="/addproducts" element={<AddProducts />}></Route>
+            <Route path="/user" element={<User />}></Route>
+            <Route path="/ud/:id" element={<ProtectedRouter><UserDashboard /></ProtectedRouter>}></Route>
+            <Route path="/user/:id" element={<ProtectedRouter><Userprofile /></ProtectedRouter>}></Route>
+            <Route path="/u_purchase/:id" element={<ProtectedRouter><UserPurchase /></ProtectedRouter>}></Route>
+          </Routes>
         </main>
         <header>
           <Footer />

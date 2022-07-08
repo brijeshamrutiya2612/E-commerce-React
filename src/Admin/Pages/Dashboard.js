@@ -10,36 +10,46 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useEffect } from "react";
-import { Button } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { getData, getCategory } from "../../store/ProductsSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import Admin from "../Admin";
+import logger from "use-reducer-logger";
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_REQUEST":
+      return { ...state, loading: true };
+    case "FETCH_SUCCESS":
+      return { ...state, getProd: action.payload, loading: false };
+    case "FETCH_FAIL":
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 
 function Dashboard() {
-  const dispatch = useDispatch();
-  const nav = useNavigate();
-  const { getProd } = useSelector((state) => state.products);
-  // console.log(getProd[0].itemCategory.length)
-  const [list, setList] = React.useState([]);
+  const [{ loading, error, getProd }, dispatch] = React.useReducer(logger(reducer), {
+    getProd: [],
+    loading: true,
+    error: "",
+  });
   const [filter, setFilter] = React.useState([]);
-  const [count, setCount] = React.useState([]);
+  
+  
   useEffect(() => {
-    dispatch(getData());
-    async function getAllStudent() {
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_REQUEST" });
       try {
-        const listProduct = await axios.get(
-          "https://fakestoreapi.com/products/categories",
-          {
-            withCredentials: false,
-          }
-        );
-        setList(listProduct.data);
-      } catch (error) {
-        console.log("Problem");
+        const response = await axios.get("http://localhost:5000/api/products");
+        dispatch({ type: "FETCH_SUCCESS", payload: response.data.products });
+      } catch (err) {
+        dispatch({ type: "FETCH_FAIL", payload: err.message });
       }
-    }
-    getAllStudent();
-  }, []);
+    };
+    fetchData();
+  }, [dispatch]);
+
   useEffect(() => {
     const getUnique = (arr, index) => {
       const unique = getProd
@@ -61,17 +71,15 @@ function Dashboard() {
     type: mediaType,
     count: getProd.filter((item) => item.itemCategory === mediaType).length,
   }));
-  const bckDash = () => {
-    nav("/admin");
-  };
   return (
+    <>
     <div className="col-lg-15">
-      <Typography variant="h3" className="ml-3 my-4">
+      <Admin></Admin>
+      </div>
+        <div className="container col-lg-15">
+      <Typography variant="h5" className="ml-3 my-4">
         Dashboard
       </Typography>
-      <Button variant="outline-warning" className="ml-4 btn" onClick={bckDash}>
-        <strong>&#x2190; Back</strong>
-      </Button>
       <TableContainer component={Paper} className="container">
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableBody>
@@ -79,7 +87,7 @@ function Dashboard() {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                Products
+                <strong>Products</strong>
               </TableCell>
               <TableCell align="right">{getProd.length}</TableCell>
             </TableRow>
@@ -87,14 +95,14 @@ function Dashboard() {
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                Category
+              <strong>Category</strong>
               </TableCell>
-              <TableCell align="right">{list.length}</TableCell>
+              <TableCell align="right">{filter.length}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
-      <Typography variant="h4" className="ml-3 my-3 mt-5">Products & Category</Typography>
+      <Typography variant="h5" className="ml-3 my-3 mt-5">Products &#x0026; Category</Typography>
       <TableContainer component={Paper} className="mt-3 container my-4">
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableBody>
@@ -131,6 +139,7 @@ function Dashboard() {
         </Table>
       </TableContainer>
     </div>
+    </>
   );
 }
 

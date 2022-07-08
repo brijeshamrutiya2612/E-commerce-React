@@ -1,35 +1,9 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { TextField } from "@mui/material";
-import axios from "axios";
-import { useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 function Admin() {
   const nav = useNavigate();
-  const [age, setAge] = React.useState("");
-  const [list, setList] = React.useState([]);
-  useEffect(() => {
-    async function getAllStudent() {
-      try {
-        const listProduct = await axios.get(
-          "https://fakestoreapi.com/products/categories",{
-            withCredentials:false
-          }
-        );
-        console.log(listProduct);
-        setList(listProduct.data);
-      } catch (error) {
-        console.log("Problem");
-      }
-    }
-    getAllStudent();
-  }, []);
   const goDashboard = () =>{
     nav("/dashboard");
   }

@@ -4,19 +4,25 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Admin from "../Admin";
 
 function AddProducts() {
   const nav = useNavigate();
+  const [age, setAge] = React.useState('');
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
   const [add, setAdd] = React.useState({
     itemCategory: "",
     itemName: "",
     itemPrice: "",
-    itemQty: "",
+    quantity: "",
     itemUnit: "",
     itemDescription: "",
     image: "",
@@ -40,10 +46,10 @@ function AddProducts() {
   }, [list]);
   const sendRequest = async () => {
     const res = await axios.post("http://localhost:5000/api/products/add", {
-      itemCategory: add.itemCategory,
+      itemCategory: age,
       itemName: add.itemName,
       itemPrice: add.itemPrice,
-      itemQty: add.itemQty,
+      quantity: add.quantity,
       itemUnit: add.itemUnit,
       itemDescription: add.itemDescription,
       image: add.image,
@@ -59,38 +65,50 @@ function AddProducts() {
       itemCategory: "",
       itemName: "",
       itemPrice: "",
-      itemQty: "",
+      quantity: "",
       itemUnit: "",
       itemDescription: "",
       image: "",
     })
   };
-  const bckDash = () => {
-    nav("/admin");
-  };
+  
   return (
-    <div className="container col-lg-5">
-      <form onSubmit={handleSubmit}>
-        <Box>
-          <Button variant="outline-warning" className="btn" onClick={bckDash}>
-            <strong>&#x2190; Back</strong>
-          </Button>
-          <FormControl className="my-3 container">
-            <InputLabel id="demo-simple-select-label">
+    <>
+    <div className="col-lg-15">
+      <Admin></Admin>
+      </div>
+    <div className="container">
+      <Typography variant="h5" className="ml-3 my-4">
+        Add Products
+      </Typography>
+      </div>
+    <div className="container">
+    <div className="container">
+          <FormControl variant="standard" sx={{ minWidth: 520, maxWidth:500 }}>
+          <InputLabel id="demo-simple-select-standard-label">
               Product's Category
             </InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={list.item}
-              label="Product's Category"
-              onChange={(e) => setAdd({ ...add, itemCategory: e.target.value })}
-            >
-              {list.map((item, i) => {
-                return <MenuItem value={item}>{item.toUpperCase()}</MenuItem>;
-              })}
-            </Select>
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={age}
+          onChange={handleChange}
+          label="Age"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value="Food">Food</MenuItem>
+          <MenuItem value="Electronics">Electronics</MenuItem>
+          <MenuItem value="Men's Clothes">Men's Clothing</MenuItem>
+          <MenuItem value="Women's Clothes">Women's Clothing</MenuItem>
+          <MenuItem value="Jewelery">Jewelery</MenuItem>
+          <MenuItem value="Sports">Sports</MenuItem>
+        </Select>
           </FormControl>
+          </div>
+      <form onSubmit={handleSubmit}>
+        <Box className="container">
           <div className="my-3">
             <TextField
               onChange={(e) => setAdd({ ...add, itemName: e.target.value })}
@@ -111,8 +129,8 @@ function AddProducts() {
           </div>
           <div className="my-3">
             <TextField
-              onChange={(e) => setAdd({ ...add, itemQty: e.target.value })}
-              name="itemQty"
+              onChange={(e) => setAdd({ ...add, quantity: e.target.value })}
+              name="quantity"
               className="container"
               id="outlined-read-only-input"
               label="Item Quantity"
@@ -150,6 +168,7 @@ function AddProducts() {
         </Box>
       </form>
     </div>
+    </>
   );
 }
 

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserData } from "../../store/userSlice";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Admin from "../Admin";
 function User() {
   const dispatch = useDispatch();
   const nav = useNavigate();
@@ -25,17 +26,15 @@ function User() {
   useEffect(() => {
     dispatch(getUserData());
   }, []);
-  const bckDash = () => {
-    nav("/admin");
-  };
+  
   return (
     <div className="col-lg-15 my-4">
-      <Typography variant="h3" className="ml-5 my-3">
+      <Admin></Admin>
+    <div className="container">
+      <Typography variant="h5" className="my-3">
         Mart's User's Detail
       </Typography>
-      <Button variant="outline-warning" className="ml-5 btn" onClick={bckDash}>
-        <strong>&#x2190; Back</strong>
-      </Button>
+      </div>
       <div className="container my-4">
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
