@@ -36,6 +36,7 @@ function App() {
           margin: "auto",
         }}
       >
+        <ToastContainer position="top-center" limit={1}/>
         <header>
           <Container>
             <Header />

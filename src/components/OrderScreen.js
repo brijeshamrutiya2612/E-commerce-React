@@ -150,8 +150,15 @@ const OrderScreen = () => {
         <Helmet>
           <title>Order Summary</title>
         </Helmet>
+        <div
+        style={{
+          background: "#D8E4E6",
+          width: "auto",
+          height: "auto",
+        }}
+      >
+         <div className='container col-lg-8 pt-3 pb-3 justify-content-center'>
         <h1 className="my-3">Order {orderId}</h1>
-        <ToastContainer position="top-center" limit={1}/>
         <Row>
           <Col md={8}>
             <Card className="mb-3">
@@ -187,7 +194,7 @@ const OrderScreen = () => {
             </Card>{" "}
             Your Cart Items {order.orderItems.length} and Qty{" "}
             {order.orderItems.reduce((a, c) => a + c.quantity, 0)}
-            <Table striped className="my-4">
+            <Table striped className="my-4" style={{background:"white"}}>
               <thead>
                 <tr>
                   <th>Items</th>
@@ -283,6 +290,8 @@ const OrderScreen = () => {
             </Card>
           </Col>
         </Row>
+        </div>
+        </div>
       </div>
     </>
   );

@@ -17,7 +17,7 @@ const Payment = () => {
         paymentMethod || 'PayPal'
     )
     useEffect(()=>{
-        if(!shippingAddress.registers.address1){
+        if(!shippingAddress.address1){
             navigate('/shipping')
         }
     },[shippingAddress.registers,navigate])
@@ -30,10 +30,18 @@ const Payment = () => {
   return (
     <div>
       <CheckOutSteps step1 step2 step3></CheckOutSteps>
-      <div className='container small-container'>
+      <div 
+        style={{
+          background: "#D8E4E6",
+          width: "auto",
+          height: "auto",
+        }}
+      >
+        <div className='container col-lg-15 pt-3 pb-3 justify-content-center'>
         <h1 className='my-3'>Payment Method</h1>
         <Form onSubmit={submitHandler}>
             <Form.Check
+            className="col-md-8 my-3 justify-content-center"
             type="radio"
             id="PayPal"
             label="PayPal"
@@ -43,6 +51,7 @@ const Payment = () => {
             >   
             </Form.Check>
             <Form.Check
+            className="col-md-8 my-3 justify-content-center"
             type="radio"
             id="Stripe"
             label="Stripe"
@@ -57,6 +66,7 @@ const Payment = () => {
           </Button>
         </div>
         </Form>
+        </div>
       </div>
     </div>
   )

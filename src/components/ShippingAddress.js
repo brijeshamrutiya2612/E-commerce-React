@@ -11,14 +11,13 @@ const ShippingAddress = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
-  const [registers, setRegister] = useState({
-    firstname: "",
-    lastname: "",
-    address1: "",
-    address2: "",
-    address3: "",
-    phone: "",
-  });
+  const [firstname, setFirstname] = useState(userInfo.firstname || "");
+  const [lastname, setLastname] = useState(userInfo.lastname || "");
+  const [address1, setAddress1] = useState(userInfo.address1 || "");
+  const [address2, setAddress2] = useState(userInfo.address2 || "");
+  const [address3, setAddress3] = useState(userInfo.address3 || "");
+  const [phone, setPhone] = useState(userInfo.phone || "");
+
   useEffect(() => {
     if (!userInfo) {
       navigate("/login?redirect=/shipping");
@@ -28,10 +27,25 @@ const ShippingAddress = () => {
     ctxDispatch({
       type: "SAVE_SHIPPING_ADDRESS",
       payload: {
-        registers,
+        firstname,
+        lastname,
+        address1,
+        address2,
+        address3,
+        phone,
       },
     });
-    localStorage.setItem("shippingAddress", JSON.stringify({ registers }));
+    localStorage.setItem(
+      "shippingAddress",
+      JSON.stringify({
+        firstname,
+        lastname,
+        address1,
+        address2,
+        address3,
+        phone,
+      })
+    );
     navigate("/Payment");
   };
 
@@ -41,18 +55,17 @@ const ShippingAddress = () => {
         <Helmet>
           <title>Shipping Address</title>
         </Helmet>
-
-        <CheckOutSteps step1 step2></CheckOutSteps>
-        <div
-        className="container mb-5"
+      </div>
+      <CheckOutSteps step1 step2></CheckOutSteps>
+      <div
         style={{
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            width: "auto",
-            height: "auto",
-          }}
-        >
-        <h1 className="my-3">Shipping Address</h1>
+          background: "#D8E4E6",
+          width: "auto",
+          height: "auto",
+        }}
+      >
+        <div className="container col-lg-8 pt-3 pb-3 justify-content-center">
+          <h1 className="my-3">Shipping Address</h1>
           <div className="my-2">
             <form>
               <div>
@@ -60,83 +73,77 @@ const ShippingAddress = () => {
                   <TextField
                     className="col-md-8 my-3 justify-content-center"
                     label="Firstname"
+                    style={{ backgroundColor: "white" }}
                     variant="outlined"
                     type="text"
                     name="//name.firstname"
-                    //value={userInfo.firstname}
-                    onChange={(e) =>
-                      setRegister({ ...registers, firstname: e.target.value })
-                    }
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
                   />
                 </div>
                 <div className="justify-content-center">
                   <TextField
                     className="col-md-8 my-3 justify-content-center"
+                    style={{ backgroundColor: "white" }}
                     label="Lastname"
                     variant="outlined"
                     name="name.lastname"
-                    //value={userInfo.lastname}
-                    onChange={(e) =>
-                      setRegister({ ...registers, lastname: e.target.value })
-                    }
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
                   />
                 </div>
                 <div className="justify-content-center">
                   <TextField
                     className="col-md-8 my-3 justify-content-center"
+                    style={{ backgroundColor: "white" }}
                     label="Address1"
                     type="text"
                     variant="outlined"
-                    //value={userInfo.address1}
-                    onChange={(e) =>
-                      setRegister({ ...registers, address1: e.target.value })
-                    }
+                    value={address1}
+                    onChange={(e) => setAddress1(e.target.value)}
                   />
                 </div>
                 <div className="justify-content-center">
                   <TextField
                     className="col-md-8 my-3 justify-content-center"
+                    style={{ backgroundColor: "white" }}
                     label="Address2"
                     type="text"
                     variant="outlined"
-                    //value={userInfo.address2}
-                    onChange={(e) =>
-                      setRegister({ ...registers, address2: e.target.value })
-                    }
+                    value={address2}
+                    onChange={(e) => setAddress2(e.target.value)}
                   />
                 </div>
                 <div className="justify-content-center">
                   <TextField
                     className="col-md-8 my-3 justify-content-center"
+                    style={{ backgroundColor: "white" }}
                     label="Address3"
                     type="text"
                     variant="outlined"
-                    //value={userInfo.address3}
-                    onChange={(e) =>
-                      setRegister({ ...registers, address3: e.target.value })
-                    }
+                    value={address3}
+                    onChange={(e) => setAddress3(e.target.value)}
                   />
                 </div>
                 <div className="justify-content-center">
                   <TextField
                     className="col-md-8 my-3 justify-content-center"
+                    style={{ backgroundColor: "white" }}
                     label="Mobile:"
                     type="number"
                     variant="outlined"
-                    //value={userInfo.phone}
-                    onChange={(e) =>
-                      setRegister({ ...registers, phone: e.target.value })
-                    }
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
               </div>
             </form>
           </div>
-        <div className="text-left my-1">
-          <Button variant="warning" size="sm" onClick={submitHandler}>
-            Continue
-          </Button>
-        </div>
+          <div className="text-left my-1">
+            <Button variant="warning" size="sm" onClick={submitHandler}>
+              Continue
+            </Button>
+          </div>
         </div>
       </div>
     </>

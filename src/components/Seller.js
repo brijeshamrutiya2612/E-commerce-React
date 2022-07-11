@@ -6,6 +6,8 @@ import "./Home.css";
 import { FaCartArrowDown, FaCartPlus } from "react-icons/fa";
 import { getData } from "../store/ProductsSlice";
 import { Store } from "../store/Context";
+import { Rating } from "react-simple-star-rating";
+
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -127,10 +129,11 @@ function Seller() {
                 <h2>
                   <u>{getProd.itemName}</u>
                 </h2>
-                {/* <Rating ratingValue={rate.rate * 20} size={20}></Rating> */}
                 {/* <small style={{ marginTop: "10px" }}> ({rate.count}) Rating</small> */}
                 <p>Price: &#x20B9;{getProd.itemPrice}</p>
-                <p>Category: {getProd.itemCategory}</p>
+                <p>Category: {getProd.itemCategory.toUpperCase()}</p>
+                
+                <Rating ratingValue={getProd.rating * 20} size={20}></Rating>
                 <p>
                   <b>Description:</b> {getProd.itemDescription}
                 </p>
@@ -141,6 +144,7 @@ function Seller() {
                 ) : (
                   <Button
                     variant="warning"
+                    style={{backgroundColor:"#F7CA00",border:"none",borderRadius:"50px"}}
                     className="col mb-2 d-flex justify-content-center"
                     onClick={send}
                   >
@@ -149,7 +153,7 @@ function Seller() {
                   </Button>
                 )}
                 <Button
-                  variant="success"
+                  style={{backgroundColor:"#FA8800", border:"none",borderRadius:"50px"}}
                   className="col d-flex justify-content-center"
                   onClick={finalBuy}
                 >
@@ -159,177 +163,207 @@ function Seller() {
               </div>
             </div>
           </div>
-          <div className="col-lg-15" style={{ zIndex: 1 }}>
+          <div className="col-lg-15 mt-5" style={{ zIndex: 1,background: "#D8E4E6" }}>
             <h3 className="pt-5 pb-5 col-lg-5">Related Products</h3>
             <div className="row pl-5">
               {!all
                 ? "No Related Data"
                 : all.map((val, i) => {
                     return (
-                      <div
-                        key={i}
-                        className="col-lg-3 my-3 d-flex justify-content-center"
-                      >
-                        <Link to={`/Seller/${val._id}`}>
-                        <Card
-                          className="card card-item"
-                          key={i}
-                          style={{
-                            overflow: "hidden",
-                            width:"300px",
-                            maxWidth: "500px",
-                            boxShadow: "1px 1px 15px #343A40",
-                            transitionDuration: "1s",
-                          }}
-                        >
-                          <Container>
-                            <Row>
-                              <Col
-                                style={{ height:"200px", minHeight: "170px", width:"150px", maxHeight: "550px",marginTop: "1em", textAlign:"center" }}
-                              >
-                                <Card.Img
-
-                                  src={val.image}
-                                  style={{
-                                    maxHeight: "250px",
-                                    height:"auto",
-                                    width: "auto",
-                                    maxWidth: "200px",
-                                    textAlign: "center",
-                                  }}
-                                />
-                              </Col>
-                            </Row>
-                            <Row className="mt-5">
-                              <Col
-                                style={{ height: "200px", textAlign:"center" }}>
-                              <Card.Body
-                                style={{
-                                  textAlign: "center",
-                                  color: "black",
-                                }}
-                              >
-                                <Card.Title
-                                  style={{
-                                    textAlign: "center",
-                                    color: "black",
-                                  }}
-                                >
-                                  {val.itemName.substring(0, 20)}
-                                </Card.Title>
-                                <Card.Title
-                                  style={{
-                                    textAlign: "center",
-                                    color: "black",
-                                  }}
-                                >
-                                  &#x20B9; {val.itemPrice}
-                                </Card.Title>
-                                <Card.Text
-                                  style={{
-                                    textAlign: "center",
-                                    color: "black",
-                                  }}
-                                >
-                                  {val.itemCategory.toUpperCase()}
-                                </Card.Text>
-                                <Button className="btn-sm btn-c" variant="dark">
-                                  Shop now &#x2192;
-                                </Button>
-                              </Card.Body>
-                              </Col>
-                            </Row>
-                          </Container>
-                        </Card>
-                        </Link>
-                      </div>
+                      <>
+                      <div className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
+                                    <Link key={i} to={`/Seller/${val._id}`}>
+                                      <Card
+                                        className="card card-item"
+                                        key={i}
+                                        style={{
+                                          overflow: "hidden",
+                                          width: "250px",
+                                          maxWidth: "500px",
+                                          background: "#FFFFFF",
+                                          transitionDuration: "1s",
+                                        }}
+                                      >
+                                        <Container>
+                                          <Row>
+                                            <Col
+                                              style={{
+                                                height: "200px",
+                                                minHeight: "170px",
+                                                width: "150px",
+                                                maxHeight: "550px",
+                                                marginTop: "1em",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              <Card.Img
+                                                src={val.image}
+                                                style={{
+                                                  maxHeight: "250px",
+                                                  height: "auto",
+                                                  width: "auto",
+                                                  maxWidth: "200px",
+                                                  textAlign: "center",
+                                                }}
+                                              />
+                                            </Col>
+                                          </Row>
+                                          <Row className="mt-5">
+                                            <Col
+                                              style={{
+                                                height: "200px",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              <Card.Body
+                                                style={{
+                                                  textAlign: "center",
+                                                  color: "black",
+                                                }}
+                                              >
+                                                <Card.Title
+                                                  style={{
+                                                    textAlign: "center",
+                                                    color: "black",
+                                                  }}
+                                                >
+                                                  {val.itemName.substring(
+                                                    0,
+                                                    20
+                                                  )}
+                                                </Card.Title>
+                                                <Card.Title
+                                                  style={{
+                                                    textAlign: "center",
+                                                    color: "black",
+                                                  }}
+                                                >
+                                                  &#x20B9; {val.itemPrice}
+                                                </Card.Title>
+                                                <Card.Text
+                                                  style={{
+                                                    textAlign: "center",
+                                                    color: "black",
+                                                  }}
+                                                >
+                                                  {val.itemCategory.toUpperCase()}
+                                                </Card.Text>
+                                                <Button
+                                                  className="btn-sm btn-c"
+                                                  variant="dark"
+                                                >
+                                                  Shop now &#x2192;
+                                                </Button>
+                                              </Card.Body>
+                                            </Col>
+                                          </Row>
+                                        </Container>
+                                      </Card>
+                                    </Link>
+                                  </div>
+                      </>
                     );
                   })}
             </div>
           </div>
 
-          <div style={{ zIndex: 0 }}>
+          <div style={{ zIndex: 0, background: "#D8E4E6"  }}>
             <h3 className="d-flex pt-5 pb-5 pl-5">Also may you like</h3>
             <div className="row pl-5">
               {product.map((val, i) => {
                 return (
-                  <div
-                    key={i}
-                    className="col-lg-3 my-3 d-flex justify-content-center"
-                  >
-                    <Link to={`/Seller/${val._id}`}>
-                    <Card
-                          className="card card-item"
-                          key={i}
-                          style={{
-                            overflow: "hidden",
-                            width:"300px",
-                            maxWidth: "500px",
-                            boxShadow: "1px 1px 15px #343A40",
-                            transitionDuration: "1s",
-                          }}
-                        >
-                          <Container>
-                            <Row>
-                              <Col
-                                style={{ height:"200px", minHeight: "170px", width:"150px", maxHeight: "550px",marginTop: "1em", textAlign:"center" }}
-                              >
-                                <Card.Img
-
-                                  src={val.image}
-                                  style={{
-                                    maxHeight: "250px",
-                                    height:"auto",
-                                    width: "auto",
-                                    maxWidth: "200px",
-                                    textAlign: "center",
-                                  }}
-                                />
-                              </Col>
-                            </Row>
-                            <Row className="mt-5">
-                              <Col
-                                style={{ height: "200px", textAlign:"center" }}>
-                              <Card.Body
-                                style={{
-                                  textAlign: "center",
-                                  color: "black",
-                                }}
-                              >
-                                <Card.Title
-                                  style={{
-                                    textAlign: "center",
-                                    color: "black",
-                                  }}
-                                >
-                                  {val.itemName.substring(0, 20)}
-                                </Card.Title>
-                                <Card.Title
-                                  style={{
-                                    textAlign: "center",
-                                    color: "black",
-                                  }}
-                                >
-                                  &#x20B9; {val.itemPrice}
-                                </Card.Title>
-                                <Card.Text
-                                  style={{
-                                    textAlign: "center",
-                                    color: "black",
-                                  }}
-                                >
-                                  {val.itemCategory.toUpperCase()}
-                                </Card.Text>
-                                <Button className="btn-sm btn-c" variant="dark">
-                                  Shop now &#x2192;
-                                </Button>
-                              </Card.Body>
-                              </Col>
-                            </Row>
-                          </Container>
-                        </Card>
-                    </Link>
-                  </div>
+                  <>
+                  <div className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
+                                    <Link key={i} to={`/Seller/${val._id}`}>
+                                      <Card
+                                        className="card card-item"
+                                        key={i}
+                                        style={{
+                                          overflow: "hidden",
+                                          width: "250px",
+                                          maxWidth: "500px",
+                                          background: "#FFFFFF",
+                                          transitionDuration: "1s",
+                                        }}
+                                      >
+                                        <Container>
+                                          <Row>
+                                            <Col
+                                              style={{
+                                                height: "200px",
+                                                minHeight: "170px",
+                                                width: "150px",
+                                                maxHeight: "550px",
+                                                marginTop: "1em",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              <Card.Img
+                                                src={val.image}
+                                                style={{
+                                                  maxHeight: "250px",
+                                                  height: "auto",
+                                                  width: "auto",
+                                                  maxWidth: "200px",
+                                                  textAlign: "center",
+                                                }}
+                                              />
+                                            </Col>
+                                          </Row>
+                                          <Row className="mt-5">
+                                            <Col
+                                              style={{
+                                                height: "200px",
+                                                textAlign: "center",
+                                              }}
+                                            >
+                                              <Card.Body
+                                                style={{
+                                                  textAlign: "center",
+                                                  color: "black",
+                                                }}
+                                              >
+                                                <Card.Title
+                                                  style={{
+                                                    textAlign: "center",
+                                                    color: "black",
+                                                  }}
+                                                >
+                                                  {val.itemName.substring(
+                                                    0,
+                                                    20
+                                                  )}
+                                                </Card.Title>
+                                                <Card.Title
+                                                  style={{
+                                                    textAlign: "center",
+                                                    color: "black",
+                                                  }}
+                                                >
+                                                  &#x20B9; {val.itemPrice}
+                                                </Card.Title>
+                                                <Card.Text
+                                                  style={{
+                                                    textAlign: "center",
+                                                    color: "black",
+                                                  }}
+                                                >
+                                                  {val.itemCategory.toUpperCase()}
+                                                </Card.Text>
+                                                <Button
+                                                  className="btn-sm btn-c"
+                                                  variant="dark"
+                                                >
+                                                  Shop now &#x2192;
+                                                </Button>
+                                              </Card.Body>
+                                            </Col>
+                                          </Row>
+                                        </Container>
+                                      </Card>
+                                    </Link>
+                                  </div>
+                  </>
                 );
               })}
             </div>

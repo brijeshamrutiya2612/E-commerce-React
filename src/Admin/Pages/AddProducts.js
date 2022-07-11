@@ -23,6 +23,7 @@ function AddProducts() {
     itemName: "",
     itemPrice: "",
     quantity: "",
+    rating: "",
     itemUnit: "",
     itemDescription: "",
     image: "",
@@ -50,6 +51,7 @@ function AddProducts() {
       itemName: add.itemName,
       itemPrice: add.itemPrice,
       quantity: add.quantity,
+      rating: add.rating,
       itemUnit: add.itemUnit,
       itemDescription: add.itemDescription,
       image: add.image,
@@ -66,6 +68,7 @@ function AddProducts() {
       itemName: "",
       itemPrice: "",
       quantity: "",
+      rating: "",
       itemUnit: "",
       itemDescription: "",
       image: "",
@@ -99,10 +102,10 @@ function AddProducts() {
             <em>None</em>
           </MenuItem>
           <MenuItem value="Food">Food</MenuItem>
-          <MenuItem value="Electronics">Electronics</MenuItem>
-          <MenuItem value="Men's Clothes">Men's Clothing</MenuItem>
-          <MenuItem value="Women's Clothes">Women's Clothing</MenuItem>
-          <MenuItem value="Jewelery">Jewelery</MenuItem>
+          <MenuItem value="electronics">Electronics</MenuItem>
+          <MenuItem value="men's clothing">Men's Clothing</MenuItem>
+          <MenuItem value="women's clothing">Women's Clothing</MenuItem>
+          <MenuItem value="jewelery">Jewelery</MenuItem>
           <MenuItem value="Sports">Sports</MenuItem>
         </Select>
           </FormControl>
@@ -134,6 +137,15 @@ function AddProducts() {
               className="container"
               id="outlined-read-only-input"
               label="Item Quantity"
+            />
+          </div>
+          <div className="my-3">
+            <TextField
+              onChange={(e) => setAdd({ ...add, rating: e.target.value })}
+              name="rating"
+              className="container"
+              id="outlined-read-only-input"
+              label="Item Rating"
             />
           </div>
           <div className="my-3">

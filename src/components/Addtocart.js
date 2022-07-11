@@ -11,9 +11,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { Store } from "../store/Context";
+import { decreseCart, removerFromCart, Store } from "../store/Context";
 import axios from "axios";
 import CheckOutSteps from "./CheckOutSteps";
+import { useDispatch } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 const Addtocart = () => {
 
@@ -22,6 +24,7 @@ const Addtocart = () => {
     cart: { cartItems },
     userInfo
   } = state;
+  
   const nav = useNavigate();
   const onPlus = async (item,quantity) => {
     const student = await axios.get(
@@ -33,7 +36,14 @@ const Addtocart = () => {
       return;
     }
     ctxDispatch({type:'CART_ADD_ITEM', payload: {...item, quantity},})
-    // dis(addToCart(item));
+  };
+  const removeCartItems = (item, quantity) => {
+    ctxDispatch({type:'CART_REMOVE_ITEM', payload: {...item, quantity},})
+
+  };
+  const cartClear = (item, quantity) => {
+    ctxDispatch({type:'CART_CLEAR', payload: {...item, quantity}})
+
   };
   const payment = () => {
     nav("/shipping");
@@ -41,14 +51,17 @@ const Addtocart = () => {
   const login = () => {
     nav("/login");
   };
+  const home = () => {
+    nav("/");
+  };
   
 
   return (
     <div>
       <CheckOutSteps step1></CheckOutSteps>
-      <div className="pl-5 pr-5 my-4" style={{ backgroundColor: "#FFFFFF" }}>
-        <div>
-          <Button variant="outline-success" className="btn">
+      <div className="pl-5 pr-5" style={{ background: "#D8E4E6" }}>
+        <div className="pt-3">
+          <Button variant="outline-success" className="btn" onClick={home}>
             <strong>&#x2190;Continue Shopping</strong>
           </Button>
         </div>
@@ -120,7 +133,7 @@ const Addtocart = () => {
                           <Button
                             variant="danger"
                             className="btn btn-sm"
-                            
+                            onClick={()=>removeCartItems(item)}
                           >
                             <i className="fas fa-trash"></i>
                           </Button>
@@ -149,9 +162,9 @@ const Addtocart = () => {
 
             <div className="col-md-15 text-right">
               <div className="demo-content bg-alt pt-2">
-                Subtotal: ({cartItems.reduce((a, c) => a + c.quantity, 0)}{" "}
+                <strong>Subtotal: ({cartItems.reduce((a, c) => a + c.quantity, 0)}{" "}
                 items) : &#x20B9;{" "}
-                {cartItems.reduce((a, c) => a + c.itemPrice * c.quantity, 0)}
+                {cartItems.reduce((a, c) => a + c.itemPrice * c.quantity, 0)}</strong>
               </div>
             </div>
           </>
@@ -161,6 +174,7 @@ const Addtocart = () => {
           <Button
             variant="outline-danger"
             className="text-left btn"
+            onClick={()=>cartClear(cartItems)}
           >
             <strong>Clear Cart</strong>
           </Button>
@@ -172,13 +186,14 @@ const Addtocart = () => {
               <Button
                 variant="outline-success"
                 className="text-left btn"
+                onClick={home}
               >
                 <strong>&#x2190;Continue Shopping</strong>
               </Button>
             </div>
           </div>
           <div className="col-md-6 text-right">
-            <div className="demo-content bg-alt">
+            <div className="demo-content bg-alt pb-3">
                {!userInfo ? (
                 <Button onClick={login} variant="success" className="btn">
                   Login

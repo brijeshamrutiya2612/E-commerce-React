@@ -48,14 +48,11 @@ const Login = () => {
   return (
     <div
       style={{
-        // backgroundImage: `url(${shop})`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
+        background: "#D8E4E6",
         width: "auto",
         height: "auto",
       }}
     >
-      <ToastContainer position="top-center" limit={1}/>
       <div className="container pt-5 col-md-15 justify-content-center">
         <Container
           className="justify-content-center"

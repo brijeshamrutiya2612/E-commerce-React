@@ -35,10 +35,11 @@ function Footer() {
           width: "100%",
           backgroundColor: "#fff",
           height: "52px",
+          marginTop:"1em",
           position: "absolute",
         }}
       >
-        <Navbar bg="light" expand="lg" style={{background:"linear-gradient(246deg, rgba(216,228,230,1) 47%, rgba(70,221,236,1) 100%)"}}>
+        <Navbar bg="light" expand="lg" style={{ boxShadow: "1px 1px 10px #343A40",background:"linear-gradient(246deg, rgba(216,228,230,1) 47%, rgba(70,221,236,1) 100%)"}}>
           <Container>
             <Navbar.Brand className="container d-flex justify-content-center">
               <ShoppingBag

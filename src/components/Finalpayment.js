@@ -1,12 +1,5 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
-import {
-  Button,
-  Card,
-  Col,
-  ListGroup,
-  Row,
-  Table,
-} from "react-bootstrap";
+import { Button, Card, Col, ListGroup, Row, Table } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../store/Context";
 import CheckOutSteps from "./CheckOutSteps";
@@ -36,7 +29,7 @@ function Finalpayment() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { cartItems, shippingAddress, paymentMethod },
-    userInfo
+    userInfo,
   } = state;
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   cartItems.itemPrice = round2(
@@ -45,27 +38,25 @@ function Finalpayment() {
   cartItems.shippingPrice = cartItems.itemPrice > 500 ? round2(0) : round2(10);
   cartItems.taxPrice = round2(0.15 * cartItems.itemPrice);
   cartItems.totalPrice =
-  cartItems.itemPrice + cartItems.shippingPrice + cartItems.taxPrice;
-  
+    cartItems.itemPrice + cartItems.shippingPrice + cartItems.taxPrice;
 
   useEffect(() => {
-   if(!paymentMethod){
-    navigate('/payment')
-   }
-  }, [paymentMethod,navigate]);
-  
-  const handleSubmit = async () => {
-    try{
+    if (!paymentMethod) {
+      navigate("/payment");
+    }
+  }, [paymentMethod, navigate]);
 
-      dispatch({type: 'CREATE_REQUEST'});
-      const {data} = await axios.post(
+  const handleSubmit = async () => {
+    try {
+      dispatch({ type: "CREATE_REQUEST" });
+      const { data } = await axios.post(
         "http://localhost:5000/api/orders",
         {
           orderItems: cartItems,
-          shippingAddress: shippingAddress.registers,
+          shippingAddress: shippingAddress,
           paymentMethod: paymentMethod,
           itemPrice: cartItems.itemPrice,
-          shippingPrice:cartItems.shippingPrice,
+          shippingPrice: cartItems.shippingPrice,
           taxPrice: cartItems.taxPrice,
           totalPrice: cartItems.totalPrice,
         },
@@ -74,130 +65,138 @@ function Finalpayment() {
             authorization: `Bearer ${userInfo.token}`,
           },
         }
-        );
-        ctxDispatch({ type: "CART_CLEAR" });
-        dispatch({ type: "CREATE_SUCCESS" });
-        localStorage.removeItem("cartItems");
-        navigate(`/order/${data.order._id}`)
-      } catch(err){
-        dispatch({type: 'CREATE_FAIL'})
-        toast.error(err)
-      }
+      );
+      ctxDispatch({ type: "CART_CLEAR" });
+      dispatch({ type: "CREATE_SUCCESS" });
+      localStorage.removeItem("cartItems");
+      navigate(`/order/${data.order._id}`);
+    } catch (err) {
+      dispatch({ type: "CREATE_FAIL" });
+      toast.error(err);
+    }
   };
 
   return (
-    <div className="container pt-1">
+    <div>
       <CheckOutSteps step1 step2 step3 step4></CheckOutSteps>
-      <div>
-        <h2 className="pt-3">Order Summary</h2>
-        <Row>
-          <Col>
-            <Card className="mb-3">
-              <Card.Body>
-                <Card.Title>Shipping Address</Card.Title>
-                <Card.Text>
-                  <strong>Name:</strong> {shippingAddress.registers.firstname}{" "}
-                  {shippingAddress.registers.lastname}
-                  <br />
-                  <strong>Address:</strong> {shippingAddress.registers.address1}{" "}
-                  {shippingAddress.registers.address2}{" "}
-                  {shippingAddress.registers.address3}
-                </Card.Text>
-                <Link to="/shipping">Edit</Link>
-              </Card.Body>
-            </Card>
-            <Card className="mb-3">
-              <Card.Body>
-                <Card.Title>Payment</Card.Title>
-                <Card.Text>
-                  <strong>Method:</strong> {paymentMethod}
-                </Card.Text>
-                <Link to="/Payment">Edit</Link>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={8}>
-            Your Cart Items {cartItems.length} and Qty{" "}
-            {cartItems.reduce((a, c) => a + c.quantity, 0)}
-            <Table striped className="my-4">
-              <thead>
-                <tr>
-                  <th>Items</th>
-                  <th colSpan={2}>Description</th>
-                  <th style={{ textAlign: "center" }}>Price</th>
-                  <th style={{ textAlign: "center" }}>Qty</th>
-                  <th style={{ textAlign: "right" }}>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartItems.map((item, i) => {
-                  return (
-                    <tr key={i}>
-                      <td>{i + 1}</td>
-                      <td>
-                        <img
-                          style={{ width: "4rem" }}
-                          src={item.image}
-                          alt=""
-                        />
-                      </td>
-                      <td>
-                        <strong>{item.itemName}</strong>
-                        <br />
-                        {item.itemDescription}
-                      </td>
-                      <td style={{ textAlign: "center" }}>
-                        &#x20B9; {item.itemPrice}
-                      </td>
-                      <td style={{ textAlign: "center" }}>
-                        <span className="mx-2">{item.quantity}</span>
-                      </td>
-                      <td style={{ textAlign: "right" }}>
-                        ${item.itemPrice * item.quantity}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Col>
-          <Col>
-            <Card className="mb-3">
-              <Card.Body>
-                <Card.Text>
-                  <ListGroup variant="flush">
-                    <ListGroup.Item>
-                      <Row>
-                        <Col sm={7}>
-                          Subtotal (
-                          {cartItems.reduce((a, c) => a + c.quantity, 0)} items)
-                          :
-                        </Col>
-                        <Col className="text-right">
-                          {" "}
-                          &#x20B9;{" "}
-                          {cartItems.reduce(
-                            (a, c) => a + c.itemPrice * c.quantity,
-                            0
-                          )}
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Tax:</Col>
-                        <Col className="text-right">
-                          &#x20B9; {Math.floor(cartItems.taxPrice)}
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
+      <div
+        style={{
+          background: "#D8E4E6",
+          width: "auto",
+          height: "auto",
+        }}
+      >
+         <div className='container col-lg-8 pt-3 pb-3 justify-content-center'>
+          <h2 className="pt-3">Order Summary</h2>
+          <Row>
+            <Col>
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Title>Shipping Address</Card.Title>
+                  <Card.Text>
+                    <strong>Name:</strong> {shippingAddress.firstname}{" "}
+                    {shippingAddress.lastname}
+                    <br />
+                    <strong>Address:</strong> {shippingAddress.address1}{" "}
+                    {shippingAddress.address2} {shippingAddress.address3}
+                  </Card.Text>
+                  <Link to="/shipping">Edit</Link>
+                </Card.Body>
+              </Card>
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Title>Payment</Card.Title>
+                  <Card.Text>
+                    <strong>Method:</strong> {paymentMethod}
+                  </Card.Text>
+                  <Link to="/Payment">Edit</Link>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={8}>
+              Your Cart Items {cartItems.length} and Qty{" "}
+              {cartItems.reduce((a, c) => a + c.quantity, 0)}
+              <Table striped className="my-4" style={{background:"white"}}>
+                <thead>
+                  <tr>
+                    <th>Items</th>
+                    <th colSpan={2}>Description</th>
+                    <th style={{ textAlign: "center" }}>Price</th>
+                    <th style={{ textAlign: "center" }}>Qty</th>
+                    <th style={{ textAlign: "right" }}>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartItems.map((item, i) => {
+                    return (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td>
+                          <img
+                            style={{ width: "4rem" }}
+                            src={item.image}
+                            alt=""
+                          />
+                        </td>
+                        <td>
+                          <strong>{item.itemName}</strong>
+                          <br />
+                          {item.itemDescription}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          &#x20B9; {item.itemPrice}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          <span className="mx-2">{item.quantity}</span>
+                        </td>
+                        <td style={{ textAlign: "right" }}>
+                          ${item.itemPrice * item.quantity}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </Col>
+            <Col>
+              <Card className="mb-3">
+                <Card.Body>
+                  <Card.Text>
+                    <ListGroup variant="flush">
+                      <ListGroup.Item>
+                        <Row>
+                          <Col sm={7}>
+                            Subtotal (
+                            {cartItems.reduce((a, c) => a + c.quantity, 0)}{" "}
+                            items) :
+                          </Col>
+                          <Col className="text-right">
+                            {" "}
+                            &#x20B9;{" "}
+                            {cartItems.reduce(
+                              (a, c) => a + c.itemPrice * c.quantity,
+                              0
+                            )}
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        <Row>
+                          <Col>Tax:</Col>
+                          <Col className="text-right">
+                            &#x20B9; {Math.floor(cartItems.taxPrice)}
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
                       <>
                         <ListGroup.Item>
                           <Row>
                             <Col sm={9}>Shipping Charge:</Col>
-                            <Col className="text-right">&#x20B9; {cartItems.shippingPrice}</Col>
+                            <Col className="text-right">
+                              &#x20B9; {cartItems.shippingPrice}
+                            </Col>
                           </Row>
                         </ListGroup.Item>
                         <ListGroup.Item>
@@ -209,30 +208,32 @@ function Finalpayment() {
                           </Row>
                         </ListGroup.Item>
                       </>
-                    <div className="text-right">
-                      <div className="demo-content bg-alt">
-                        <div className="text-center my-4">
-                          <Button
-                            variant="warning"
-                            size="md"
-                            type="button"
-                            onClick={handleSubmit}
-                          >
-                            Total Amount <b>&#x20B9;{Math.floor(cartItems.totalPrice)}</b> to
-                            Pay
-                          </Button>
+                      <div className="text-right">
+                        <div className="demo-content bg-alt">
+                          <div className="text-center my-4">
+                            <Button
+                              variant="warning"
+                              size="md"
+                              type="button"
+                              onClick={handleSubmit}
+                            >
+                              Total Amount{" "}
+                              <b>&#x20B9;{Math.floor(cartItems.totalPrice)}</b>{" "}
+                              to Pay
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </ListGroup>
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                    </ListGroup>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default Finalpayment;

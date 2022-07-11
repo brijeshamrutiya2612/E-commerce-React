@@ -1,12 +1,16 @@
 import { Button, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { toast, ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserData } from "../store/userSlice";
 
 const Register = () => {
   const sign = useNavigate();  
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.user);
   const [registers, setRegister] = useState({
     firstname: "",
     lastname: "",
@@ -32,88 +36,89 @@ const Register = () => {
     address3: registers.address3,
     phone: registers.phone,
     age: registers.age,
-    }).catch((err) => console.log(err));
-    const data = await res.data;
-    return data;
-  }
-  const signIn = async (e) => {
-    e.preventDefault();
-    if(registers.password !== registers.cPassword){
+  }).catch((err) => console.log(err));
+  const data = await res.data;
+  return data;
+}
+useEffect(()=>{
+  dispatch(getUserData())
+},[])
+console.log(users.getUser)
+const signIn = async (e) => {
+  e.preventDefault();
+  if(registers.password !== registers.cPassword){
       toast.error("Password do not match");
       return;
     }
-    // sendRequest().then(()=>sign("/login"));
-    
+    if (users.getUser.find(
+        (user) =>
+          user.email === registers.email
+      )
+      ) {
+      toast.error("This " + `${registers.email}` + " is Already Register");
+      }
+    if (users.getUser.find(
+        (user) =>
+          user.phone === registers.phone
+      )
+      ) {
+      toast.error("This " + `${registers.phone}` + " is Already Register");
+      }
+    const {
+      firstname,
+      lastname,
+      email,
+      password,
+      address1,
+      address2,
+      address3,
+      phone,
+      age,
+    } = registers;
 
-
-    // if (
-    //   users.loginUser.find(
-    //     (user) =>
-    //       user.email === registers.email && user.phone === registers.phone
-    //   )
-    // ) {
-    //   alert("This <b>" + `${registers.email}` + "</b> is Already Register");
-    // }
-
-    // const {
-    //   firstname,
-    //   lastname,
-    //   email,
-    //   password,
-    //   address1,
-    //   address2,
-    //   address3,
-    //   phone,
-    //   age,
-    // } = registers;
-
-    // if (firstname === "") {
-    //   alert("First Name is Require");
-    // } else if (firstname.length < 3) {
-    //   alert("First Name is Greter than 3 words");
-    // } else if (lastname === "") {
-    //   alert("Last Name is Require");
-    // } else if (lastname.length < 3) {
-    //   alert("Last Name is not valid");
-    // } else if (email === "") {
-    //   alert("Email is Required");
-    // } else if (!email.includes("@")) {
-    //   alert("Plz Enter Valid Email");
-    // } else if (password === "") {
-    //   alert("Password is Required");
-    // } else if (password.length < 5) {
-    //   alert("Password must be Enter in 6 to 10 Character");
-    // } else if (address1 === "") {
-    //   alert("Address1 is Required");
-    // } else if (address2 === "") {
-    //   alert("Address2 is Required");
-    // } else if (address3 === "") {
-    //   alert("Address3 is Required");
-    // } else if (phone === "") {
-    //   alert("Mobile No. is Required");
-    // } else if (phone.length < 5) {
-    //   alert("Plz Enter Valid Mobile No.");
-    // } else if (age === "") {
-    //   alert("Age is Require");
-    // }
-
-    // localStorage.setItem("user", JSON.stringify(registers));
-    // dispatch(userRegister(registers));
+    if (firstname === "") {
+      toast.info("First Name is Require");
+    } else if (firstname.length < 3) {
+      toast.info("First Name is Greter than 3 words");
+    } else if (lastname === "") {
+      toast.info("Last Name is Require");
+    } else if (lastname.length < 3) {
+      toast.info("Last Name is not valid");
+    } else if (email === "") {
+      toast.info("Email is Required");
+    } else if (!email.includes("@")) {
+      toast.info("Plz Enter Valid Email");
+    } else if (password === "") {
+      toast.info("Password is Required");
+    } else if (password.length < 5) {
+      toast.info("Password must be Enter in 6 to 10 Character");
+    } else if (address1 === "") {
+      toast.info("Address1 is Required");
+    } else if (address2 === "") {
+      toast.info("Address2 is Required");
+    } else if (address3 === "") {
+      toast.info("Address3 is Required");
+    } else if (phone === "") {
+      toast.info("Mobile No. is Required");
+    } else if (phone.length < 5) {
+      toast.info("Plz Enter Valid Mobile No.");
+    } else if (age === "") {
+      toast.info("Age is Require");
+    }
+    sendRequest().then(()=>sign("/login"));
+    localStorage.setItem("user", JSON.stringify(registers));
   };
-
+  
   return (
     <>
       <div
         style={{
-          // backgroundImage: `url(${shop}`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
+          background: "#D8E4E6",
           width: "auto",
           height: "auto",
         }}
       >
-        <div className="container col-lg-5 my-5 col-md-15 justify-content-center">
-        <ToastContainer position="top-bottom" limit={1}/>
+        <div className="container col-lg-4 pt-3 pb-3 justify-content-center">
           <form>
             <Container className="pt-1 justify-content-center">
               <div
@@ -253,7 +258,7 @@ const Register = () => {
                       className="ml-4 col-md-11 justify-content-center"
                       variant="contained"
                       onClick={signIn}
-                      style={{backgroundColor:"#14657C"}}
+                      style={{backgroundColor:"#F7CA00",border:"none",borderRadius:"50px"}}
                     >
                       Sign Up
                       {/* {register.registerStatus === "pending"
