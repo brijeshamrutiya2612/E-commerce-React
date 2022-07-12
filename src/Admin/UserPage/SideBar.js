@@ -31,12 +31,11 @@ const SideBar = () => {
     nav("/")
   };
   return (
-    <div>
+    <div style={{ width:"800px"}}>
       <div className="d-flex">
         <Typography
           variant="h6"
           className="pl-4 my-4"
-          style={{ position: "fixed", zIndex: "42" }}
         >
           Welcome, {userInfo.firstname} {userInfo.lastname}
         </Typography>

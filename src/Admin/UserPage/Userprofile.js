@@ -1,5 +1,5 @@
 import React, { useContext, useReducer, useState } from "react";
-import { Button, Container,  } from "react-bootstrap";
+import { Button, Col, Container, Row,  } from "react-bootstrap";
 import axios from "axios";
 import { Input } from "@mui/material";
 import { Store } from "../../store/Context";
@@ -70,20 +70,16 @@ const Userprofile = () => {
         <div>{error}</div>
       ) : (
         <> */}
-          <div className="row my-4 small-container">
-            <SideBar></SideBar>
+          <div>
+          <Row>
+              <Col md={3} style={{height:"auto",minHeight:"680px",maxHeight:"500px"}}>
+              <SideBar></SideBar>
+              </Col>
+              <Col lg={8} style={{width:"auto"}}>
             <ToastContainer position="top-center" limit={1}/>
-            <div className="col">
-              <div
-                style={{
-                  // backgroundImage: `url(${shop}`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                  width: "auto",
-                  height: "auto",
-                }}
-              >
-                <div className="container justify-content-center">
+            <div>
+              <div>
+                <div>
                   <form>
                     <Container className="pt-5 justify-content-center">
                       <div
@@ -163,6 +159,8 @@ const Userprofile = () => {
                 </div>
               </div>
             </div>
+            </Col>
+            </Row>
           </div>
         {/* </>
       )} */}

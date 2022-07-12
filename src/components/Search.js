@@ -1,12 +1,48 @@
 import { Typography } from "@mui/material";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Rating } from "react-simple-star-rating";
-import Header from "./Header";
+import { toast } from "react-toastify";
+import {getError} from '../utils';
 import "./Home.css";
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_REQUEST":
+      return{...state, loading: true};
+      case 'FETCH_SUCCESS':
+        return{
+          ...state,
+          products: action.payload.products,
+          page: action.payload.page,
+          pages: action.payload.pages,
+          countProducts: action.payload.countProducts,
+          loading: false,
+        };
+        case 'FETCH_FAIL':
+        return{...state, loading: false, error: action.payload};
+
+        default:
+          return state;
+  }
+};
+
+const prices = [
+  {
+    name: '$1 to $50',
+    value: '1-50',
+  },
+  {
+    name: '$51 to $200',
+    value: '51-200',
+  },
+  {
+    name: '$201 to $1000',
+    value: '201-1000',
+  }
+]
 const Search = () => {
   const [pro, setPro] = useState([]);
   const { search } = useParams([]);

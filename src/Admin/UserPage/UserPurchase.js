@@ -62,11 +62,15 @@ const UserPurchase = () => {
         <div>{error}</div>
       ) : (
         <>
-          <div className="my-4 d-flex">
-            <div className="row">
+          {/* <div className="my-4 d-flex"> */}
+            <Row>
+              <Col md={3} style={{height:"auto"}}>
               <SideBar></SideBar>
+              </Col>
+              <Col lg={8} style={{height:"auto",width:"auto"}}>
+            {/* <div>
               <div
-                className="col-lg-50 my-5"
+                className="col-lg-15 my-5"
                 style={{ paddingLeft: "5em"}}
               >
                 <div
@@ -77,9 +81,9 @@ const UserPurchase = () => {
                     height: "auto",
                   }}
                 >
-                  <div className="mx-auto pl-5">
+                  <div className="pl-5"> */}
                     <TableContainer component={Paper}>
-                      <Table sx={{ minWidth: 750 }} aria-label="simple table">
+                      <Table sx={{ width: 750 }} aria-label="simple table">
                         <TableHead>
                           <TableRow>
                             <TableCell>Item</TableCell>
@@ -184,11 +188,13 @@ const UserPurchase = () => {
                         </TableBody>
                       </Table>
                     </TableContainer>
-                  </div>
+                  {/* </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </div> */}
+            </Col>
+          </Row>
+          {/* </div> */}
         </>
       )}
     </>
