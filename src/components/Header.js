@@ -14,7 +14,7 @@ function Header() {
   const nav = useNavigate();
   const [list, setList] = useState([]);
   const [filter, setFilter] = useState([]);
-  const [search, setSearch] = useState([]);
+  const [query, setSearch] = useState([]);
 
   useEffect(() => {
     async function getAllStudent() {
@@ -22,7 +22,7 @@ function Header() {
         const listProduct = await axios.get(
           "http://localhost:5000/api/products"
         );
-        setList(listProduct.data.products);
+        setList(listProduct.data);
       } catch (error) {
         console.log("Problem");
       }
@@ -52,8 +52,9 @@ function Header() {
   const home = () => {
     nav("/");
   };
-  const handleSearch = () => {
-    nav(`/products/category/${search}`);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    nav(query ? `/search?query=${query}` : '/search');
   };
   return (
     <div id="myHeader" className="d-flex">
@@ -93,7 +94,7 @@ function Header() {
                   return (
                     <NavDropdown.Item key={i}>
                       <Link
-                        to={`/products/category/${item.itemCategory}`}
+                        to={query ? `/search?itemCategory=${item.itemCategory}` : '/search'}
                         style={{ color: "#000000" }}
                       >
                         {item.itemCategory.toUpperCase()}

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 import { createContext, useReducer } from "react";
 import { toast } from "react-toastify";
 
@@ -91,7 +92,7 @@ function reducer(state, action) {
           paymentMethod: action.payload,
         },
       };
-
+      
     default:
       return state;
   }

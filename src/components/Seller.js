@@ -37,7 +37,7 @@ function Seller() {
         const response = await axios.get(
           `http://localhost:5000/api/products/${id}`
         );
-        dispatch({ type: "FETCH_SUCCESS", payload: response.data.products });
+        dispatch({ type: "FETCH_SUCCESS", payload: response.data });
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: err.message });
       }
@@ -56,15 +56,15 @@ function Seller() {
         const student = await axios.get(
           `http://localhost:5000/api/products/${id}`
         );
-        setStudents(student.data.products);
+        setStudents(student.data);
         const product = await axios.get("http://localhost:5000/api/products/");
-        setProduct(product.data.products);
+        setProduct(product.data);
         const all = await axios.get("http://localhost:5000/api/products/");
-        console.log(all.data.products);
-        setAll(all.data.products);
-        const Product = all.data.products;
+        console.log(all.data);
+        setAll(all.data);
+        const Product = all.data;
         const newProduct = Product.filter((p) => {
-          return p.itemCategory === student.data.products.itemCategory;
+          return p.itemCategory === student.data.itemCategory;
         });
         setAll(newProduct);
       } catch (error) {

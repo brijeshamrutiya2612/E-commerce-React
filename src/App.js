@@ -25,6 +25,8 @@ import { ToastContainer } from "react-toastify";
 import Payment from "./components/Payment";
 import OrderScreen from "./components/OrderScreen";
 import ProtectedRouter from "./components/ProtectedRouter";
+import ProductAction from "./Admin/Pages/ProductAction";
+import ProductView from "./Admin/Pages/ProductView";
 
 function App() {
   const { state } = useContext(Store);
@@ -49,7 +51,7 @@ function App() {
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Register />}></Route>
             <Route
-              path="/products/category/:search"
+              path="/search"
               element={<Search />}
             ></Route>
             <Route path="/addToCart" element={<Addtocart />}></Route>
@@ -61,6 +63,8 @@ function App() {
             <Route path="/Admin" element={<Admin />}></Route>
             <Route path="/dashboard" element={<Dashboard />}></Route>
             <Route path="/addproducts" element={<AddProducts />}></Route>
+            <Route path="/productview" element={<ProductView />}></Route>
+            <Route path="/productAction/:id" element={<ProductAction />}></Route>
             <Route path="/user" element={<User />}></Route>
             <Route path="/ud/:id" element={<ProtectedRouter><UserDashboard /></ProtectedRouter>}></Route>
             <Route path="/user/:id" element={<ProtectedRouter><Userprofile /></ProtectedRouter>}></Route>
