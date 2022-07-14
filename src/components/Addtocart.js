@@ -30,14 +30,14 @@ const Addtocart = () => {
     const student = await axios.get(
       `http://localhost:5000/api/products/${item._id}`,
     );
-    console.log(student.data.products.itemQty)
-    if(student.data.products.itemQty < quantity){
+    console.log(student.data.quantity)
+    if(student.data.quantity < quantity){
       window.alert('Sorry, Products is out of stock');
       return;
     }
     ctxDispatch({type:'CART_ADD_ITEM', payload: {...item, quantity},})
   };
-  const removeCartItems = (item, quantity) => {
+  const removeCartItems = (item,quantity) => {
     ctxDispatch({type:'CART_REMOVE_ITEM', payload: {...item, quantity},})
 
   };
@@ -124,7 +124,7 @@ const Addtocart = () => {
                             alt=""
                           />
                         </TableCell>
-                        <TableCell align="left">
+                        <TableCell align="left" style={{width:"30%"}}>
                           <b>{item.itemName}</b>
                           <br />
                           <b>{item.itemDescription}</b>
@@ -142,7 +142,7 @@ const Addtocart = () => {
                           &#x20B9;{item.itemPrice}
                         </TableCell>
                         <TableCell align="left">
-                          <Button variant="light" onClick={()=> onPlus(item, item.quantity - 1)}>
+                          <Button disabled={item.quantity === 1} variant="light" onClick={()=> onPlus(item, item.quantity - 1)}>
                             <i className="fas fa-minus-circle"></i>
                           </Button>
                           <span className="mx-2">{item.quantity}</span>
@@ -174,6 +174,7 @@ const Addtocart = () => {
           <Button
             variant="outline-danger"
             className="text-left btn"
+            disabled={cartItems.length === 0}
             onClick={()=>cartClear(cartItems)}
           >
             <strong>Clear Cart</strong>
@@ -202,6 +203,7 @@ const Addtocart = () => {
                 <Button
                   onClick={payment}
                   variant="success"
+                  disabled={cartItems.length === 0}
                   className="text-right ml-6 btn col-md-15 lg"
                 >
                   Procced to Payment

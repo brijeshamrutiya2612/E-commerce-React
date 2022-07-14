@@ -14,7 +14,7 @@ function Header() {
   const nav = useNavigate();
   const [list, setList] = useState([]);
   const [filter, setFilter] = useState([]);
-  const [query, setSearch] = useState([]);
+  const [query, setSearch] = useState('');
 
   useEffect(() => {
     async function getAllStudent() {
@@ -94,7 +94,7 @@ function Header() {
                   return (
                     <NavDropdown.Item key={i}>
                       <Link
-                        to={query ? `/search?itemCategory=${item.itemCategory}` : '/search'}
+                        to={`/search?itemCategory=${item.itemCategory}`}
                         style={{ color: "#000000" }}
                       >
                         {item.itemCategory.toUpperCase()}
@@ -115,6 +115,7 @@ function Header() {
                 />
               <Button
                 onClick={handleSearch}
+                type="submit"
                 variant="success"
                 className="ml-2"
                 >

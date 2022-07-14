@@ -1,13 +1,22 @@
+import { CurrencyRupee } from "@mui/icons-material";
 import { Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useReducer, useState } from "react";
-import { Button, Card, Col, Container, Form, Row, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { Rating } from "react-simple-star-rating";
 import { getError } from "../utils";
 import "./Home.css";
-
+import RatingStart from "./RatingStart";
+import { Rating } from "react-simple-star-rating";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -32,38 +41,42 @@ const reducer = (state, action) => {
 
 const prices = [
   {
-    name: "$1 to $50",
-    value: "1-50",
+    name: "$100 to $500",
+    value: "100-500",
   },
   {
-    name: "$51 to $200",
-    value: "51-200",
+    name: "$500 to $1000",
+    value: "500-1000",
   },
   {
-    name: "$201 to $1000",
-    value: "201-1000",
+    name: "$1000 to $5000",
+    value: "1000-5000",
+  },
+  {
+    name: "$5000 to Above",
+    value: "5000-100000 ",
   },
 ];
 
 export const ratings = [
   {
     name: "4stars & up",
-    rating: 4,
+    value: 4,
   },
 
   {
     name: "3stars & up",
-    rating: 3,
+    value: 3,
   },
 
   {
     name: "2stars & up",
-    rating: 2,
+    value: 2,
   },
 
   {
     name: "1stars & up",
-    rating: 1,
+    value: 1,
   },
 ];
 
@@ -73,7 +86,7 @@ const Search = () => {
   const sp = new URLSearchParams(search);
   const itemCategory = sp.get("itemCategory") || "all";
   const query = sp.get("query") || "all";
-  const price = sp.get("price") || "all";
+  const itemPrice = sp.get("itemPrice") || "all";
   const rating = sp.get("rating") || "all";
   const order = sp.get("order") || "all";
   const page = sp.get("page") || 1;
@@ -88,7 +101,7 @@ const Search = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/products/search?page=${page}&query=${query}&itemCategory=${itemCategory}&price=${price}&rating=${rating}&order=${order}`
+          `http://localhost:5000/api/products/search?page=${page}&query=${query}&itemCategory=${itemCategory}&itemPrice=${itemPrice}&rating=${rating}&order=${order}`
         );
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
@@ -99,7 +112,8 @@ const Search = () => {
       }
     };
     fetchData();
-  }, [itemCategory, error, order, page, price, query, rating]);
+    console.log(query);
+  }, [itemCategory, error, order, page, itemPrice, query, rating]);
 
   const [categories, setCategories] = useState([]);
   useEffect(() => {
@@ -121,9 +135,9 @@ const Search = () => {
     const filterCategory = filter.itemCategory || itemCategory;
     const filterQuery = filter.query || query;
     const filterRating = filter.rating || rating;
-    const filterPrice = filter.price || price;
+    const filterPrice = filter.itemPrice || itemPrice;
     const sortOrder = filter.order || order;
-    return `/search?page=${filterPage}&query=${filterQuery}&itemCategory=${filterCategory}&price=${filterPrice}&rating=${filterRating}&order=${sortOrder}`;
+    return `/search?page=${filterPage}&query=${filterQuery}&itemCategory=${filterCategory}&itemPrice=${filterPrice}&rating=${filterRating}&order=${sortOrder}`;
   };
 
   console.log(products);
@@ -145,15 +159,16 @@ const Search = () => {
           ></h3>
           <Row>
             <Col
-              style={{ background: "white", height: "350px" }}
+              style={{ background: "white", height: "auto" }}
               md={2}
               className="pl-5"
             >
-              <Typography variant="h6">Department</Typography>
+              <Typography variant="h6">Category</Typography>
               <div>
-                <ul>
+                <ul style={{ listStyleType: "none" }}>
                   <li>
                     <Link
+                      style={{ textDecoration: "none", color: "#000000" }}
                       className={"all" === itemCategory ? "text-bold" : ""}
                       to={getFilterUrl({ itemCategory: "all" })}
                     >
@@ -165,10 +180,11 @@ const Search = () => {
                       <>
                         <li key={c}>
                           <Link
+                            style={{ textDecoration: "none", color: "#000000" }}
                             className={c === itemCategory ? "text-bold" : ""}
                             to={getFilterUrl({ itemCategory: c })}
                           >
-                            {c}
+                            {c.toUpperCase()}
                           </Link>
                         </li>
                       </>
@@ -178,11 +194,12 @@ const Search = () => {
               </div>
               <Typography variant="h6">Price</Typography>
               <div>
-                <ul>
+                <ul style={{ listStyleType: "none" }}>
                   <li>
                     <Link
-                      className={"all" === price ? "text-bold" : ""}
-                      to={getFilterUrl({ price: "all" })}
+                      style={{ textDecoration: "none", color: "#000000" }}
+                      className={"all" === itemPrice ? "text-bold" : ""}
+                      to={getFilterUrl({ itemPrice: "all" })}
                     >
                       Any
                     </Link>
@@ -192,8 +209,9 @@ const Search = () => {
                       <>
                         <li key={p.value}>
                           <Link
-                            className={p.value === price ? "text-bold" : ""}
-                            to={getFilterUrl({ price: p.value })}
+                            style={{ textDecoration: "none", color: "#000000" }}
+                            className={p.value === itemPrice ? "text-bold" : ""}
+                            to={getFilterUrl({ itemPrice: p.value })}
                           >
                             {p.name}
                           </Link>
@@ -205,54 +223,63 @@ const Search = () => {
               </div>
               <Typography variant="h6">Avg. Customer Review</Typography>
               <div>
-                <ul>
+                <ul style={{ listStyleType: "none" }}>
+                  {ratings.map((r) => (
+                    <li key={r.name}>
+                      <Link
+                        style={{ textDecoration: "none", color: "#000000" }}
+                        to={getFilterUrl({ rating: r.value })}
+                        className={
+                          `${r.value}` === `${rating}` ? "text-bold" : ""
+                        }
+                      >
+                        <RatingStart
+                          caption={" & up"}
+                          rating={r.value}
+                        ></RatingStart>
+                      </Link>
+                    </li>
+                  ))}
                   <li>
                     <Link
-                      className={"all" === price ? "text-bold" : ""}
-                      to={getFilterUrl({ price: "all" })}
+                      style={{ textDecoration: "none", color: "#000000" }}
+                      to={getFilterUrl({ rating: "all" })}
+                      className={rating === "all" ? "text-bold" : ""}
                     >
-                      Any
+                      <RatingStart caption={" & up"} rating={0}></RatingStart>
                     </Link>
                   </li>
-                  {ratings.map((p) => {
-                    return (
-                      <>
-                        <li key={p.value}>
-                          <Link
-                            className={p.value === price ? "text-bold" : ""}
-                            to={getFilterUrl({ price: p.value })}
-                          >
-                            {p.name}
-                          </Link>
-                        </li>
-                      </>
-                    );
-                  })}
                 </ul>
               </div>
             </Col>
-            <Col md={9}>
+            <Col lg={9}>
               {loading ? (
                 <div className="container pt-5">
-                <Spinner animation="border" role="status"></Spinner>
-              </div>
+                  <Spinner animation="border" role="status"></Spinner>
+                </div>
               ) : error ? (
                 <div>{error}</div>
               ) : (
                 <>
                   <Row className="justify-content-between mb-3">
-                    <Col md={6}>
-                      <div>
-                        {countProducts === 0 ? "No" : countProducts} Results
-                        {query !== "all" && " : " + query}
-                        {itemCategory !== "all" && " : " + itemCategory}
-                        {price !== "all" && " : Price " + price}
+                    <Col md={8}>
+                      <div
+                        className="container ml-5"
+                        style={{ fontWeight: "bold", fontSize: "20px" }}
+                      >
+                        Results "{countProducts === 0 ? "No" : countProducts}"
+                        Found
+                        {query !== "all" && " : " + query.toUpperCase()}
+                        {itemCategory !== "all" &&
+                          " : " + itemCategory.toUpperCase()}
+                        {itemPrice !== "all" && " : Price " + itemPrice}
                         {rating !== "all" && " : Rating " + rating + " & up"}
                         {query !== "all" ||
                         itemCategory !== "all" ||
                         rating !== "all" ||
-                        price !== "all" ? (
+                        itemPrice !== "all" ? (
                           <Button
+                            className="ml-1"
                             variant="light"
                             onClick={() => navigate("/search")}
                           >
@@ -261,7 +288,7 @@ const Search = () => {
                         ) : null}
                       </div>
                     </Col>
-                    <Col className="text-end">
+                    <Col className="text-right">
                       Sort by{" "}
                       <select
                         value={order}
@@ -277,129 +304,133 @@ const Search = () => {
                     </Col>
                   </Row>
                   {products.length === 0 && (
-                    <div>No Product Found</div>
+                    <div
+                      className="container ml-5"
+                      style={{ fontWeight: "bold", fontSize: "20px" }}
+                    >
+                      No Product Found
+                    </div>
                   )}
 
                   <Row>
-                    {products.map((val,i) => (
-                      <Col sm={6} lg={4} className="mb-3" key={val._id}>
+                    {products.map((val, i) => (
+                      <Col className="mb-3" key={val._id}>
                         <>
-                      <div className="col-lg-15 ml-5 my-2 mb-5">
-                        <Link key={i} to={`/Seller/${val._id}`}>
-                          <Card
-                            className="card card-item"
-                            key={i}
-                            style={{
-                              overflow: "hidden",
-                              width: "250px",
-                              maxWidth: "500px",
-                              background: "#FFFFFF",
-                              transitionDuration: "1s",
-                            }}
-                            >
-                            <Container>
-                            <Row>
-                            <Col
-                            style={{
-                              height: "200px",
-                                    minHeight: "170px",
-                                    width: "150px",
-                                    maxHeight: "550px",
-                                    marginTop: "1em",
-                                    textAlign: "center",
-                                  }}
-                                  >
-                                  <Card.Img
-                                    src={val.image}
-                                    style={{
-                                      maxHeight: "250px",
-                                      height: "auto",
-                                      width: "auto",
-                                      maxWidth: "200px",
-                                      textAlign: "center",
-                                    }}
-                                    />
-                                    </Col>
-                                    </Row>
-                                    <Row className="mt-5">
-                                <Col
-                                  style={{
-                                    height: "230px",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  <Rating
-                                    ratingValue={val.rating * 20}
-                                    size={20}
-                                    ></Rating>
-                                    <Card.Body
-                                    style={{
-                                      textAlign: "center",
-                                      color: "black",
-                                    }}
-                                  >
-                                  <Card.Title
+                          <div className="ml-5 mt-3" style={{ width: "50%" }}>
+                            <Link key={i} to={`/Seller/${val._id}`}>
+                              <Card
+                                className="card card-item"
+                                key={i}
+                                style={{
+                                  overflow: "hidden",
+                                  width: "250px",
+                                  maxWidth: "500px",
+                                  background: "#FFFFFF",
+                                  transitionDuration: "1s",
+                                }}
+                              >
+                                <Container>
+                                  <Row>
+                                    <Col
                                       style={{
+                                        height: "200px",
+                                        minHeight: "170px",
+                                        width: "150px",
+                                        maxHeight: "550px",
+                                        marginTop: "1em",
                                         textAlign: "center",
-                                        color: "black",
-                                      }}
-                                      >
-                                      {val.itemName.substring(0, 20)}
-                                      </Card.Title>
-                                      <Card.Title
-                                      style={{
-                                        textAlign: "center",
-                                        color: "black",
                                       }}
                                     >
-                                      &#x20B9; {val.itemPrice}
-                                    </Card.Title>
-                                    <Card.Text
+                                      <Card.Img
+                                        src={val.image}
+                                        style={{
+                                          maxHeight: "250px",
+                                          height: "auto",
+                                          width: "auto",
+                                          maxWidth: "200px",
+                                          textAlign: "center",
+                                        }}
+                                      />
+                                    </Col>
+                                  </Row>
+                                  <Row className="mt-5">
+                                    <Col
                                       style={{
+                                        height: "230px",
                                         textAlign: "center",
-                                        color: "black",
                                       }}
+                                    >
+                                      <Rating
+                                        ratingValue={val.rating * 20}
+                                        size={20}
+                                      ></Rating>
+                                      <Card.Body
+                                        style={{
+                                          textAlign: "center",
+                                          color: "black",
+                                        }}
                                       >
-                                      {val.itemCategory.toUpperCase()}
-                                      </Card.Text>
-                                      <Button
-                                      className="btn-sm btn-c"
-                                      variant="dark"
-                                      >
-                                      Shop now &#x2192;
-                                    </Button>
-                                  </Card.Body>
-                                </Col>
-                                </Row>
+                                        <Card.Title
+                                          style={{
+                                            textAlign: "center",
+                                            color: "black",
+                                          }}
+                                        >
+                                          {val.itemName.substring(0, 20)}
+                                        </Card.Title>
+                                        <Card.Title
+                                          style={{
+                                            textAlign: "center",
+                                            color: "black",
+                                          }}
+                                        >
+                                          &#x20B9; {val.itemPrice}
+                                        </Card.Title>
+                                        <Card.Text
+                                          style={{
+                                            textAlign: "center",
+                                            color: "black",
+                                          }}
+                                        >
+                                          {val.itemCategory.toUpperCase()}
+                                        </Card.Text>
+                                        <Button
+                                          className="btn-sm btn-c"
+                                          variant="dark"
+                                        >
+                                          Shop now &#x2192;
+                                        </Button>
+                                      </Card.Body>
+                                    </Col>
+                                  </Row>
                                 </Container>
-                                </Card>
-                                </Link>
-                                </div>
-                                </>
+                              </Card>
+                            </Link>
+                          </div>
+                        </>
                       </Col>
                     ))}
                   </Row>
-
-                  <div>
-                    {[...Array(pages).keys()].map((x) => (
-                      <LinkContainer
-                        key={x + 1}
-                        className="mx-1"
-                        to={getFilterUrl({ page: x + 1 })}
-                      >
-                        <Button
-                          className={Number(page) === x + 1 ? "text-bold" : ""}
-                          variant="light"
-                        >
-                          {x + 1}
-                        </Button>
-                      </LinkContainer>
-                    ))}
-                  </div>
                 </>
               )}
             </Col>
           </Row>
+          <div className="pb-3 pt-5" style={{ textAlign: "center" }}>
+            {[...Array(pages).keys()].map((x) => (
+              <LinkContainer
+                key={x + 1}
+                className="mx-1"
+                to={getFilterUrl({ page: x + 1 })}
+              >
+                <Button
+                  className={Number(page) === x + 1 ? "text-bold" : ""}
+                  variant="light"
+                >
+                  {x + 1}
+                </Button>
+              </LinkContainer>
+            ))}
+          </div>
           <div></div>
         </div>
       </div>
