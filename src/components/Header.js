@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Form, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Button, Container, Form, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Tab } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,23 +62,21 @@ function Header() {
         style={{
           minWidth: "500px",
           maxWidth: "100px",
-          height: "52px",
-          lineHeight: "52px",
+          height: "25px",
           position: "sticky",
           zIndex: "40",
         }}
       >
         <Navbar
           fixed="top"
-          bg="dark"
           expand="lg"
           style={{
             boxShadow: "1px 1px 10px #343A40",
-            background:
-              "linear-gradient(246deg, rgba(216,228,230,1) 47%, rgba(70,221,236,1) 100%)",
+            background:"#95bec4",
           }}
         >
-          <Navbar.Brand onClick={home}>
+          <Container>
+          <Navbar.Brand onClick={home} className="col-lg-15">
             <ShoppingBag
               style={{
                 fontSize: "50px",
@@ -88,7 +86,7 @@ function Header() {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
+            <Nav className="col-lg-9">
               <NavDropdown title="PRODUCTS" id="basic-nav-dropdown">
                 {filter.map((item, i) => {
                   return (
@@ -105,23 +103,7 @@ function Header() {
                 {/* <NavDropdown.Divider /> */}
               </NavDropdown>
                   </Nav>
-            <Form className="d-flex col-lg-3 mx-auto mb-2">
-              <Form.Control
-                type="search"
-                placeholder="Search by product, category..."
-                className="me-2 mt-2"
-                aria-label="Search"
-                onChange={(e) => setSearch(e.target.value)}
-                />
-              <Button
-                onClick={handleSearch}
-                type="submit"
-                variant="success"
-                className="ml-2"
-                >
-                Search
-              </Button>
-            </Form>
+            
             <Link to="/addToCart">
               <ShoppingCartOutlinedIcon style={{ color: "#000000" }} />
               <span style={{ color: "#000000" }}>{cart.cartItems.length}</span>
@@ -132,6 +114,7 @@ function Header() {
                   style={{ color: "#000000" }}
                   title={userInfo.firstname}
                   id="navbarScrollingDropdown"
+                  className="mx-auto"
                   >
                   <NavDropdown.Item>
                     <Link style={{ color: "#000000" }} to={`/ud/${userInfo._id}`}>Dashboard</Link>
@@ -171,6 +154,7 @@ function Header() {
               style={{ color: "#000000" }}
               />
           </Navbar.Collapse>
+          </Container>
         </Navbar>
       </div>
     </div>

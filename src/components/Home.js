@@ -78,69 +78,68 @@ function Home() {
                   height: "auto",
                 }}
               >
-                <h3
-                  className="p-4 d-flex justify-content-center"
-                  style={{
-                    lineHeight: "2em",
-                  }}
-                >
-                  Your Choice is in Our Place
-                </h3>
-
-                <Carousel
-                  fade
-                  style={{
-                    
-                    borderRadius: "20px",
-                    paddingLeft:"5em"
-
-                  }}
-                  activeIndex={index}
-                  onSelect={handleSelect}
-                >
-                  {getProd.map((item, i) => {
-                    return (
-                      <Carousel.Item
-                        key={i}
-                        style={{ height: "520px" }}
-                        interval={2000}
-                      >
-                        <Link key={i} to={`/Seller/${item._id}`}>
-                          <img
-                            className="d-block pb-5 w-10 mx-auto justify-content-center"
-                            style={{ height: "350px"}}
-                            src={item.image}
-                            alt={item.itemCategory}
-                          />
-                          <Carousel.Caption style={{ color: "black"}}>
-                            <h3>{item.itemName}</h3>
-                            <h3>{item.itemCategory.toUpperCase()}</h3>
-                          </Carousel.Caption>
-                        </Link>
-                      </Carousel.Item>
-                    );
-                  })}
-                </Carousel>
-
-                <div className="my-4" style={{ background: "#D8E4E6" }}>
-                <div className="pt-3">
-                  <Form className="d-flex col-lg-3 mx-auto mt-5">
-                    <Form.Control
-                      type="search"
-                      placeholder="Search by product, category..."
-                      aria-label="Search"
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                  </Form>
+                <div className="my-4 p-4" style={{ background: "#D8E4E6"}}>
+                  <div className="pt-2">
+                    <Form className="d-flex col-lg-3 mx-auto">
+                      <Form.Control
+                        type="search"
+                        placeholder="Search by product, category..."
+                        aria-label="Search"
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    </Form>
                   </div>
+                </div>
+                <div className="my-4">
                   <div>
-                    <div>
+                    <div className="container col-lg-12">
                       {search == "" ? (
                         <>
-                          <div className="ml-5">
-                            <Typography variant="h4">MEN</Typography>
+                          <Carousel
+                            fade
+                            style={{
+                              border:"50px solid #D8E4E6",
+                              borderRadius: "50px",
+                              padding: "3em",
+                              
+                            }}
+                            activeIndex={index}
+                            onSelect={handleSelect}
+                          >
+                            {getProd.map((item, i) => {
+                              return (
+                                <Carousel.Item
+                                  key={i}
+                                  style={{ height: "520px" }}
+                                  interval={2000}
+                                >
+                                  <Link key={i} to={`/Seller/${item._id}`}>
+                                    <img
+                                      className="d-block pb-5 w-10 mx-auto text-center"
+                                      style={{ height: "350px" }}
+                                      src={item.image}
+                                      alt={item.itemCategory}
+                                    />
+                                    <Carousel.Caption
+                                      style={{ color: "black" }}
+                                    >
+                                      <h3>{item.itemName}</h3>
+                                      <h3>{item.itemCategory.toUpperCase()}</h3>
+                                    </Carousel.Caption>
+                                  </Link>
+                                </Carousel.Item>
+                              );
+                            })}
+                          </Carousel>
+                          <div className="ml-5 my-5">
+                            <Typography
+                              style={{ textAlign: "center" }}
+                              variant="h4"
+                            >
+                              MEN
+                            </Typography>
                           </div>
-                          <div className="row ml-5">
+                          <div className="row" style={{ background: "#D8E4E6" }}>
                             {getProd
                               .filter((itm) => {
                                 if (itm.itemCategory === "men's clothing") {
@@ -244,10 +243,15 @@ function Home() {
                                 );
                               })}
                           </div>
-                          <div className="ml-5">
-                            <Typography variant="h4">WOMEN</Typography>
+                          <div className="ml-5 my-5">
+                            <Typography
+                              style={{ textAlign: "center" }}
+                              variant="h4"
+                            >
+                              WOMEN
+                            </Typography>
                           </div>
-                          <div className="row ml-5">
+                          <div className="row" style={{ background: "#D8E4E6" }}>
                             {getProd
                               .filter((itm) => {
                                 if (itm.itemCategory === "women's clothing") {
@@ -351,10 +355,15 @@ function Home() {
                                 );
                               })}
                           </div>
-                          <div className="ml-5">
-                            <Typography variant="h4">JEWELERY</Typography>
+                          <div className="ml-5 my-5">
+                            <Typography
+                              style={{ textAlign: "center" }}
+                              variant="h4"
+                            >
+                              JEWELERY
+                            </Typography>
                           </div>
-                          <div className="row ml-5">
+                          <div className="row" style={{ background: "#D8E4E6" }}>
                             {getProd
                               .filter((itm) => {
                                 if (itm.itemCategory === "jewelery") {
@@ -458,10 +467,15 @@ function Home() {
                                 );
                               })}
                           </div>
-                          <div className="ml-5">
-                            <Typography variant="h4">SPORTS</Typography>
+                          <div className="ml-5 my-5">
+                            <Typography
+                              style={{ textAlign: "center" }}
+                              variant="h4"
+                            >
+                              SPORTS
+                            </Typography>
                           </div>
-                          <div className="row ml-5">
+                          <div className="row" style={{ background: "#D8E4E6" }}>
                             {getProd
                               .filter((itm) => {
                                 if (itm.itemCategory === "Sports") {
@@ -565,10 +579,15 @@ function Home() {
                                 );
                               })}
                           </div>
-                          <div className="ml-5">
-                            <Typography variant="h4">FOODS</Typography>
+                          <div className="ml-5 my-5">
+                            <Typography
+                              style={{ textAlign: "center" }}
+                              variant="h4"
+                            >
+                              FOODS
+                            </Typography>
                           </div>
-                          <div className="row ml-5">
+                          <div className="row" style={{ background: "#D8E4E6" }}>
                             {getProd
                               .filter((itm) => {
                                 if (itm.itemCategory === "Food") {
@@ -672,10 +691,15 @@ function Home() {
                                 );
                               })}
                           </div>
-                          <div className="ml-5">
-                            <Typography variant="h4">ELECTRONICS</Typography>
+                          <div className="ml-5 my-5">
+                            <Typography
+                              style={{ textAlign: "center" }}
+                              variant="h4"
+                            >
+                              ELECTRONICS
+                            </Typography>
                           </div>
-                          <div className="row ml-5">
+                          <div className="row" style={{ background: "#D8E4E6" }}>
                             {getProd
                               .filter((itm) => {
                                 if (itm.itemCategory === "electronics") {
@@ -781,7 +805,7 @@ function Home() {
                           </div>
                         </>
                       ) : (
-                        <div className="row pl-5">
+                        <div className="row" style={{ background: "#D8E4E6" }}>
                           {getProd
                             .filter((itm) => {
                               if (search == "") {

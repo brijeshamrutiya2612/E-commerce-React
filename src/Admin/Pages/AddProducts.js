@@ -1,4 +1,4 @@
-import * as React from "react";
+import React,{useState} from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -12,36 +12,36 @@ import { useNavigate } from "react-router-dom";
 import Admin from "../Admin";
 import logger from "use-reducer-logger";
 import Header from "./Header";
+import { toast } from "react-toastify";
 
 function AddProducts() {
   const nav = useNavigate();
-  const [filter, setFilter] = React.useState([]);
-  const [age, setAge] = React.useState("");
+  const [filter, setFilter] = useState([]);
+  const [category, setCategory] = useState("");
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setCategory(event.target.value);
   };
-  const [add, setAdd] = React.useState({
-    itemCategory: "",
-    itemName: "",
-    itemPrice: "",
-    quantity: "",
-    rating: "",
-    itemUnit: "",
-    itemDescription: "",
-    image: "",
-  });
+  
+  const [itemName, setItemName] = useState("")
+  const [itemPrice, setItemPrice] = useState("")
+  const [itemQuantity, setQuantity] = useState("")
+  const [rating, setRating] = useState("")
+  const [itemUnit, setItemUnit] = useState("")
+  const [itemDescription, setItemDescription] = useState("")
+  const [image, setImage] = useState("")
+
   const sendRequest = async () => {
     const res = await axios
       .post("http://localhost:5000/api/products/add", {
-        itemCategory: age,
-        itemName: add.itemName,
-        itemPrice: add.itemPrice,
-        quantity: add.quantity,
-        rating: add.rating,
-        itemUnit: add.itemUnit,
-        itemDescription: add.itemDescription,
-        image: add.image,
+        itemCategory: category,
+        itemName: itemName,
+        itemPrice: itemPrice,
+        quantity: itemQuantity,
+        rating: rating,
+        itemUnit: itemUnit,
+        itemDescription: itemDescription,
+        image: image,
       })
       .catch((err) => console.log(err));
     const data = await res.data;
@@ -49,19 +49,27 @@ function AddProducts() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(add);
+
+    if(category === ""){
+      toast.error("Please Select Category");
+    }else if (itemName === "") {
+        toast.error("Item Name is Require");
+    } else if (itemPrice === "") {
+      toast.error("Price is Require");
+    } else if(itemQuantity === ""){
+      toast.error("Quantity is Required")
+    } else if (rating === "") {
+      toast.error("Rating is Required");
+    } else if (itemUnit === "") {
+      toast.error("Unit is Required");
+    } else if (itemDescription === "") {
+      toast.error("Description is Required");
+    } else if (image === "") {
+      toast.error("Image is Required");
+    } 
     sendRequest().then((data) => console.log(data));
     nav('/productview')
-    setAdd({
-      itemCategory: "",
-      itemName: "",
-      itemPrice: "",
-      quantity: "",
-      rating: "",
-      itemUnit: "",
-      itemDescription: "",
-      image: "",
-    });
+    setItemName()
   };
 
   return (
@@ -83,7 +91,7 @@ function AddProducts() {
             <Select
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"
-              value={age}
+              value={category}
               onChange={handleChange}
               label="Age"
             >
@@ -99,11 +107,11 @@ function AddProducts() {
             </Select>
           </FormControl>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form>
           <Box className="container">
             <div className="my-3">
               <TextField
-                onChange={(e) => setAdd({ ...add, itemName: e.target.value })}
+                onChange={(e) => setItemName(e.target.value)}
                 label="Item Name"
                 className="container"
                 name="itemName"
@@ -112,7 +120,7 @@ function AddProducts() {
             </div>
             <div className="my-3">
               <TextField
-                onChange={(e) => setAdd({ ...add, itemPrice: e.target.value })}
+                onChange={(e) => setItemPrice(e.target.value)}
                 name="itemPrice"
                 className="container"
                 id="outlined-read-only-input"
@@ -121,8 +129,8 @@ function AddProducts() {
             </div>
             <div className="my-3">
               <TextField
-                onChange={(e) => setAdd({ ...add, quantity: e.target.value })}
-                name="quantity"
+                onChange={(e) => setQuantity(e.target.value)}
+                name="itemQuantity"
                 className="container"
                 id="outlined-read-only-input"
                 label="Item Quantity"
@@ -130,7 +138,7 @@ function AddProducts() {
             </div>
             <div className="my-3">
               <TextField
-                onChange={(e) => setAdd({ ...add, rating: e.target.value })}
+                onChange={(e) => setRating(e.target.value)}
                 name="rating"
                 className="container"
                 id="outlined-read-only-input"
@@ -139,7 +147,7 @@ function AddProducts() {
             </div>
             <div className="my-3">
               <TextField
-                onChange={(e) => setAdd({ ...add, itemUnit: e.target.value })}
+                onChange={(e) => setItemUnit(e.target.value)}
                 name="itemUnit"
                 className="container"
                 id="outlined-read-only-input"
@@ -149,7 +157,7 @@ function AddProducts() {
             <div className="my-3">
               <TextField
                 onChange={(e) =>
-                  setAdd({ ...add, itemDescription: e.target.value })
+                  setItemDescription(e.target.value)
                 }
                 name="itemDescription"
                 className="container"
@@ -158,12 +166,12 @@ function AddProducts() {
               />
             </div>
             <Form.Control
-              onChange={(e) => setAdd({ ...add, image: e.target.value })}
+              onChange={(e) => setImage(e.target.value)}
               name="image"
               className="my-3"
               type="text"
             />
-            <Button type="submit" className="my-3" variant="success">
+            <Button onClick={handleSubmit} className="my-3" variant="success">
               Add Product
             </Button>
           </Box>

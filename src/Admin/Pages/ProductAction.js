@@ -32,18 +32,18 @@ function ProductAction() {
   });
 
   const { id } = useParams();
-  const [age, setAge] = React.useState("");
+  const [category, setCategory] = React.useState("");
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setCategory(event.target.value);
   };
 
-  const [itemName, setItemName] = useState();
-  const [itemPrice, setItemPrice] = useState();
-  const [quantity, setQuantity] = useState();
-  const [rating, setRating] = useState();
-  const [itemUnit, setItemUnit] = useState();
-  const [itemDescription, setItemDescription] = useState();
-  const [image, setImage] = useState();
+  const [itemName, setItemName] = useState("");
+  const [itemPrice, setItemPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [rating, setRating] = useState("");
+  const [itemUnit, setItemUnit] = useState("");
+  const [itemDescription, setItemDescription] = useState("");
+  const [image, setImage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +52,7 @@ function ProductAction() {
         const response = await axios.get(
           `http://localhost:5000/api/products/${id}`
         );
-        dispatch({ type: "FETCH_SUCCESS", payload: response.data.products });
+        dispatch({ type: "FETCH_SUCCESS", payload: response.data });
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: err.message });
       }
@@ -61,11 +61,28 @@ function ProductAction() {
   }, [id]);
 
   const updateProducts = async () => {
+    if(category === ""){
+      toast.error("Please Select Category");
+    }else if (itemName === "") {
+        toast.error("Item Name is Require");
+    } else if (itemPrice === "") {
+      toast.error("Price is Require");
+    } else if(quantity === ""){
+      toast.error("Quantity is Required")
+    } else if (rating === "") {
+      toast.error("Rating is Required");
+    } else if (itemUnit === "") {
+      toast.error("Unit is Required");
+    } else if (itemDescription === "") {
+      toast.error("Description is Required");
+    } else if (image === "") {
+      toast.error("Image is Required");
+    }
     try {
       const response = await axios.put(
         `http://localhost:5000/api/products/update/${id}`,
         {
-          itemCategory: age,
+          itemCategory: category,
           itemName: itemName,
           itemPrice: itemPrice,
           quantity: quantity,
@@ -161,7 +178,7 @@ function ProductAction() {
                     <Select
                       labelId="demo-simple-select-standard-label"
                       id="demo-simple-select-standard"
-                      value={age}
+                      value={category}
                       onChange={handleChange}
                       label="Age"
                     >

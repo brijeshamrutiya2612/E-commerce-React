@@ -77,33 +77,33 @@ const signIn = async (e) => {
     } = registers;
 
     if (firstname === "") {
-      toast.info("First Name is Require");
+      toast.error("First Name is Require");
     } else if (firstname.length < 3) {
-      toast.info("First Name is Greter than 3 words");
+      toast.error("First Name is Greter than 3 words");
     } else if (lastname === "") {
-      toast.info("Last Name is Require");
+      toast.error("Last Name is Require");
     } else if (lastname.length < 3) {
-      toast.info("Last Name is not valid");
+      toast.error("Last Name is not valid");
     } else if (email === "") {
-      toast.info("Email is Required");
+      toast.error("Email is Required");
     } else if (!email.includes("@")) {
-      toast.info("Plz Enter Valid Email");
+      toast.error("Plz Enter Valid Email");
     } else if (password === "") {
-      toast.info("Password is Required");
+      toast.error("Password is Required");
     } else if (password.length < 5) {
-      toast.info("Password must be Enter in 6 to 10 Character");
+      toast.error("Password must be Enter in 6 to 10 Character");
     } else if (address1 === "") {
-      toast.info("Address1 is Required");
+      toast.error("Address1 is Required");
     } else if (address2 === "") {
-      toast.info("Address2 is Required");
+      toast.error("Address2 is Required");
     } else if (address3 === "") {
-      toast.info("Address3 is Required");
+      toast.error("Address3 is Required");
     } else if (phone === "") {
-      toast.info("Mobile No. is Required");
+      toast.error("Mobile No. is Required");
     } else if (phone.length < 5) {
-      toast.info("Plz Enter Valid Mobile No.");
+      toast.error("Plz Enter Mobile No. Must be < 5");
     } else if (age === "") {
-      toast.info("Age is Require");
+      toast.error("Age is Require");
     }
     sendRequest().then(()=>sign("/login"));
     localStorage.setItem("user", JSON.stringify(registers));

@@ -35,12 +35,12 @@ const SideBar = () => {
       <div className="d-flex">
         <Typography
           variant="h6"
-          className="pl-4 my-4"
+          className="pl-5 my-2"
         >
           Welcome, {userInfo.firstname} {userInfo.lastname}
         </Typography>
       </div>
-      <div className="pl-3 my-5 d-flex">
+      <div className="pl-3 d-flex">
         <div className="row">
           <div
             style={{

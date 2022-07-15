@@ -39,13 +39,13 @@ function Footer() {
           position: "absolute",
         }}
       >
-        <Navbar bg="light" expand="lg" style={{ boxShadow: "1px 1px 10px #343A40",background:"linear-gradient(246deg, rgba(216,228,230,1) 47%, rgba(70,221,236,1) 100%)"}}>
+        <Navbar expand="lg" style={{ boxShadow: "1px 1px 10px #343A40", background: "#96b5ba"}}>
           <Container>
             <Navbar.Brand className="container d-flex justify-content-center">
               <ShoppingBag
                 onClick={home}
                 style={{
-                  fontSize: "80px",
+                  fontSize: "50px",
                   textAlign: "center",
                 }}
               />
@@ -54,7 +54,7 @@ function Footer() {
                   fontSize: "30px",
                   textAlign: "center",
                   color: "#14657C",
-                  lineHeight: "3em",
+                  lineHeight: "1.8em",
                 }}
               >
                 MART

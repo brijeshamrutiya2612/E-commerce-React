@@ -144,19 +144,13 @@ const Search = () => {
   return (
     <>
       <div>
-        <div
+        <div className="pt-5"
           style={{
             background: "#D8E4E6",
             width: "auto",
             height: "auto",
           }}
         >
-          <h3
-            className="container d-flex"
-            style={{
-              lineHeight: "2em",
-            }}
-          ></h3>
           <Row>
             <Col
               style={{ background: "white", height: "auto" }}
@@ -227,7 +221,7 @@ const Search = () => {
                   {ratings.map((r) => (
                     <li key={r.name}>
                       <Link
-                        style={{ textDecoration: "none", color: "#000000" }}
+                        style={{ textDecoration: "none", color: "#FFBC0B" }}
                         to={getFilterUrl({ rating: r.value })}
                         className={
                           `${r.value}` === `${rating}` ? "text-bold" : ""
@@ -242,7 +236,7 @@ const Search = () => {
                   ))}
                   <li>
                     <Link
-                      style={{ textDecoration: "none", color: "#000000" }}
+                      style={{ textDecoration: "none", color: "#FFBC0B" }}
                       to={getFilterUrl({ rating: "all" })}
                       className={rating === "all" ? "text-bold" : ""}
                     >

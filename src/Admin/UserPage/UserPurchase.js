@@ -78,11 +78,11 @@ const UserPurchase = () => {
             <Col md={3} style={{ height: "auto" }}>
               <SideBar></SideBar>
             </Col>
-            <Col lg={8} style={{ height: "auto", width: "auto" }}>
-              {/* <div>
+            <Col style={{ height: "auto", width: "auto" }}>
+              {/* <div> */}
               <div
-                className="col-lg-15 my-5"
-                style={{ paddingLeft: "5em"}}
+                className="col-lg-10 my-5"
+                style={{ paddingLeft: "1em"}}
               >
                 <div
                   style={{
@@ -92,8 +92,10 @@ const UserPurchase = () => {
                     height: "auto",
                   }}
                 >
-                  <div className="pl-5"> */}
-              <TableContainer component={Paper}>
+                  <div className="pl-1">
+                  {orders.length !== 0 ? 
+                  <>
+                  <TableContainer component={Paper}>
                 <Table sx={{ width: 750 }} aria-label="simple table">
                   <TableHead>
                     <TableRow>
@@ -198,10 +200,16 @@ const UserPurchase = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-              {/* </div>
+                  </>
+                  :<>
+                    <div className="container">
+                    <div className="mt-5">
+                    <Typography variant="h4">You have a no any Products Purchase Yet</Typography>
+                    </div>
+                    </div></>}
+               </div>
                 </div>
               </div>
-            </div> */}
             </Col>
           </Row>
           {/* </div> */}

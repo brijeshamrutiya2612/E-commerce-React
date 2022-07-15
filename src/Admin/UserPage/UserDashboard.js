@@ -84,15 +84,18 @@ const Userdashboard = () => {
         <Row>
           <Col
             md={3}
-            style={{ height: "auto", minHeight: "680px", maxHeight: "500px" }}
+            style={{ width:"auto", height: "auto", minHeight: "680px", maxHeight: "500px" }}
           >
             <SideBar></SideBar>
           </Col>
-          <Col lg={8} style={{ width: "auto" }}>
+          <Col md={8} style={{ width: "auto"}}>
             <>
-              <div className="container col-lg-15">
-                <Typography variant="h5" className="ml-3 my-4">
+              <div className="col-lg-15 mt-5 pt-5">
+                <Typography variant="h4" className="ml-3">
                   Dashboard
+                </Typography>
+                <Typography variant="h5" className="ml-5 my-4">
+                  Profile Summary
                 </Typography>
                 <TableContainer component={Paper} className="container">
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -118,53 +121,60 @@ const Userdashboard = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <Typography variant="h5" className="ml-3 my-3 mt-5">
-                  Your Orders Summary
+                <Typography variant="h5" className="ml-5 my-4">
+                  Orders Summary
                 </Typography>
                 <TableContainer
                   component={Paper}
                   className="mt-3 container my-4"
                 >
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>
-                            #
-                          </TableCell>
-                          <TableCell>
-                            Product Name
-                          </TableCell>
-                          <TableCell>
-                            Price
-                          </TableCell>
-                          <TableCell>
-                            Date
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>#</TableCell>
+                        <TableCell>Product Name</TableCell>
+                        <TableCell>Price</TableCell>
+                        <TableCell>Date</TableCell>
+                      </TableRow>
+                    </TableHead>
                     <TableBody>
-                      {orders.map((item, i) => {
-                        return (
-                          <TableRow
-                            style={{
-                              borderRight: "none",
-                            }}
-                          >
-                            <TableCell>{i + 1}</TableCell>
-                            {item.orderItems.map((itm) => {
-                              return (
-                                <>
-                                  <TableRow>
-                                    <TableCell>{itm.itemName}</TableCell>
-                                  </TableRow>
-                                </>
-                              );
-                            })}
-                            <TableCell>{Math.ceil(item.totalPrice)}</TableCell>
-                            <TableCell>{item.createdAt}</TableCell>
-                          </TableRow>
-                        );
-                      })}
+                      {orders.length !== 0 ? (
+                        orders.map((item, i) => {
+                          return (
+                            <TableRow
+                              style={{
+                                borderRight: "none",
+                              }}
+                            >
+                              <TableCell>{i + 1}</TableCell>
+                              {item.orderItems.map((itm) => {
+                                return (
+                                  <>
+                                    <TableRow>
+                                      <TableCell>{itm.itemName}</TableCell>
+                                    </TableRow>
+                                  </>
+                                );
+                              })}
+                              <TableCell>
+                                {Math.ceil(item.totalPrice)}
+                              </TableCell>
+                              <TableCell>{item.createdAt}</TableCell>
+                            </TableRow>
+                          );
+                        })
+                      ) : (
+                        <>
+                              <TableRow>
+                                <TableCell colSpan={4}>
+                                  <Typography variant="h6" style={{textAlign:"center"}}>
+                                    You have a no any Products Purchase Yet
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                          
+                        </>
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
