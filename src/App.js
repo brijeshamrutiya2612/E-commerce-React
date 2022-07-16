@@ -46,8 +46,8 @@ function App() {
         </header>
         <main className="pt-5">
           <Routes>
-            <Route path="/" element={<Home />}></Route>
-            {userInfo && <Route path="/" element={<Home />}></Route>}{" "}
+            <Route index path="/" element={<Home />}></Route>
+            {userInfo && <Route index path="/" element={<Home />}></Route>}{" "}
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Register />}></Route>
             <Route

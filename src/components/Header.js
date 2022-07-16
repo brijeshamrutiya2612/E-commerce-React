@@ -72,7 +72,7 @@ function Header() {
           expand="lg"
           style={{
             boxShadow: "1px 1px 10px #343A40",
-            background:"#95bec4",
+            background:"#96B5BA",
           }}
         >
           <Container>

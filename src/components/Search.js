@@ -82,10 +82,11 @@ export const ratings = [
 
 const Search = () => {
   const navigate = useNavigate();
+  const [searching, setSearch] = useState([]);
+
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const itemCategory = sp.get("itemCategory") || "all";
-  const query = sp.get("query") || "all";
   const itemPrice = sp.get("itemPrice") || "all";
   const rating = sp.get("rating") || "all";
   const order = sp.get("order") || "all";
@@ -96,12 +97,11 @@ const Search = () => {
       loading: true,
       error: "",
     });
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/products/search?page=${page}&query=${query}&itemCategory=${itemCategory}&itemPrice=${itemPrice}&rating=${rating}&order=${order}`
+          `http://localhost:5000/api/products/search?page=${page}&query=${searching}&itemCategory=${itemCategory}&itemPrice=${itemPrice}&rating=${rating}&order=${order}`
         );
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
@@ -112,8 +112,8 @@ const Search = () => {
       }
     };
     fetchData();
-    console.log(query);
-  }, [itemCategory, error, order, page, itemPrice, query, rating]);
+    console.log(searching);
+  }, [itemCategory, error, order, page, itemPrice, searching, rating]);
 
   const [categories, setCategories] = useState([]);
   useEffect(() => {
@@ -133,300 +133,392 @@ const Search = () => {
   const getFilterUrl = (filter) => {
     const filterPage = filter.page || page;
     const filterCategory = filter.itemCategory || itemCategory;
-    const filterQuery = filter.query || query;
+    const filterQuery = filter.searching || searching;
     const filterRating = filter.rating || rating;
     const filterPrice = filter.itemPrice || itemPrice;
     const sortOrder = filter.order || order;
     return `/search?page=${filterPage}&query=${filterQuery}&itemCategory=${filterCategory}&itemPrice=${filterPrice}&rating=${filterRating}&order=${sortOrder}`;
   };
-
-  console.log(products);
   return (
     <>
       <div>
-        <div className="pt-5"
-          style={{
-            background: "#D8E4E6",
-            width: "auto",
-            height: "auto",
-          }}
-        >
-          <Row>
-            <Col
-              style={{ background: "white", height: "auto" }}
-              md={2}
-              className="pl-5"
-            >
-              <Typography variant="h6">Category</Typography>
-              <div>
-                <ul style={{ listStyleType: "none" }}>
-                  <li>
-                    <Link
-                      style={{ textDecoration: "none", color: "#000000" }}
-                      className={"all" === itemCategory ? "text-bold" : ""}
-                      to={getFilterUrl({ itemCategory: "all" })}
-                    >
-                      Any
-                    </Link>
-                  </li>
-                  {categories.map((c) => {
-                    return (
-                      <>
-                        <li key={c}>
-                          <Link
-                            style={{ textDecoration: "none", color: "#000000" }}
-                            className={c === itemCategory ? "text-bold" : ""}
-                            to={getFilterUrl({ itemCategory: c })}
-                          >
-                            {c.toUpperCase()}
-                          </Link>
-                        </li>
-                      </>
-                    );
-                  })}
-                </ul>
-              </div>
-              <Typography variant="h6">Price</Typography>
-              <div>
-                <ul style={{ listStyleType: "none" }}>
-                  <li>
-                    <Link
-                      style={{ textDecoration: "none", color: "#000000" }}
-                      className={"all" === itemPrice ? "text-bold" : ""}
-                      to={getFilterUrl({ itemPrice: "all" })}
-                    >
-                      Any
-                    </Link>
-                  </li>
-                  {prices.map((p) => {
-                    return (
-                      <>
-                        <li key={p.value}>
-                          <Link
-                            style={{ textDecoration: "none", color: "#000000" }}
-                            className={p.value === itemPrice ? "text-bold" : ""}
-                            to={getFilterUrl({ itemPrice: p.value })}
-                          >
-                            {p.name}
-                          </Link>
-                        </li>
-                      </>
-                    );
-                  })}
-                </ul>
-              </div>
-              <Typography variant="h6">Avg. Customer Review</Typography>
-              <div>
-                <ul style={{ listStyleType: "none" }}>
-                  {ratings.map((r) => (
-                    <li key={r.name}>
-                      <Link
-                        style={{ textDecoration: "none", color: "#FFBC0B" }}
-                        to={getFilterUrl({ rating: r.value })}
-                        className={
-                          `${r.value}` === `${rating}` ? "text-bold" : ""
-                        }
-                      >
-                        <RatingStart
-                          caption={" & up"}
-                          rating={r.value}
-                        ></RatingStart>
-                      </Link>
-                    </li>
-                  ))}
-                  <li>
-                    <Link
-                      style={{ textDecoration: "none", color: "#FFBC0B" }}
-                      to={getFilterUrl({ rating: "all" })}
-                      className={rating === "all" ? "text-bold" : ""}
-                    >
-                      <RatingStart caption={" & up"} rating={0}></RatingStart>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </Col>
-            <Col lg={9}>
-              {loading ? (
-                <div className="container pt-5">
-                  <Spinner animation="border" role="status"></Spinner>
-                </div>
-              ) : error ? (
-                <div>{error}</div>
-              ) : (
-                <>
-                  <Row className="justify-content-between mb-3">
-                    <Col md={8}>
-                      <div
-                        className="container ml-5"
-                        style={{ fontWeight: "bold", fontSize: "20px" }}
-                      >
-                        Results "{countProducts === 0 ? "No" : countProducts}"
-                        Found
-                        {query !== "all" && " : " + query.toUpperCase()}
-                        {itemCategory !== "all" &&
-                          " : " + itemCategory.toUpperCase()}
-                        {itemPrice !== "all" && " : Price " + itemPrice}
-                        {rating !== "all" && " : Rating " + rating + " & up"}
-                        {query !== "all" ||
-                        itemCategory !== "all" ||
-                        rating !== "all" ||
-                        itemPrice !== "all" ? (
-                          <Button
-                            className="ml-1"
-                            variant="light"
-                            onClick={() => navigate("/search")}
-                          >
-                            <i className="fas fa-times-circle"></i>
-                          </Button>
-                        ) : null}
-                      </div>
-                    </Col>
-                    <Col className="text-right">
-                      Sort by{" "}
-                      <select
-                        value={order}
-                        onChange={(e) => {
-                          navigate(getFilterUrl({ order: e.target.value }));
-                        }}
-                      >
-                        <option value="newest">Newest Arrivals</option>
-                        <option value="lowest">Price: Low to High</option>
-                        <option value="highest">Price: High to Low</option>
-                        <option value="toprated">Avg. Customer Reviews</option>
-                      </select>
-                    </Col>
-                  </Row>
-                  {products.length === 0 && (
-                    <div
-                      className="container ml-5"
-                      style={{ fontWeight: "bold", fontSize: "20px" }}
-                    >
-                      No Product Found
-                    </div>
-                  )}
-
-                  <Row>
-                    {products.map((val, i) => (
-                      <Col className="mb-3" key={val._id}>
-                        <>
-                          <div className="ml-5 mt-3" style={{ width: "50%" }}>
-                            <Link key={i} to={`/Seller/${val._id}`}>
-                              <Card
-                                className="card card-item"
-                                key={i}
-                                style={{
-                                  overflow: "hidden",
-                                  width: "250px",
-                                  maxWidth: "500px",
-                                  background: "#FFFFFF",
-                                  transitionDuration: "1s",
-                                }}
-                              >
-                                <Container>
-                                  <Row>
-                                    <Col
-                                      style={{
-                                        height: "200px",
-                                        minHeight: "170px",
-                                        width: "150px",
-                                        maxHeight: "550px",
-                                        marginTop: "1em",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      <Card.Img
-                                        src={val.image}
-                                        style={{
-                                          maxHeight: "250px",
-                                          height: "auto",
-                                          width: "auto",
-                                          maxWidth: "200px",
-                                          textAlign: "center",
-                                        }}
-                                      />
-                                    </Col>
-                                  </Row>
-                                  <Row className="mt-5">
-                                    <Col
-                                      style={{
-                                        height: "230px",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      <Rating
-                                        ratingValue={val.rating * 20}
-                                        size={20}
-                                      ></Rating>
-                                      <Card.Body
-                                        style={{
-                                          textAlign: "center",
-                                          color: "black",
-                                        }}
-                                      >
-                                        <Card.Title
-                                          style={{
-                                            textAlign: "center",
-                                            color: "black",
-                                          }}
-                                        >
-                                          {val.itemName.substring(0, 20)}
-                                        </Card.Title>
-                                        <Card.Title
-                                          style={{
-                                            textAlign: "center",
-                                            color: "black",
-                                          }}
-                                        >
-                                          &#x20B9; {val.itemPrice}
-                                        </Card.Title>
-                                        <Card.Text
-                                          style={{
-                                            textAlign: "center",
-                                            color: "black",
-                                          }}
-                                        >
-                                          {val.itemCategory.toUpperCase()}
-                                        </Card.Text>
-                                        <Button
-                                          className="btn-sm btn-c"
-                                          variant="dark"
-                                        >
-                                          Shop now &#x2192;
-                                        </Button>
-                                      </Card.Body>
-                                    </Col>
-                                  </Row>
-                                </Container>
-                              </Card>
-                            </Link>
-                          </div>
-                        </>
-                      </Col>
-                    ))}
-                  </Row>
-                </>
-              )}
-            </Col>
-          </Row>
-          <div className="pb-3 pt-5" style={{ textAlign: "center" }}>
-            {[...Array(pages).keys()].map((x) => (
-              <LinkContainer
-                key={x + 1}
-                className="mx-1"
-                to={getFilterUrl({ page: x + 1 })}
-              >
-                <Button
-                  className={Number(page) === x + 1 ? "text-bold" : ""}
-                  variant="light"
-                >
-                  {x + 1}
-                </Button>
-              </LinkContainer>
-            ))}
+        {loading ? (
+          <div className="container pt-5">
+            <Spinner animation="border" role="status"></Spinner>
           </div>
-          <div></div>
-        </div>
+        ) : error ? (
+          <div>{error}</div>
+        ) : (
+          <>
+            <div>
+              <div
+                style={{
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  width: "auto",
+                  height: "auto",
+                }}
+              >
+                <div className="my-4 p-4" style={{ background: "#D8E4E6" }}>
+                  <div className="pt-2">
+                    <Form className="d-flex col-lg-3 mx-auto">
+                      <Form.Control
+                        type="search"
+                        placeholder="Search by product, category..."
+                        aria-label="Search"
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    </Form>
+                  </div>
+                </div>
+                <div className="my-4">
+                  <div>
+                    <div className="col-lg-12">
+                      <Row style={{ width: "100%" }}>
+                        <Col lg={2} style={{background:"#D8E4E6", borderRight:"5px solid #ffffff"}}>
+                          <Typography variant="h6">Category</Typography>
+                          <div>
+                            <ul style={{ listStyleType: "none" }}>
+                              <li>
+                                <Link
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "#000000",
+                                  }}
+                                  className={
+                                    "all" === itemCategory ? "text-bold" : ""
+                                  }
+                                  to={getFilterUrl({ itemCategory: "all" })}
+                                >
+                                  Any
+                                </Link>
+                              </li>
+                              {categories.map((c) => {
+                                return (
+                                  <>
+                                    <li key={c}>
+                                      <Link
+                                        style={{
+                                          textDecoration: "none",
+                                          color: "#000000",
+                                        }}
+                                        className={
+                                          c === itemCategory ? "text-bold" : ""
+                                        }
+                                        to={getFilterUrl({ itemCategory: c })}
+                                      >
+                                        {c.toUpperCase()}
+                                      </Link>
+                                    </li>
+                                  </>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                          <Typography variant="h6">Price</Typography>
+                          <div>
+                            <ul style={{ listStyleType: "none" }}>
+                              <li>
+                                <Link
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "#000000",
+                                  }}
+                                  className={
+                                    "all" === itemPrice ? "text-bold" : ""
+                                  }
+                                  to={getFilterUrl({ itemPrice: "all" })}
+                                >
+                                  Any
+                                </Link>
+                              </li>
+                              {prices.map((p) => {
+                                return (
+                                  <>
+                                    <li key={p.value}>
+                                      <Link
+                                        style={{
+                                          textDecoration: "none",
+                                          color: "#000000",
+                                        }}
+                                        className={
+                                          p.value === itemPrice
+                                            ? "text-bold"
+                                            : ""
+                                        }
+                                        to={getFilterUrl({
+                                          itemPrice: p.value,
+                                        })}
+                                      >
+                                        {p.name}
+                                      </Link>
+                                    </li>
+                                  </>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                          <Typography variant="h6">
+                            Avg. Customer Review
+                          </Typography>
+                          <div>
+                            <ul style={{ listStyleType: "none" }}>
+                              {ratings.map((r) => (
+                                <li key={r.name}>
+                                  <Link
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "#FFBC0B",
+                                    }}
+                                    to={getFilterUrl({ rating: r.value })}
+                                    className={
+                                      `${r.value}` === `${rating}`
+                                        ? "text-bold"
+                                        : ""
+                                    }
+                                  >
+                                    <RatingStart
+                                      caption={" & up"}
+                                      rating={r.value}
+                                    ></RatingStart>
+                                  </Link>
+                                </li>
+                              ))}
+                              <li>
+                                <Link
+                                  style={{
+                                    textDecoration: "none",
+                                    color: "#FFBC0B",
+                                  }}
+                                  to={getFilterUrl({ rating: "all" })}
+                                  className={
+                                    rating === "all" ? "text-bold" : ""
+                                  }
+                                >
+                                  <RatingStart
+                                    caption={" & up"}
+                                    rating={0}
+                                  ></RatingStart>
+                                </Link>
+                              </li>
+                            </ul>
+                          </div>
+                        </Col>
+                        <Col lg={10} className="p-3" style={{background:"#D8E4E6",width:"100%"}}>
+                          {loading ? (
+                            <div className="container pt-5">
+                              <Spinner
+                                animation="border"
+                                role="status"
+                              ></Spinner>
+                            </div>
+                          ) : error ? (
+                            <div>{error}</div>
+                          ) : (
+                            <>
+                              <Row className="justify-content-between mb-3">
+                                <Col md={8}>
+                                  <div
+                                    className="container ml-5"
+                                    style={{
+                                      fontWeight: "bold",
+                                      fontSize: "20px",
+                                    }}
+                                  >
+                                    Results "
+                                    {countProducts === 0 ? "No" : countProducts}
+                                    " Found
+                                    {/* {searching !== "all" && " : " + searching.toUpperCase()} */}
+                                    {itemCategory !== "all" &&
+                                      " : " + itemCategory.toUpperCase()}
+                                    {itemPrice !== "all" &&
+                                      " : Price " + itemPrice}
+                                    {rating !== "all" &&
+                                      " : Rating " + rating + " & up"}
+                                    {searching !== "all" ||
+                                    itemCategory !== "all" ||
+                                    rating !== "all" ||
+                                    itemPrice !== "all" ? (
+                                      <Button
+                                        className="ml-1"
+                                        variant="light"
+                                        onClick={() => navigate("/search")}
+                                      >
+                                        <i className="fas fa-times-circle"></i>
+                                      </Button>
+                                    ) : null}
+                                  </div>
+                                </Col>
+                                <Col md={4} className="text-right">
+                                  Sort by{" "}
+                                  <select
+                                    value={order}
+                                    onChange={(e) => {
+                                      navigate(
+                                        getFilterUrl({ order: e.target.value })
+                                      );
+                                    }}
+                                  >
+                                    <option value="newest">
+                                      Newest Arrivals
+                                    </option>
+                                    <option value="lowest">
+                                      Price: Low to High
+                                    </option>
+                                    <option value="highest">
+                                      Price: High to Low
+                                    </option>
+                                    <option value="toprated">
+                                      Avg. Customer Reviews
+                                    </option>
+                                  </select>
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col>
+                                  <div className="row" style={{ width: "100%" }}>
+                                    {products.map((val, i) => {
+                                      return (
+                                        <div
+                                          className="p-3"
+                                        >
+                                          <Link
+                                            key={i}
+                                            to={`/Seller/${val._id}`}
+                                          >
+                                            <Card
+                                              className="card card-item"
+                                              key={i}
+                                              style={{
+                                                overflow: "hidden",
+                                                width: "250px",
+                                                maxWidth: "500px",
+                                                background: "#FFFFFF",
+                                                transitionDuration: "1s",
+                                              }}
+                                            >
+                                              <Container>
+                                                <Row>
+                                                  <Col
+                                                    style={{
+                                                      height: "200px",
+                                                      minHeight: "170px",
+                                                      width: "150px",
+                                                      maxHeight: "550px",
+                                                      marginTop: "1em",
+                                                      textAlign: "center",
+                                                    }}
+                                                  >
+                                                    <Card.Img
+                                                      src={val.image}
+                                                      style={{
+                                                        maxHeight: "250px",
+                                                        height: "auto",
+                                                        width: "auto",
+                                                        maxWidth: "200px",
+                                                        textAlign: "center",
+                                                      }}
+                                                    />
+                                                  </Col>
+                                                </Row>
+                                                <Row className="mt-5">
+                                                  <Col
+                                                    style={{
+                                                      height: "230px",
+                                                      textAlign: "center",
+                                                    }}
+                                                  >
+                                                    <Rating
+                                                      ratingValue={
+                                                        val.rating * 20
+                                                      }
+                                                      size={20}
+                                                    ></Rating>
+                                                    <Card.Body
+                                                      style={{
+                                                        textAlign: "center",
+                                                        color: "black",
+                                                      }}
+                                                    >
+                                                      <Card.Title
+                                                        style={{
+                                                          textAlign: "center",
+                                                          color: "black",
+                                                        }}
+                                                      >
+                                                        {val.itemName.substring(
+                                                          0,
+                                                          20
+                                                        )}
+                                                      </Card.Title>
+                                                      <Card.Title
+                                                        style={{
+                                                          textAlign: "center",
+                                                          color: "black",
+                                                        }}
+                                                      >
+                                                        &#x20B9; {val.itemPrice}
+                                                      </Card.Title>
+                                                      <Card.Text
+                                                        style={{
+                                                          textAlign: "center",
+                                                          color: "black",
+                                                        }}
+                                                      >
+                                                        {val.itemCategory.toUpperCase()}
+                                                      </Card.Text>
+                                                      <Button
+                                                        className="btn-sm btn-c"
+                                                        variant="dark"
+                                                      >
+                                                        Shop now &#x2192;
+                                                      </Button>
+                                                    </Card.Body>
+                                                  </Col>
+                                                </Row>
+                                              </Container>
+                                            </Card>
+                                          </Link>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </Col>
+                              </Row>
+                              <div
+                                className="pb-3 pt-5"
+                                style={{ textAlign: "center" }}
+                              >
+                                {[...Array(pages).keys()].map((x) => (
+                                  <LinkContainer
+                                    key={x + 1}
+                                    className="mx-1"
+                                    to={getFilterUrl({ page: x + 1 })}
+                                  >
+                                    <Button
+                                      className={
+                                        Number(page) === x + 1
+                                          ? "text-bold"
+                                          : ""
+                                      }
+                                      variant="light"
+                                    >
+                                      {x + 1}
+                                    </Button>
+                                  </LinkContainer>
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        </Col>
+                      </Row>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
