@@ -1,12 +1,29 @@
 import axios from "axios";
 import React, { useContext, useEffect, useReducer, useState } from "react";
-import { Button, Card, Col, Container, Form, Row, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "./Home.css";
 import { FaCartArrowDown, FaCartPlus } from "react-icons/fa";
 import { getData } from "../store/ProductsSlice";
 import { Store } from "../store/Context";
 import { Rating } from "react-simple-star-rating";
+import {
+  AppBar,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextareaAutosize,
+  Typography,
+} from "@mui/material";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -97,8 +114,9 @@ function Seller() {
         <div>{error}</div>
       ) : (
         <>
-          <div className="my-1 p-2" style={{ background: "#D8E4E6" }}>
-            <div className="pt-2">
+        <AppBar className="mt-5">
+          <div className="my-4 p-2" style={{ background: "#D8E4E6",position:"fixed",width:"100%", }}>
+            <div className="pt-2 pb-2" style={{}}>
               <Form className="d-flex col-lg-3 mx-auto">
                 <Form.Control
                   type="search"
@@ -109,11 +127,12 @@ function Seller() {
               </Form>
             </div>
           </div>
+          </AppBar>
           <div
             className="container d-flex"
             style={{
               backgroundColor: "white",
-              paddingTop: "2em",
+              paddingTop: "8em",
             }}
           >
             <div className="row">
@@ -126,10 +145,9 @@ function Seller() {
                     variant="top"
                     className="card-item"
                     style={{
-                      maxHeight: "400px",
                       width: "auto",
-                      maxWidth: "500px",
-                      minWidth: "100px",
+                      maxWidth:"200px",
+                      minWidth:"300px"
                     }}
                     src={getProd.image}
                   />
@@ -159,6 +177,7 @@ function Seller() {
                       backgroundColor: "#F7CA00",
                       border: "none",
                       borderRadius: "50px",
+                      maxWidth:"150px"
                     }}
                     className="col mb-2 d-flex justify-content-center"
                     onClick={send}
@@ -172,6 +191,7 @@ function Seller() {
                     backgroundColor: "#FA8800",
                     border: "none",
                     borderRadius: "50px",
+                    maxWidth:"150px"
                   }}
                   className="col d-flex justify-content-center"
                   onClick={finalBuy}
@@ -179,6 +199,82 @@ function Seller() {
                   <FaCartPlus className="my-1 d-flex justify-content-center" />
                   &#x2003;&#x2003; Buy Now
                 </Button>
+                <div className="my-4">
+                  <Row>
+                    <Col>
+                      <Typography variant="h5">Customer Review</Typography>
+                    </Col>
+                  </Row>
+                  <div className="my-3">
+                    <Row>
+                      <Col>
+                        <Typography variant="h6">Rating</Typography>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormControl
+                          variant="standard"
+                          sx={{ minWidth: 520, maxWidth: 500 }}
+                        >
+                          <Select
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
+                            // value={category}
+                            // onChange={handleChange}
+                            label="Age"
+                          >
+                            <MenuItem selected value="1">
+                              1
+                            </MenuItem>
+                            <MenuItem selected value="2">
+                              2
+                            </MenuItem>
+                            <MenuItem selected value="3">
+                              3
+                            </MenuItem>
+                            <MenuItem selected value="4">
+                              4
+                            </MenuItem>
+                            <MenuItem selected value="5">
+                              5
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Col>
+                    </Row>
+                  </div>
+                  <Row>
+                    <Col>
+                      <Typography variant="h6">Comment</Typography>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <textarea
+                        aria-label="empty textarea"
+                        placeholder="Write a Comment"
+                        className="col-12 bg-light p-3 mt-2 border-0 rounded"
+                      />
+                    </Col>
+                  </Row>
+                  <div className="mt-2">
+                    <Row>
+                      <Col>
+                        <Button
+                          style={{
+                            backgroundColor: "#000000",
+                            border: "none",
+                          }}
+                          className="col d-flex justify-content-center"
+                          onClick={finalBuy}
+                        >
+                          SUBMIT
+                        </Button>
+                      </Col>
+                    </Row>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

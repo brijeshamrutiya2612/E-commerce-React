@@ -27,7 +27,7 @@ function Footer() {
   };
 
   return (
-    <div id="myHeader">
+    <div id="myHeader" className="mt-2">
       <div
         style={{
           minWidth: "100px",

@@ -1,22 +1,53 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Button, Container, Form, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { Tab } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import axios from "axios";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
 import { Store } from "../store/Context";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
-function Header() {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+//const pages = ["Products", "Pricing", "Blog"];
+
+const Header = () => {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const { state, dispatch: ctxDispatch } = React.useContext(Store);
   const { cart, userInfo } = state;
   const nav = useNavigate();
-  const [list, setList] = useState([]);
-  const [filter, setFilter] = useState([]);
-  const [query, setSearch] = useState('');
+  const [list, setList] = React.useState([]);
+  const [filter, setFilter] = React.useState([]);
+  const [query, setSearch] = React.useState("");
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function getAllStudent() {
       try {
         const listProduct = await axios.get(
@@ -47,118 +78,212 @@ function Header() {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
-    window.location.href = '/login'
+    window.location.href = "/login";
   };
   const home = () => {
     nav("/");
   };
   const handleSearch = (e) => {
     e.preventDefault();
-    nav(query ? `/search?query=${query}` : '/search');
+    nav(query ? `/search?query=${query}` : "/search");
   };
   return (
-    <div id="myHeader" className="d-flex">
-      <div
-        style={{
-          minWidth: "500px",
-          maxWidth: "100px",
-          height: "25px",
-          position: "sticky",
-          zIndex: "40",
-        }}
-      >
-        <Navbar
-          fixed="top"
-          expand="lg"
-          style={{
-            boxShadow: "1px 1px 10px #343A40",
-            background:"#96B5BA",
-          }}
-        >
-          <Container>
-          <Navbar.Brand onClick={home} className="col-lg-15">
-            <ShoppingBag
-              style={{
-                fontSize: "50px",
-              }}
-            />{" "}
+    <AppBar
+      position="fixed"
+      style={{ boxShadow: "1px 1px 10px #343A40", background: "#96b5ba" }}
+    >
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <ShoppingBag sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
             MART
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="col-lg-9">
-              <NavDropdown title="PRODUCTS" id="basic-nav-dropdown">
-                {filter.map((item, i) => {
-                  return (
-                    <NavDropdown.Item key={i}>
-                      <Link
-                        to={`/search?itemCategory=${item.itemCategory}`}
-                        style={{ color: "#000000" }}
-                      >
-                        {item.itemCategory.toUpperCase()}
-                      </Link>
-                    </NavDropdown.Item>
-                  );
-                })}
-                {/* <NavDropdown.Divider /> */}
-              </NavDropdown>
-                  </Nav>
-            
-            <Link to="/addToCart">
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+              }}
+            >
+              {filter.map((item) => (
+                <MenuItem key={item._id} onClick={handleCloseNavMenu}>
+                  <Typography
+                    style={{ textTransform: "uppercase" }}
+                    textAlign="center"
+                  >
+                    {item.itemCategory}
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <ShoppingBag sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href=""
+            sx={{
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+              flexGrow: 1,
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            MART
+          </Typography>
+         
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <Tooltip title="Show Products">
+              <Button
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+                value="products"
+              >
+                <Typography textAlign="center">Products</Typography>
+              </Button>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              style={{ marginLeft: "5em" }}
+            >
+              {filter.map((item) => (
+                <MenuItem key={item._id} onClick={handleCloseNavMenu}>
+                  <Typography
+                    style={{ textTransform: "uppercase" }}
+                    textAlign="center"
+                  >
+                    <Link to={`/search?itemCategory=${item.itemCategory}`}
+                        style={{ color: "#000000" }}>{item.itemCategory}</Link>
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <Box sx={{ flexGrow: 0 }}>
+          <Link to="/addToCart" className="pr-2">
               <ShoppingCartOutlinedIcon style={{ color: "#000000" }} />
               <span style={{ color: "#000000" }}>{cart.cartItems.length}</span>
             </Link>
             {userInfo ? (
               <>
-                <NavDropdown
-                  style={{ color: "#000000" }}
-                  title={userInfo.firstname}
-                  id="navbarScrollingDropdown"
-                  className="mx-auto"
-                  >
-                  <NavDropdown.Item>
-                    <Link style={{ color: "#000000" }} to={`/ud/${userInfo._id}`}>Dashboard</Link>
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <Tab
-                    onClick={handleLogout}
-                    to="/"
-                    LinkComponent={Link}
-                    label="Logout"
-                    style={{ color: "#000000" }}
-                  />
-                </NavDropdown>
-              </>
-            ) : (
-              <>
-                <Tab
-                  to="/login"
-                  LinkComponent={Link}
-                  label="Login"
-                  variant="contained"
-                  style={{ color: "#000000" }}
-                />
-                &#x2002;
-                <Tab
-                  to="/register"
-                  LinkComponent={Link}
-                  label="Signup"
-                  style={{ color: "#000000" }}
-                  />
-              </>
-            )}
-            <Tab
-              to="/admin"
-              LinkComponent={Link}
-              label="Admin"
-              style={{ color: "#000000" }}
-              />
-          </Navbar.Collapse>
-          </Container>
-        </Navbar>
-      </div>
-    </div>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt={userInfo.firstname} src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+              style={{ marginLeft: "3em" }}
+            >
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography
+                  textAlign="center"
+                >
+                  <Link style={{ color: "#000000" }} to={`/ud/${userInfo._id}`}>Dashboard</Link>
+                </Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography
+                  textAlign="center"
+                >
+                  <Link style={{ color: "#000000" }} to="/SellerLogin">Switch To Seller</Link>
+                </Typography>
+              </MenuItem>
+              <MenuItem onClick={handleLogout}>
+                <Typography
+                  textAlign="center"
+                >
+                  Logout
+                </Typography>
+              </MenuItem>
+            </Menu>
+            </>
+            ):(<Tooltip>
+            <Button
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              color="inherit"
+              value="products"
+            >
+              <Typography textAlign="center"><Link style={{ color: "#FFFFFF" }} to='/login'>Login</Link></Typography>
+            </Button>
+          </Tooltip>)}
+          </Box>
+         
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
-}
-
+};
 export default Header;

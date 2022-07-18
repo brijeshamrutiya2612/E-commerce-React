@@ -12,7 +12,7 @@ import {
 import Carousel from "react-bootstrap/Carousel";
 import { Link } from "react-router-dom";
 import logger from "use-reducer-logger";
-import { Typography } from "@mui/material";
+import { AppBar, Typography } from "@mui/material";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -78,21 +78,31 @@ function Home() {
                   height: "auto",
                 }}
               >
-                <div className="my-4 p-4" style={{ background: "#D8E4E6" }}>
-                  <div className="pt-2">
-                    <Form className="d-flex col-lg-3 mx-auto">
-                      <Form.Control
-                        type="search"
-                        placeholder="Search by product, category..."
-                        aria-label="Search"
-                        onChange={(e) => setSearch(e.target.value)}
-                      />
-                    </Form>
+                <AppBar className="mt-5">
+                  <div
+                    className="my-4 p-2"
+                    style={{
+                      background: "#D8E4E6",
+                      position: "fixed",
+                      width: "100%",
+                    }}
+                  >
+                    <div className="pt-2 pb-2" style={{}}>
+                      <Form className="d-flex col-lg-3 mx-auto">
+                        <Form.Control
+                          type="search"
+                          placeholder="Search by product, category..."
+                          aria-label="Search"
+                          onChange={(e) => setSearch(e.target.value)}
+                        />
+                      </Form>
+                    </div>
                   </div>
-                </div>
-                <div className="my-4">
+                </AppBar>
+                <div style={{marginTop:"7em"}}/>
+                <div className="my-4 mt-3">
                   <div>
-                    <div className="container col-lg-12">
+                    <div className="container col-lg-12 mt-5">
                       {search == "" ? (
                         <>
                           <Carousel

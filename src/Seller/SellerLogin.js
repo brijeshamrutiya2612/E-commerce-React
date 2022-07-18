@@ -9,7 +9,7 @@ import { Store } from "../store/Context";
 import { toast, ToastContainer } from "react-toastify";
 
 
-const Login = () => {
+const SellerLogin = () => {
 
   const {search} = useLocation();
   const redirectInUrl = new URLSearchParams(search).get('redirect');
@@ -21,12 +21,13 @@ const Login = () => {
     password: "",
   });
   const {state, dispatch: ctxDispatch} = useContext(Store);
-  const {userInfo} = state;
+  const {sellerInfo} = state;
  useEffect(()=>{
-  if(userInfo){
+  if(sellerInfo){
     nav(redirect);
+    toast.info("You are Already Logged in")
   } 
-},[nav,redirect,userInfo])
+},[nav,redirect,sellerInfo])
  const handleSubmit = async (e) =>{
      e.preventDefault();
      try{
@@ -35,8 +36,8 @@ const Login = () => {
          password: emails.password
        })
        const data = await res.data
-       ctxDispatch({type: 'USER_SIGNIN', payload: data})
-       localStorage.setItem('userInfo', JSON.stringify(data))
+       ctxDispatch({type: 'SELLER_SIGNIN', payload: data})
+       localStorage.setItem('sellerInfo', JSON.stringify(data))
        nav(redirect || '/');
        return data;
      }catch(err){
@@ -73,11 +74,11 @@ const Login = () => {
               <h2
                  className="container text-center"
                  variant="contained"
-                
+                style={{lineHeight:"2em"}}
               >
                 <ShoppingBag style={{fontSize:"50px",color:"#14657C"}}/>
               </h2>
-              <h2 className="container my-4 text-center">
+              <h2 className="container mx-auto my-4 justify-content-center">
                 Sign In
               </h2>
 
@@ -114,18 +115,18 @@ const Login = () => {
                   </Button>
                 </div>
                 <p>
-                  Not a member? <Link to={`/register?redirect=${redirect}`}>Create Your Account</Link>
-                </p>
-                <p>
-                You want sell your Product? <Link to={`/NewSellerRegister?redirect=${redirect}`}>Create Seller Account</Link>
+                  Not a member? <Link to={`/NewSellerRegister?redirect=${redirect}`}>Create Your Account</Link>
                 </p>
               </div>
             </div>
           </div>
         </Container>
+        {/* {users.loginUser.map((item) => {
+        return <p key={item.id}>{item.email}</p>;
+      })} */}
       </div>
     </div>
   );
 };
 
-export default Login;
+export default SellerLogin;

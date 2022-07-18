@@ -9,6 +9,9 @@ const initialState = {
   userInfo: localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
+  sellerInfo: localStorage.getItem("sellerInfo")
+    ? JSON.parse(localStorage.getItem("sellerInfo"))
+    : null,
   cart: {
     shippingAddress: localStorage.getItem("shippingAddress")
       ? JSON.parse(localStorage.getItem("shippingAddress"))
@@ -42,7 +45,7 @@ function reducer(state, action) {
           cartItems,
         },
       };
-    case "CART_REMOVE_ITEM":{ 
+    case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
         (item) => item._id !== action.payload._id
       );
@@ -51,24 +54,23 @@ function reducer(state, action) {
         position: "bottom-left",
       });
       return {
-        ...state, 
+        ...state,
         cart: {
           ...state.cart,
           cartItems,
-          
         },
       };
     }
-    case "CART_CLEAR":{
+    case "CART_CLEAR": {
       const cartItems = state.cart.cartItems.filter(
         (item) => item !== action.payload
-        );
-        localStorage.removeItem("cartItems", JSON.stringify(cartItems));
-        toast.success(`Cart Clear`, {
-          position: "bottom-left",
-        });
-      return { ...state, cart: {cartItems:[]}, };
-      }
+      );
+      localStorage.removeItem("cartItems", JSON.stringify(cartItems));
+      toast.success(`Cart Clear`, {
+        position: "bottom-left",
+      });
+      return { ...state, cart: { cartItems: [] } };
+    }
     case "USER_SIGNIN": {
       return { ...state, userInfo: action.payload };
     }
@@ -95,7 +97,18 @@ function reducer(state, action) {
           paymentMethod: action.payload,
         },
       };
-      
+
+      // Seller Section
+
+      case "SELLER_SIGNIN":{
+        return {...state, sellerInfo: action.payload};
+      }
+      case "SELLER_SIGNOUT":{
+        return{
+          ...state,
+          sellerInfo: null,
+        }
+      }
     default:
       return state;
   }

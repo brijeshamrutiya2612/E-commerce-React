@@ -57,11 +57,11 @@ const Addtocart = () => {
   
 
   return (
-    <div>
+    <div style={{marginTop:"2em"}}>
       <CheckOutSteps step1></CheckOutSteps>
       <div className="pl-5 pr-5" style={{ background: "#D8E4E6" }}>
         <div className="pt-3">
-          <Button variant="outline-success" className="btn" onClick={home}>
+          <Button variant="light" className="btn" onClick={home}>
             <strong>&#x2190;Continue Shopping</strong>
           </Button>
         </div>
@@ -172,7 +172,7 @@ const Addtocart = () => {
         <div className="col-md-5 my-4">
           <form>
           <Button
-            variant="outline-danger"
+            variant="danger" 
             className="text-left btn"
             disabled={cartItems.length === 0}
             onClick={()=>cartClear(cartItems)}
@@ -185,7 +185,7 @@ const Addtocart = () => {
           <div className="col-md-6">
             <div className="demo-content">
               <Button
-                variant="outline-success"
+                variant="light"
                 className="text-left btn"
                 onClick={home}
               >

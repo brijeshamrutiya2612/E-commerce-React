@@ -12,7 +12,7 @@ import { Button } from "react-bootstrap";
 const SideBar = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
-  const nav = useNavigate()
+  const nav = useNavigate();
   const Item = styled(Paper)(({ theme }) => ({
     // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     backgroundColor: "white",
@@ -28,88 +28,75 @@ const SideBar = () => {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
-    nav("/")
+    nav("/");
   };
   return (
-    <div style={{ width:"800px"}}>
+    <div
+      className="col-md-8 ml-3 mt-3 mb-5"
+      style={{ width: "auto", background: "#96B5BA", height: "100%"}}
+    >
       <div className="d-flex">
-        <Typography
-          variant="h6"
-          className="pl-5 my-2"
-        >
+        <Typography variant="h6" className="pl-5 my-2">
           Welcome, {userInfo.firstname} {userInfo.lastname}
         </Typography>
       </div>
-      <div className="pl-3 d-flex">
+      <div className="">
         <div className="row">
-          <div
-            style={{
-              height: "52px",
-              lineHeight: "52px",
-              height: "auto",
-              margin: "auto",
-              width: "auto",
-            }}
-          >
+          <div>
             <Grid container spacing={1}>
               <Grid item xs={9} md={15}>
                 <Item>
-                  <DashboardIcon style={{ float: "left" }} />
                   &#x2003;
                   <Link
                     style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
                       color: "black",
                     }}
                     to={`/ud/${userInfo._id}`}
                   >
+                    <DashboardIcon />&#x2003;
                     <strong>Dashboard</strong>
                   </Link>
                 </Item>
                 <Item>
-                  <PersonIcon style={{ float: "left" }} />
                   &#x2003;
                   <Link
                     style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
                       color: "black",
                     }}
                     to={`/user/${userInfo._id}`}
                   >
+                    <PersonIcon />&#x2003;
                     <strong>Profile</strong>
                   </Link>
                 </Item>
                 <Item>
-                  <HistoryIcon style={{ float: "left" }} />
                   &#x2003;
                   <Link
                     style={{
-                      lineHeight: "1.2em",
-                      fontSize: "20px",
+                      float: "right",
                       color: "black",
                     }}
                     to={`/u_purchase/${userInfo._id}`}
                   >
+                    <HistoryIcon />&#x2003;
                     <strong>Purchase History</strong>
                   </Link>
                 </Item>
                 <Item>
                   
-                      <LogoutIcon style={{ float: "left" }} />
-                      &#x2003;
-                      <Button
-                      variant="light"
-                        style={{
-                          lineHeight: "1.2em",
-                          fontSize: "20px",
-                          color: "black",
-                        }}
-                        onClick={handleLogout}
-                      >
-                        <strong>Logout</strong>
-                      </Button>
+                  &#x2003;
+                  <Button
+                    variant="light"
+                    style={{
+                      lineHeight: "1em",
+                      fontSize: "15px",
+                      color: "black",
+                    }}
+                    onClick={handleLogout}
+                  >
+                    <LogoutIcon/> &#x2003;
+                    <strong>Logout</strong>
+                  </Button>
                 </Item>
               </Grid>
             </Grid>
