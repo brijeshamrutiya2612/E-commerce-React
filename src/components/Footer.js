@@ -1,23 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
-  Badge,
-  Button,
   Container,
-  Dropdown,
-  Form,
-  FormControl,
-  Nav,
   Navbar,
-  NavDropdown,
 } from "react-bootstrap";
-import { Tab } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { loginActions } from "../store/loginSlice";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import WomanIcon from "@mui/icons-material/Woman";
-import ManIcon from "@mui/icons-material/Man";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
 
 function Footer() {

@@ -8,43 +8,45 @@ import ShoppingBag from "@mui/icons-material/ShoppingBag";
 import { Store } from "../store/Context";
 import { toast, ToastContainer } from "react-toastify";
 
-
 const SellerLogin = () => {
-
-  const {search} = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
+  const { search } = useLocation();
+  const redirectInUrl = new URLSearchParams(search).get("redirect");
+  const redirect = redirectInUrl ? redirectInUrl : "/";
   const dispatch = useDispatch();
   const nav = useNavigate();
   const [emails, setEmail] = useState({
     email: "",
     password: "",
   });
-  const {state, dispatch: ctxDispatch} = useContext(Store);
-  const {sellerInfo} = state;
- useEffect(()=>{
-  if(sellerInfo){
-    nav(redirect);
-    toast.info("You are Already Logged in")
-  } 
-},[nav,redirect,sellerInfo])
- const handleSubmit = async (e) =>{
-     e.preventDefault();
-     try{
-       const res = await axios.post("http://localhost:5000/api/login",{      
-         email: emails.email,
-         password: emails.password
-       })
-       const data = await res.data
-       ctxDispatch({type: 'SELLER_SIGNIN', payload: data})
-       localStorage.setItem('sellerInfo', JSON.stringify(data))
-       nav(redirect || '/');
-       return data;
-     }catch(err){
-        toast.error("Invalid email or password");
-     }
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { sellerInfo } = state;
+  //  useEffect(()=>{
+  //   if(sellerInfo){
+  //     localStorage.removeItem("userInfo");
+  //     localStorage.removeItem("shippingAddress");
+  //     localStorage.removeItem("paymentMethod");
+  //   }
+  // },[sellerInfo])
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:5000/api/seller/login", {
+        email: emails.email,
+        password: emails.password,
+      });
+      const data = await res.data;
+      ctxDispatch({ type: "SELLER_SIGNIN", payload: data });
+      localStorage.setItem("sellerInfo", JSON.stringify(data));
+      localStorage.removeItem("userInfo");
+      localStorage.removeItem("shippingAddress");
+      localStorage.removeItem("paymentMethod");
+      nav("/SellerHome");
+      return data;
+    } catch (err) {
+      toast.error("Invalid email or password");
+    }
     //sendRequest().then((data)=>localStorage.setItem("userId", data._id)).then(()=>dispatch(loginActions.login())).then(()=>nav("/")).then(data=>console.log(data))
- }
+  };
 
   return (
     <div
@@ -59,7 +61,7 @@ const SellerLogin = () => {
           className="justify-content-center"
           style={{ overflow: "hidden" }}
         >
-          <div className="my-4 pt-5 pl-5justify-content-center">
+          <div className="my-4 pt-5 pl-5 justify-content-center">
             <div
               className="container my-5 col-md-5 justify-content-center"
               style={{
@@ -72,11 +74,11 @@ const SellerLogin = () => {
               }}
             >
               <h2
-                 className="container text-center"
-                 variant="contained"
-                style={{lineHeight:"2em"}}
+                className="container text-center"
+                variant="contained"
+                style={{ lineHeight: "2em" }}
               >
-                <ShoppingBag style={{fontSize:"50px",color:"#14657C"}}/>
+                <ShoppingBag style={{ fontSize: "50px", color: "#14657C" }} />
               </h2>
               <h2 className="container mx-auto my-4 justify-content-center">
                 Sign In
@@ -108,14 +110,17 @@ const SellerLogin = () => {
                   <Button
                     className="container col-md-11 justify-content-center"
                     variant="contained"
-                    style={{backgroundColor:"#14657C"}}
+                    style={{ backgroundColor: "#14657C" }}
                     onClick={handleSubmit}
                   >
                     LOGIN
                   </Button>
                 </div>
                 <p>
-                  Not a member? <Link to={`/NewSellerRegister?redirect=${redirect}`}>Create Your Account</Link>
+                  Not a member?{" "}
+                  <Link to={`/NewSellerRegister?redirect=${redirect}`}>
+                    Create Your Account
+                  </Link>
                 </p>
               </div>
             </div>

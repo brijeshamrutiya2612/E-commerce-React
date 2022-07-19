@@ -35,7 +35,7 @@ function Home() {
   });
   const [search, setSearch] = useState([]);
   const [index, setIndex] = useState(0);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
@@ -52,6 +52,7 @@ function Home() {
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
   };
+  // eslint-disable-next-line
   const handleSearch = (e) => {
     e.preventDefault();
     console.log(search);

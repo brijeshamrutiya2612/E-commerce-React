@@ -2,13 +2,13 @@ import { Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserData } from "../store/userSlice";
 
 const Register = () => {
-  const sign = useNavigate();  
+  const sign = useNavigate();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.user);
   const [registers, setRegister] = useState({
@@ -23,47 +23,43 @@ const Register = () => {
     phone: "",
     age: "",
   });
-  
+
   // console.log(registers);
-  const sendRequest = async () =>{
-    const res = await axios.post("http://localhost:5000/api/signup",{
-    firstname: registers.firstname,
-    lastname: registers.lastname,
-    email: registers.email,
-    password: registers.password,
-    address1: registers.address1,
-    address2: registers.address2,
-    address3: registers.address3,
-    phone: registers.phone,
-    age: registers.age,
-  }).catch((err) => console.log(err));
-  const data = await res.data;
-  return data;
-}
-useEffect(()=>{
-  dispatch(getUserData())
-},[])
-console.log(users.getUser)
-const signIn = async (e) => {
-  e.preventDefault();
-  if(registers.password !== registers.cPassword){
+  const sendRequest = async () => {
+    const res = await axios
+      .post("http://localhost:5000/api/signup", {
+        firstname: registers.firstname,
+        lastname: registers.lastname,
+        email: registers.email,
+        password: registers.password,
+        address1: registers.address1,
+        address2: registers.address2,
+        address3: registers.address3,
+        phone: registers.phone,
+        age: registers.age,
+      })
+      .catch((err) => console.log(err));
+    const data = await res.data;
+    return data;
+  };
+  useEffect(() => {
+    dispatch(getUserData());
+  }, [dispatch]);
+  console.log(users.getUser);
+  const signIn = async (e) => {
+    e.preventDefault();
+    if (registers.password !== registers.cPassword) {
       toast.error("Password do not match");
       return;
     }
-    if (users.getUser.find(
-        (user) =>
-          user.email === registers.email
-      )
-      ) {
-      toast.error("This " + `${registers.email}` + " is Already Register");
-      }
-    if (users.getUser.find(
-        (user) =>
-          user.phone === registers.phone
-      )
-      ) {
-      toast.error("This " + `${registers.phone}` + " is Already Register");
-      }
+    if (users.getUser.find((user) => user.email === registers.email)) {
+      // eslint-disable-next-line
+      toast.error(`${registers.email}` + " is Already Register");
+    }
+    if (users.getUser.find((user) => user.phone === registers.phone)) {
+      // eslint-disable-next-line
+      toast.error(`${registers.phone}` + " is Already Register");
+    }
     const {
       firstname,
       lastname,
@@ -105,10 +101,11 @@ const signIn = async (e) => {
     } else if (age === "") {
       toast.error("Age is Require");
     }
-    sendRequest().then(()=>sign("/login"));
+    toast.success("Sucessfull Register");
+    sendRequest().then(() => sign("/login"));
     localStorage.setItem("user", JSON.stringify(registers));
   };
-  
+
   return (
     <>
       <div
@@ -258,16 +255,14 @@ const signIn = async (e) => {
                       className="ml-4 col-md-11 justify-content-center"
                       variant="contained"
                       onClick={signIn}
-                      style={{backgroundColor:"#F7CA00",border:"none",borderRadius:"50px"}}
+                      style={{
+                        backgroundColor: "#96B5BA",
+                        border: "none",
+                        borderRadius: "50px",
+                      }}
                     >
-                      Sign Up
-                      {/* {register.registerStatus === "pending"
-                        ? "Submitting"
-                        : "Register"} */}
+                      Register
                     </Button>
-                    {/* {register.registerStatus === "rejected" ? (
-                      <p>{register.registerError}</p>
-                    ) : null} */}
                   </div>
                   <p>
                     Have an account? <Link to="/Login">Log in</Link>
@@ -276,11 +271,6 @@ const signIn = async (e) => {
               </div>
             </Container>
           </form>
-          {/* {register.map((item, i)=>{
-      return(
-        <p key={i}>{item.firstname}</p>
-      )
-    })} */}
         </div>
       </div>
     </>

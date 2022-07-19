@@ -30,6 +30,7 @@ import ProductView from "./Admin/Pages/ProductView";
 import NewSellerRegister from "./Seller/NewSellerRegister";
 import SellerAddProduct from "./Seller/SellerAddProduct";
 import SellerLogin from "./Seller/SellerLogin";
+import SellerHome from "./Seller/SellerHome";
 
 function App() {
   const { state } = useContext(Store);
@@ -68,6 +69,7 @@ function App() {
             <Route path="/NewSellerRegister" element={<NewSellerRegister />}></Route>
             <Route path="/SellerAddProduct" element={<SellerAddProduct />}></Route>
             <Route path="/SellerLogin" element={<SellerLogin />}></Route>
+            <Route path="/SellerHome" element={<SellerHome />}></Route>
             <Route path="/addproducts" element={<AddProducts />}></Route>
             <Route path="/productview" element={<ProductView />}></Route>
             <Route path="/productAction/:id" element={<ProductAction />}></Route>

@@ -4,7 +4,7 @@ import { Card, Col, ListGroup, Row, Spinner, Table } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { Store } from "../store/Context";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Box } from "@mui/material";
 import {Helmet} from "react-helmet"
 
@@ -36,7 +36,8 @@ function reducer(state, action) {
 const OrderScreen = () => {
   const { state } = useContext(Store);
   const {
-    cart: { cartItems },
+    // eslint-disable-next-line
+    cart,
     userInfo,
   } = state;
   const params = useParams();

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 import { Button, Card, Col, ListGroup, Row, Table } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../store/Context";
@@ -21,6 +21,7 @@ const reducer = (state, action) => {
 
 function Finalpayment() {
   const navigate = useNavigate();
+  // eslint-disable-next-line
   const [{ loading, error }, dispatch] = useReducer(reducer, {
     loading: false,
     error: "",

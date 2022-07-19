@@ -1,5 +1,3 @@
-import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import { createContext, useReducer } from "react";
 import { toast } from "react-toastify";
 

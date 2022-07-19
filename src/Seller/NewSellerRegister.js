@@ -2,18 +2,19 @@ import { Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserData } from "../store/userSlice";
 
 const NewSellerRegister = () => {
-  const sign = useNavigate();  
+  const sign = useNavigate();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.user);
   const [registers, setRegister] = useState({
     firstname: "",
     lastname: "",
+    mnfName: "",
     email: "",
     password: "",
     cPassword: "",
@@ -25,32 +26,35 @@ const NewSellerRegister = () => {
     gstin: "",
     panno: "",
   });
-  
+
   // console.log(registers);
-  const sendRequest = async () =>{
-    const res = await axios.post("http://localhost:5000/api/seller/register",{
-    firstname: registers.firstname,
-    lastname: registers.lastname,
-    email: registers.email,
-    password: registers.password,
-    address1: registers.address1,
-    address2: registers.address2,
-    address3: registers.address3,
-    Mobile: registers.phone,
-    Age: registers.age,
-    GSTIN:registers.gstin,
-    PAN_NO:registers.panno,
-  }).catch((err) => console.log(err));
-  const data = await res.data;
-  return data;
-}
-useEffect(()=>{
-  dispatch(getUserData())
-},[])
-console.log(registers)
-const signIn = async (e) => {
-  e.preventDefault();
-  if(registers.password !== registers.cPassword){
+  const sendRequest = async () => {
+    const res = await axios
+      .post("http://localhost:5000/api/seller/register", {
+        firstname: registers.firstname,
+        lastname: registers.lastname,
+        mnfName: registers.mnfName,
+        email: registers.email,
+        password: registers.password,
+        address1: registers.address1,
+        address2: registers.address2,
+        address3: registers.address3,
+        Mobile: registers.phone,
+        Age: registers.age,
+        GSTIN: registers.gstin,
+        PAN_NO: registers.panno,
+      })
+      .catch((err) => console.log(err));
+    const data = await res.data;
+    return data;
+  };
+  useEffect(() => {
+    dispatch(getUserData());
+  }, []);
+  console.log(registers);
+  const signIn = async (e) => {
+    e.preventDefault();
+    if (registers.password !== registers.cPassword) {
       toast.error("Password do not match");
       return;
     }
@@ -71,6 +75,7 @@ const signIn = async (e) => {
     const {
       firstname,
       lastname,
+      
       email,
       password,
       address1,
@@ -109,10 +114,10 @@ const signIn = async (e) => {
     } else if (age === "") {
       toast.error("Age is Require");
     }
-    sendRequest()
+    sendRequest();
     localStorage.setItem("Seller", JSON.stringify(registers));
   };
-  
+
   return (
     <>
       <div
@@ -156,6 +161,15 @@ const signIn = async (e) => {
                     name="name.lastname"
                     onChange={(e) =>
                       setRegister({ ...registers, lastname: e.target.value })
+                    }
+                  />
+                  <TextField
+                    className="ml-4 col-md-11 my-3 justify-content-center"
+                    label="Manufacturer Name:"
+                    type="text"
+                    variant="outlined"
+                    onChange={(e) =>
+                      setRegister({ ...registers, mnfName: e.target.value })
                     }
                   />
                 </div>
@@ -270,7 +284,11 @@ const signIn = async (e) => {
                       className="ml-4 col-md-11 justify-content-center"
                       variant="contained"
                       onClick={signIn}
-                      style={{backgroundColor:"#96B5BA",border:"none",borderRadius:"50px"}}
+                      style={{
+                        backgroundColor: "#96B5BA",
+                        border: "none",
+                        borderRadius: "50px",
+                      }}
                     >
                       Register
                     </Button>

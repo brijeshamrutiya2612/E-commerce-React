@@ -41,10 +41,11 @@ const Header = () => {
   };
 
   const { state, dispatch: ctxDispatch } = React.useContext(Store);
-  const { cart, userInfo } = state;
+  const { cart, userInfo, sellerInfo } = state;
   const nav = useNavigate();
   const [list, setList] = React.useState([]);
   const [filter, setFilter] = React.useState([]);
+  // eslint-disable-next-line
   const [query, setSearch] = React.useState("");
 
   React.useEffect(() => {
@@ -76,13 +77,17 @@ const Header = () => {
   const handleLogout = () => {
     ctxDispatch({ type: "USER_SIGNOUT" });
     localStorage.removeItem("userInfo");
+    ctxDispatch({ type: "SELLER_SIGNOUT" });
+    localStorage.removeItem("sellerInfo");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
     window.location.href = "/login";
   };
+  // eslint-disable-next-line
   const home = () => {
     nav("/");
   };
+  // eslint-disable-next-line
   const handleSearch = (e) => {
     e.preventDefault();
     nav(query ? `/search?query=${query}` : "/search");
@@ -172,7 +177,7 @@ const Header = () => {
           >
             MART
           </Typography>
-         
+          
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Tooltip title="Show Products">
               <Button
@@ -209,78 +214,134 @@ const Header = () => {
                     style={{ textTransform: "uppercase" }}
                     textAlign="center"
                   >
-                    <Link to={`/search?itemCategory=${item.itemCategory}`}
-                        style={{ color: "#000000" }}>{item.itemCategory}</Link>
+                    <Link
+                      to={`/search?itemCategory=${item.itemCategory}`}
+                      style={{ color: "#000000" }}
+                    >
+                      {item.itemCategory}
+                    </Link>
                   </Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-          <Link to="/addToCart" className="pr-2">
-              <ShoppingCartOutlinedIcon style={{ color: "#000000" }} />
-              <span style={{ color: "#000000" }}>{cart.cartItems.length}</span>
-            </Link>
             {userInfo ? (
               <>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={userInfo.firstname} src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-              style={{ marginLeft: "3em" }}
-            >
-              <MenuItem onClick={handleCloseUserMenu}>
-                <Typography
-                  textAlign="center"
+                <Link to="/addToCart" className="pr-2">
+                  <ShoppingCartOutlinedIcon style={{ color: "#000000" }} />
+                  <span style={{ color: "#000000" }}>
+                    {cart.cartItems.length}
+                  </span>
+                </Link>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar
+                      alt={userInfo.firstname}
+                      src="/static/images/avatar/2.jpg"
+                    />
+                    Brijesh
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                  style={{ marginLeft: "3em" }}
                 >
-                  <Link style={{ color: "#000000" }} to={`/ud/${userInfo._id}`}>Dashboard</Link>
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleCloseUserMenu}>
-                <Typography
-                  textAlign="center"
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">
+                      <Link
+                        style={{ color: "#000000" }}
+                        to={`/ud/${userInfo._id}`}
+                      >
+                        Dashboard
+                      </Link>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">
+                      <Link style={{ color: "#000000" }} to="/SellerLogin">
+                        Switch To Seller
+                      </Link>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : sellerInfo ? (
+              <>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar
+                      alt={sellerInfo.firstname}
+                      src="/static/images/avatar/2.jpg"
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                  style={{ marginLeft: "3em" }}
                 >
-                  <Link style={{ color: "#000000" }} to="/SellerLogin">Switch To Seller</Link>
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <Typography
-                  textAlign="center"
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">
+                      <Link
+                        style={{ color: "#000000" }}
+                        to={`/sd/${sellerInfo._id}`}
+                      >
+                        Dashboard
+                      </Link>
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Tooltip>
+                <Button
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  color="inherit"
+                  value="products"
                 >
-                  Logout
-                </Typography>
-              </MenuItem>
-            </Menu>
-            </>
-            ):(<Tooltip>
-            <Button
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              color="inherit"
-              value="products"
-            >
-              <Typography textAlign="center"><Link style={{ color: "#FFFFFF" }} to='/login'>Login</Link></Typography>
-            </Button>
-          </Tooltip>)}
+                  <Typography textAlign="center">
+                    <Link style={{ color: "#FFFFFF" }} to="/login">
+                      Login
+                    </Link>
+                  </Typography>
+                </Button>
+              </Tooltip>
+            )}
           </Box>
-         
         </Toolbar>
       </Container>
     </AppBar>

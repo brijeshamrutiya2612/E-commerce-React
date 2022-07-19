@@ -11,11 +11,9 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { decreseCart, removerFromCart, Store } from "../store/Context";
+import { Store } from "../store/Context";
 import axios from "axios";
 import CheckOutSteps from "./CheckOutSteps";
-import { useDispatch } from "react-redux";
-import { ToastContainer } from "react-toastify";
 
 const Addtocart = () => {
 
