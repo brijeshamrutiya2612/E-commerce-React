@@ -12,32 +12,7 @@ const SellerHome = () => {
     <div className="my-5">
       <Row>
         <Col md={2}>
-          <div className="p-3">
-            <div
-              style={{
-                border: "none",
-                background: "#D8E4E6",
-                boxShadow: "5px 5px 15px #888888",
-                borderRadius: "20px",
-                height: "100%",
-              }}
-              className="p-4"
-            >
-              <Avatar
-                className="mr-2"
-                sx={{ background: "black", float: "left" }}
-                alt={sellerInfo.firstname}
-                src="/static/images/avatar/2.jpg"
-              />
-              <Typography className="p-1" variant="h6">
-                {sellerInfo.firstname}
-              </Typography>
-
-              <div>
-                <SellerSideBar></SellerSideBar>
-              </div>
-            </div>
-          </div>
+          <SellerSideBar></SellerSideBar>
         </Col>
         <Col lg={8}>
           <div
@@ -50,7 +25,56 @@ const SellerHome = () => {
               height: "100%",
             }}
             className="p-4"
-          ></div>
+          >
+            <Row>
+              <Col sm={2}>
+                <Typography className="p-1" variant="h6">
+                  Seller:
+                </Typography>
+              </Col>
+              <Col sm={5}>
+                <Typography className="p-1" variant="h6">
+                  {sellerInfo.firstname} {sellerInfo.lastname}
+                </Typography>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={2}>
+                <Typography className="p-1" variant="h6">
+                  GSTIN No:
+                </Typography>
+              </Col>
+              <Col sm={5}>
+                <Typography className="p-1" variant="h6">
+                  {sellerInfo.GSTIN}
+                </Typography>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={2}>
+                <Typography className="p-1" variant="h6">
+                  PAN No:
+                </Typography>
+              </Col>
+              <Col sm={5}>
+                <Typography className="p-1" variant="h6">
+                  {sellerInfo.PAN_NO}
+                </Typography>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={2}>
+                <Typography className="p-1" variant="h6">
+                  Manufacturer:
+                </Typography>
+              </Col>
+              <Col sm={5}>
+                <Typography className="p-1" variant="h6">
+                  {sellerInfo.mnfName}
+                </Typography>
+              </Col>
+            </Row>
+          </div>
         </Col>
       </Row>
     </div>

@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useContext, useState} from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -6,13 +6,17 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { TextField, Typography } from "@mui/material";
 import axios from "axios";
-import { Button, Form } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import SellerSideBar from "./SellerSideBar";
+import { Store } from "../store/Context";
 
 function SellerAddProduct() {
   const nav = useNavigate();
   const [category, setCategory] = useState("");
+  const { state } = useContext(Store);
+  const { sellerInfo } = state;
 
   const handleChange = (event) => {
     setCategory(event.target.value);
@@ -25,21 +29,22 @@ function SellerAddProduct() {
   const [itemUnit, setItemUnit] = useState("")
   const [itemDescription, setItemDescription] = useState("")
   const [image, setImage] = useState("")
-
+console.log(localStorage.getItem("sellerInfo"))
   const sendRequest = async () => {
     const res = await axios
       .post("http://localhost:5000/api/products/add", {
         itemCategory: category,
         itemName: itemName,
+        mnfName:sellerInfo.mnfName,
         itemPrice: itemPrice,
         quantity: itemQuantity,
-        rating: rating,
         itemUnit: itemUnit,
         itemDescription: itemDescription,
         image: image,
       })
       .catch((err) => console.log(err));
     const data = await res.data;
+    console.log(data)
     return data;
   };
   const handleSubmit = (e) => {
@@ -53,8 +58,6 @@ function SellerAddProduct() {
       toast.error("Price is Require");
     } else if(itemQuantity === ""){
       toast.error("Quantity is Required")
-    } else if (rating === "") {
-      toast.error("Rating is Required");
     } else if (itemUnit === "") {
       toast.error("Unit is Required");
     } else if (itemDescription === "") {
@@ -63,14 +66,29 @@ function SellerAddProduct() {
       toast.error("Image is Required");
     } 
     sendRequest().then((data) => console.log(data));
-    nav('/productview')
-    setItemName()
+    // nav('/productview')
+    setItemName('')
   };
 
   return (
     <>
-      <div className="col-lg-15">
-      </div>
+    <div className="my-5">
+      <Row>
+        <Col md={2}>
+          <SellerSideBar></SellerSideBar>
+        </Col>
+        <Col lg={8}>
+          <div
+            style={{
+              border: "none",
+              background: "#D8E4E6",
+              boxShadow: "5px 5px 15px #888888",
+              borderRadius: "20px",
+              width: "100%",
+              height: "100%",
+            }}
+            className="p-4"
+          >
       <div className="container">
         <Typography variant="h5" className="ml-3 my-4">
           Add Products
@@ -78,7 +96,7 @@ function SellerAddProduct() {
       </div>
       <div className="container">
         <div className="container">
-          <FormControl variant="standard" sx={{ minWidth: 520, maxWidth: 500 }}>
+          <FormControl className="container" variant="standard">
             <InputLabel id="demo-simple-select-standard-label">
               Product's Category
             </InputLabel>
@@ -132,15 +150,6 @@ function SellerAddProduct() {
             </div>
             <div className="my-3">
               <TextField
-                onChange={(e) => setRating(e.target.value)}
-                name="rating"
-                className="container"
-                id="outlined-read-only-input"
-                label="Item Rating"
-              />
-            </div>
-            <div className="my-3">
-              <TextField
                 onChange={(e) => setItemUnit(e.target.value)}
                 name="itemUnit"
                 className="container"
@@ -170,6 +179,10 @@ function SellerAddProduct() {
             </Button>
           </Box>
         </form>
+      </div>
+      </div>
+      </Col>
+      </Row>
       </div>
     </>
   );

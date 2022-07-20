@@ -8,42 +8,75 @@ import ShoppingBag from "@mui/icons-material/ShoppingBag";
 import { Store } from "../store/Context";
 import { toast, ToastContainer } from "react-toastify";
 
-
 const Login = () => {
-
-  const {search} = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
+  const { search } = useLocation();
+  const redirectInUrl = new URLSearchParams(search).get("redirect");
+  const redirect = redirectInUrl ? redirectInUrl : "/";
   const dispatch = useDispatch();
   const nav = useNavigate();
   const [emails, setEmail] = useState({
     email: "",
     password: "",
   });
-  const {state, dispatch: ctxDispatch} = useContext(Store);
-  const {userInfo} = state;
- useEffect(()=>{
-  if(userInfo){
-    nav(redirect);
-  } 
-},[nav,redirect,userInfo])
- const handleSubmit = async (e) =>{
-     e.preventDefault();
-     try{
-       const res = await axios.post("http://localhost:5000/api/login",{      
-         email: emails.email,
-         password: emails.password
-       })
-       const data = await res.data
-       ctxDispatch({type: 'USER_SIGNIN', payload: data})
-       localStorage.setItem('userInfo', JSON.stringify(data))
-       nav(redirect || '/');
-       return data;
-     }catch(err){
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo } = state;
+  useEffect(() => {
+    if (userInfo) {
+      nav(redirect);
+    }
+  }, [nav, redirect, userInfo]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const user = await axios.get("http://localhost:5000/api/users");
+    const userData = user.data.users;
+
+    const checkUserEmail = userData.filter((e) => {
+      return e.email === emails.email;
+    });
+
+    const seller = await axios.get(
+      "http://localhost:5000/api/seller/sellerlogin"
+    );
+    const sellerData = seller.data.sellers;
+
+    const checkSellerEmail = sellerData.filter((e) => {
+      return e.email === emails.email;
+    });
+
+    if (checkUserEmail.length === 1) {
+      try {
+        const res = await axios.post("http://localhost:5000/api/login", {
+          email: emails.email,
+          password: emails.password,
+        });
+        const data = await res.data;
+        ctxDispatch({ type: "USER_SIGNIN", payload: data });
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        nav(redirect || "/");
+        return data;
+      } catch (err) {
         toast.error("Invalid email or password");
-     }
+      }
+    } else if (checkSellerEmail.length === 1) {
+      try {
+        const res = await axios.post("http://localhost:5000/api/seller/login", {
+          email: emails.email,
+          password: emails.password,
+        });
+        const data = await res.data;
+        ctxDispatch({ type: "SELLER_SIGNIN", payload: data });
+        localStorage.setItem("sellerInfo", JSON.stringify(data));
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("shippingAddress");
+        localStorage.removeItem("paymentMethod");
+        nav("/SellerHome");
+        return data;
+      } catch (err) {
+        toast.error("Invalid email or password");
+      }
+    }
     //sendRequest().then((data)=>localStorage.setItem("userId", data._id)).then(()=>dispatch(loginActions.login())).then(()=>nav("/")).then(data=>console.log(data))
- }
+  };
 
   return (
     <div
@@ -70,16 +103,10 @@ const Login = () => {
                 opacity: 0.8,
               }}
             >
-              <h2
-                 className="container text-center"
-                 variant="contained"
-                
-              >
-                <ShoppingBag style={{fontSize:"50px",color:"#14657C"}}/>
+              <h2 className="container text-center" variant="contained">
+                <ShoppingBag style={{ fontSize: "50px", color: "#14657C" }} />
               </h2>
-              <h2 className="container my-4 text-center">
-                Sign In
-              </h2>
+              <h2 className="container my-4 text-center">Sign In</h2>
 
               <div className="container col-md-15 justify-content-center">
                 <TextField
@@ -107,17 +134,23 @@ const Login = () => {
                   <Button
                     className="container col-md-11 justify-content-center"
                     variant="contained"
-                    style={{backgroundColor:"#14657C"}}
+                    style={{ backgroundColor: "#14657C" }}
                     onClick={handleSubmit}
                   >
                     LOGIN
                   </Button>
                 </div>
                 <p>
-                  Not a member? <Link to={`/register?redirect=${redirect}`}>Create Your Account</Link>
+                  Not a member?{" "}
+                  <Link to={`/register?redirect=${redirect}`}>
+                    Create Your Account
+                  </Link>
                 </p>
                 <p>
-                You want sell your Product? <Link to={`/NewSellerRegister?redirect=${redirect}`}>Create Seller Account</Link>
+                  You want sell your Product?{" "}
+                  <Link to={`/NewSellerRegister?redirect=${redirect}`}>
+                    Create Seller Account
+                  </Link>
                 </p>
               </div>
             </div>

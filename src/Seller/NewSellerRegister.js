@@ -48,30 +48,14 @@ const NewSellerRegister = () => {
     const data = await res.data;
     return data;
   };
-  useEffect(() => {
-    dispatch(getUserData());
-  }, []);
-  console.log(registers);
+  
   const signIn = async (e) => {
     e.preventDefault();
     if (registers.password !== registers.cPassword) {
       toast.error("Password do not match");
       return;
     }
-    // if (users.getUser.find(
-    //     (user) =>
-    //       user.email === registers.email
-    //   )
-    //   ) {
-    //   toast.error("This " + `${registers.email}` + " is Already Register");
-    //   }
-    // if (users.getUser.find(
-    //     (user) =>
-    //       user.phone === registers.phone
-    //   )
-    //   ) {
-    //   toast.error("This " + `${registers.phone}` + " is Already Register");
-    //   }
+  
     const {
       firstname,
       lastname,
@@ -114,8 +98,8 @@ const NewSellerRegister = () => {
     } else if (age === "") {
       toast.error("Age is Require");
     }
-    sendRequest();
-    localStorage.setItem("Seller", JSON.stringify(registers));
+    sendRequest().then(() => sign("/login"));
+    // localStorage.setItem("seller", JSON.stringify(registers));
   };
 
   return (

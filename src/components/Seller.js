@@ -17,6 +17,7 @@ import { Store } from "../store/Context";
 import { Rating } from "react-simple-star-rating";
 import {
   AppBar,
+  Avatar,
   FormControl,
   InputLabel,
   MenuItem,
@@ -24,6 +25,7 @@ import {
   TextareaAutosize,
   Typography,
 } from "@mui/material";
+import { toast } from "react-toastify";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -45,7 +47,6 @@ function Seller() {
     error: "",
   });
   const { id } = useParams();
-
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
@@ -76,7 +77,7 @@ function Seller() {
         const product = await axios.get("http://localhost:5000/api/products/");
         setProduct(product.data);
         const all = await axios.get("http://localhost:5000/api/products/");
-        console.log(all.data);
+
         setAll(all.data);
         const Product = all.data;
         const newProduct = Product.filter((p) => {
@@ -89,9 +90,64 @@ function Seller() {
     }
     getAllStudent();
   }, [id]);
-
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart } = state;
+  const { cart, userInfo } = state;
+  const [userRating, setUserRating] = useState("");
+  const [comment, setComment] = useState("");
+
+  const handleChange = (event) => {
+    setUserRating(event.target.value);
+  };
+
+  const ratingAndCommentAdd = async () => {
+    if (!userInfo) {
+      final("/Login");
+    } else {
+      try {
+        const res = await axios.post(
+          "http://localhost:5000/api/rating/addrating",
+          {
+            productRating: getProd,
+            user: userInfo,
+            rating: userRating,
+            comment: comment,
+          },
+          {
+            headers: {
+              authorization: `Bearer ${userInfo.token}`,
+            },
+          }
+        );
+        const data = await res.data;
+        return data;
+      } catch (err) {
+        toast.error(err);
+      }
+    }
+  };
+
+  const [review, setReview] = useState([]);
+  useEffect(() => {
+    async function getAllStudent() {
+      try {
+        const allProduct = await axios.get(
+          `http://localhost:5000/api/products/${id}`
+        );
+        const all = await axios.get(
+          "http://localhost:5000/api/rating/getrating"
+        );
+
+        const Product = all.data;
+        const newProduct = Product.filter((p) => {
+          return p.productRating === allProduct.data._id;
+        });
+        setReview(newProduct);
+      } catch (error) {
+        console.log("Problem");
+      }
+    }
+    getAllStudent();
+  }, []);
 
   const send = () => {
     const existItem = cart.cartItems.find((x) => x._id === getProd._id);
@@ -114,19 +170,26 @@ function Seller() {
         <div>{error}</div>
       ) : (
         <>
-        <AppBar className="mt-5">
-          <div className="my-4 p-2" style={{ background: "#D8E4E6",position:"fixed",width:"100%", }}>
-            <div className="pt-2 pb-2" style={{}}>
-              <Form className="d-flex col-lg-3 mx-auto">
-                <Form.Control
-                  type="search"
-                  placeholder="Search by product, category..."
-                  aria-label="Search"
-                  // onChange={(e) => setSearch(e.target.value)}
-                />
-              </Form>
+          <AppBar className="mt-5">
+            <div
+              className="my-4 p-2"
+              style={{
+                background: "#D8E4E6",
+                position: "fixed",
+                width: "100%",
+              }}
+            >
+              <div className="pt-2 pb-2" style={{}}>
+                <Form className="d-flex col-lg-3 mx-auto">
+                  <Form.Control
+                    type="search"
+                    placeholder="Search by product, category..."
+                    aria-label="Search"
+                    // onChange={(e) => setSearch(e.target.value)}
+                  />
+                </Form>
+              </div>
             </div>
-          </div>
           </AppBar>
           <div
             className="container d-flex"
@@ -146,8 +209,8 @@ function Seller() {
                     className="card-item"
                     style={{
                       width: "auto",
-                      maxWidth:"200px",
-                      minWidth:"300px"
+                      maxWidth: "200px",
+                      minWidth: "300px",
                     }}
                     src={getProd.image}
                   />
@@ -158,11 +221,10 @@ function Seller() {
                 <h2>
                   <u>{getProd.itemName}</u>
                 </h2>
-                {/* <small style={{ marginTop: "10px" }}> ({rate.count}) Rating</small> */}
                 <p>Price: &#x20B9;{getProd.itemPrice}</p>
                 <p>Category: {getProd.itemCategory.toUpperCase()}</p>
-
-                <Rating ratingValue={getProd.rating * 20} size={20}></Rating>
+                <Rating ratingValue={getProd.rating * 20} size={20} />(
+                {getProd.rating})
                 <p>
                   <b>Description:</b> {getProd.itemDescription}
                 </p>
@@ -177,7 +239,7 @@ function Seller() {
                       backgroundColor: "#F7CA00",
                       border: "none",
                       borderRadius: "50px",
-                      maxWidth:"150px"
+                      maxWidth: "150px",
                     }}
                     className="col mb-2 d-flex justify-content-center"
                     onClick={send}
@@ -191,7 +253,7 @@ function Seller() {
                     backgroundColor: "#FA8800",
                     border: "none",
                     borderRadius: "50px",
-                    maxWidth:"150px"
+                    maxWidth: "150px",
                   }}
                   className="col d-flex justify-content-center"
                   onClick={finalBuy}
@@ -220,8 +282,8 @@ function Seller() {
                           <Select
                             labelId="demo-simple-select-standard-label"
                             id="demo-simple-select-standard"
-                            // value={category}
-                            // onChange={handleChange}
+                            value={userRating}
+                            onChange={handleChange}
                             label="Age"
                           >
                             <MenuItem selected value="1">
@@ -255,6 +317,7 @@ function Seller() {
                         aria-label="empty textarea"
                         placeholder="Write a Comment"
                         className="col-12 bg-light p-3 mt-2 border-0 rounded"
+                        onChange={(e) => setComment(e.target.value)}
                       />
                     </Col>
                   </Row>
@@ -267,7 +330,7 @@ function Seller() {
                             border: "none",
                           }}
                           className="col d-flex justify-content-center"
-                          onClick={finalBuy}
+                          onClick={ratingAndCommentAdd}
                         >
                           SUBMIT
                         </Button>
@@ -277,6 +340,28 @@ function Seller() {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="col-lg-15 p-5">
+            <Typography variant="h4">Customer Review</Typography>
+            {review.map((item) => {
+              return (
+                <>
+                <div className="p-4">
+                  <Avatar
+                    className="mr-2"
+                    sx={{ background: "black", float: "left" }}
+                    alt={userInfo.firstname}
+                    src="/static/images/avatar/2.jpg"
+                  />
+                  <Typography className="p-1" variant="h6">
+                    {userInfo.firstname + " " + userInfo.lastname}
+                  </Typography>
+                  <Rating ratingValue={item.rating * 20} size="20" />
+                  <Typography className="p-1">{item.comment}</Typography>
+                  </div>
+                </>
+              );
+            })}
           </div>
           <div
             className="col-lg-15 mt-5"

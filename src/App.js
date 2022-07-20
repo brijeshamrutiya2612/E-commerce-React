@@ -29,12 +29,13 @@ import ProductAction from "./Admin/Pages/ProductAction";
 import ProductView from "./Admin/Pages/ProductView";
 import NewSellerRegister from "./Seller/NewSellerRegister";
 import SellerAddProduct from "./Seller/SellerAddProduct";
-import SellerLogin from "./Seller/SellerLogin";
 import SellerHome from "./Seller/SellerHome";
+import SellerProducts from "./Seller/SellerProducts";
+import SellerEditProducts from "./Seller/SellerEditProducts";
 
 function App() {
   const { state } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo,sellerInfo } = state;
   return (
     <React.Fragment>
       <div
@@ -52,6 +53,7 @@ function App() {
           <Routes>
             <Route index path="/" element={<Home />}></Route>
             {userInfo && <Route index path="/" element={<Home />}></Route>}{" "}
+            {sellerInfo && <Route index path="/SellerHome" element={<SellerHome />}></Route>}{" "}
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Register />}></Route>
             <Route
@@ -68,7 +70,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />}></Route>
             <Route path="/NewSellerRegister" element={<NewSellerRegister />}></Route>
             <Route path="/SellerAddProduct" element={<SellerAddProduct />}></Route>
-            <Route path="/SellerLogin" element={<SellerLogin />}></Route>
+            <Route path="/SellerProducts" element={<SellerProducts />}></Route>
+            <Route path="/SellerEditProducts/:id" element={<SellerEditProducts />}></Route>
             <Route path="/SellerHome" element={<SellerHome />}></Route>
             <Route path="/addproducts" element={<AddProducts />}></Route>
             <Route path="/productview" element={<ProductView />}></Route>

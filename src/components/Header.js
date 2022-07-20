@@ -240,7 +240,7 @@ const Header = () => {
                       alt={userInfo.firstname}
                       src="/static/images/avatar/2.jpg"
                     />
-                    Brijesh
+                    
                   </IconButton>
                 </Tooltip>
                 <Menu
@@ -253,7 +253,7 @@ const Header = () => {
                   }}
                   keepMounted
                   transformOrigin={{
-                    vertical: "top",
+                    vertical: "top",  
                     horizontal: "right",
                   }}
                   open={Boolean(anchorElUser)}
@@ -270,13 +270,13 @@ const Header = () => {
                       </Link>
                     </Typography>
                   </MenuItem>
-                  <MenuItem onClick={handleCloseUserMenu}>
+                  {/* <MenuItem onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">
-                      <Link style={{ color: "#000000" }} to="/SellerLogin">
+                      <Link style={{ color: "#000000" }} to="/Login">
                         Switch To Seller
                       </Link>
                     </Typography>
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem onClick={handleLogout}>
                     <Typography textAlign="center">Logout</Typography>
                   </MenuItem>
@@ -313,7 +313,7 @@ const Header = () => {
                     <Typography textAlign="center">
                       <Link
                         style={{ color: "#000000" }}
-                        to={`/sd/${sellerInfo._id}`}
+                        to='/SellerHome'
                       >
                         Dashboard
                       </Link>
