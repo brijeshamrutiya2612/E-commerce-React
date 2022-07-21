@@ -35,18 +35,32 @@ const reducer = (state, action) => {
       return { ...state, getProd: action.payload, loading: false };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
+
+    case "FETCH_RATING_REQUEST":
+      return { ...state, loading: true };
+    case "FETCH_RATING_SUCCESS":
+      return { ...state, getRating: action.payload, loading: false };
+    case "FETCH_RATING_FAIL":
+      return { ...state, loading: false, error: action.payload };
+
     default:
       return state;
   }
 };
 
 function Seller() {
-  const [{ loading, error, getProd }, dispatch] = useReducer(reducer, {
-    getProd: [],
-    loading: true,
-    error: "",
-  });
+  const [{ loading, error, getProd, getRating }, dispatch] = useReducer(
+    reducer,
+    {
+      getProd: [],
+      getRating: [],
+      loading: true,
+      error: "",
+    }
+  );
   const { id } = useParams();
+  const [review, setReview] = useState([]);
+  const [user, setUser] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
@@ -55,12 +69,21 @@ function Seller() {
           `http://localhost:5000/api/products/${id}`
         );
         dispatch({ type: "FETCH_SUCCESS", payload: response.data });
+        const all = await axios.get(
+          "http://localhost:5000/api/rating/getrating"
+        );
+        dispatch({ type: "FETCH_RATING_SUCCESS", payload: all.data });
+
+        const user = await axios.get("http://localhost:5000/api/users");
+        const userData = user.data.users;
+        setUser(userData);
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: err.message });
       }
     };
     fetchData();
   }, [id]);
+
   const [student, setStudents] = useState([]);
   const [all, setAll] = useState([]);
   const [product, setProduct] = useState([]);
@@ -123,32 +146,19 @@ function Seller() {
       } catch (err) {
         toast.error(err);
       }
-    }
-  };
 
-  const [review, setReview] = useState([]);
-  useEffect(() => {
-    async function getAllStudent() {
       try {
-        const allProduct = await axios.get(
-          `http://localhost:5000/api/products/${id}`
+        const addProductRateing = await axios.put(
+          `http://localhost:5000/api/products/update/${id}`,
+          {
+            rating: (userRating += 1),
+          }
         );
-        const all = await axios.get(
-          "http://localhost:5000/api/rating/getrating"
-        );
-
-        const Product = all.data;
-        const newProduct = Product.filter((p) => {
-          return p.productRating === allProduct.data._id;
-        });
-        setReview(newProduct);
-      } catch (error) {
-        console.log("Problem");
+      } catch (err) {
+        toast.error(err);
       }
     }
-    getAllStudent();
-  }, []);
-
+  };
   const send = () => {
     const existItem = cart.cartItems.find((x) => x._id === getProd._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
@@ -224,7 +234,7 @@ function Seller() {
                 <p>Price: &#x20B9;{getProd.itemPrice}</p>
                 <p>Category: {getProd.itemCategory.toUpperCase()}</p>
                 <Rating ratingValue={getProd.rating * 20} size={20} />(
-                {getProd.rating})
+                {getProd.rating})<p></p>
                 <p>
                   <b>Description:</b> {getProd.itemDescription}
                 </p>
@@ -343,42 +353,76 @@ function Seller() {
           </div>
           <div className="col-lg-15 p-5">
             <Typography variant="h4">Customer Review</Typography>
-            {review.map((item) => {
-              return (
-                <>
-                <div className="p-4">
-                  <Avatar
-                    className="mr-2"
-                    sx={{ background: "black", float: "left" }}
-                    alt={userInfo.firstname}
-                    src="/static/images/avatar/2.jpg"
-                  />
-                  <Typography className="p-1" variant="h6">
-                    {userInfo.firstname + " " + userInfo.lastname}
-                  </Typography>
-                  <Rating ratingValue={item.rating * 20} size="20" />
-                  <Typography className="p-1">{item.comment}</Typography>
-                  </div>
-                </>
-              );
-            })}
+            <>
+              {getRating
+                .filter((item) => {
+                  if (item.productRating === getProd._id) {
+                    return item;
+                  }
+                })
+                .map((val, i) => {
+                  return (
+                    <>
+                      {val ? (
+                        <>
+                          <div key={i} className="p-4">
+                            {user
+                              .filter((t) => {
+                                if (t._id === val.user) {
+                                  return t;
+                                }
+                              })
+                              .map((g,i) => {
+                                return (
+                                  <Avatar
+                                    key={i} 
+                                    className="mr-2"
+                                    sx={{ background: "black", float: "left" }}
+                                    alt={g.firstname}
+                                    src="/static/images/avatar/2.jpg"
+                                  />
+                                );
+                              })}
+                            <Typography className="p-1" variant="h6">
+                              {user
+                                .filter((t) => {
+                                  if (t._id === val.user) {
+                                    return t;
+                                  }
+                                })
+                                .map((g) => {
+                                  return g.firstname + " " + g.lastname;
+                                })}
+                            </Typography>
+                            <Rating ratingValue={val.rating * 20} size="20" />
+                            <Typography className="p-1">
+                              {val.comment}
+                            </Typography>
+                          </div>
+                        </>
+                      ) : (
+                        "No Coustomer Review Yet"
+                      )}
+                    </>
+                  );
+                })}
+            </>
           </div>
           <div
             className="col-lg-15 mt-5"
             style={{ zIndex: 1, background: "#D8E4E6" }}
           >
-            <h3 className="pt-5 pb-5 col-lg-5">Related Products</h3>
+            <h3 className="d-flex pt-5 pb-5 pl-5">Related Products</h3>
             <div className="row pl-5">
               {!all
                 ? "No Related Data"
                 : all.map((val, i) => {
                     return (
                       <>
-                        <div className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
-                          <Link key={i} to={`/Seller/${val._id}`}>
+                        <div key={i} className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
+                          <Link to={`/Seller/${val._id}`}>
                             <Card
                               className="card card-item"
-                              key={i}
                               style={{
                                 overflow: "hidden",
                                 width: "250px",
@@ -473,8 +517,8 @@ function Seller() {
               {product.map((val, i) => {
                 return (
                   <>
-                    <div className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
-                      <Link key={i} to={`/Seller/${val._id}`}>
+                    <div key={i} className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
+                      <Link to={`/Seller/${val._id}`}>
                         <Card
                           className="card card-item"
                           key={i}

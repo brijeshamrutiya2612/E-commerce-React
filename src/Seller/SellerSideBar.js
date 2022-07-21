@@ -36,7 +36,12 @@ const SellerSideBar = () => {
               Home
             </Typography>
             <Typography style={{ paddingTop: "1.3em" }} variant="h6">
+            <Link
+                style={{ textDecoration: "none", color: "#000000" }}
+                to="/SellerManageOrder"
+              >
               Order
+              </Link>
             </Typography>
             <Typography style={{ paddingTop: "1.3em" }} variant="h6">
             <Link

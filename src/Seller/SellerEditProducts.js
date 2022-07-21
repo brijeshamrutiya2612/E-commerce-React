@@ -92,7 +92,7 @@ const SellerEditProducts = () => {
         }
       );
       toast.success("Product's Data Updated");
-      nav("/productview");
+      nav("/SellerProducts");
     } catch (err) {}
   };
   return (
