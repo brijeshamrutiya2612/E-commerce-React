@@ -231,10 +231,10 @@ function Seller() {
                 <h2>
                   <u>{getProd.itemName}</u>
                 </h2>
-                <p>Price: &#x20B9;{getProd.itemPrice}</p>
-                <p>Category: {getProd.itemCategory.toUpperCase()}</p>
                 <Rating ratingValue={getProd.rating * 20} size={20} />(
-                {getProd.rating})<p></p>
+                {getProd.rating})<h5>Price: &#x20B9;{getProd.itemPrice}</h5>
+                <h5>Category: {getProd.itemCategory.toUpperCase()}</h5>
+                <h5>Manufacture By: {getProd.mnfName.toUpperCase()}</h5>
                 <p>
                   <b>Description:</b> {getProd.itemDescription}
                 </p>
@@ -372,10 +372,10 @@ function Seller() {
                                   return t;
                                 }
                               })
-                              .map((g,i) => {
+                              .map((g, i) => {
                                 return (
                                   <Avatar
-                                    key={i} 
+                                    key={i}
                                     className="mr-2"
                                     sx={{ background: "black", float: "left" }}
                                     alt={g.firstname}
@@ -419,7 +419,10 @@ function Seller() {
                 : all.map((val, i) => {
                     return (
                       <>
-                        <div key={i} className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
+                        <div
+                          key={i}
+                          className="col-lg-15 ml-5 my-3 d-flex justify-content-center"
+                        >
                           <Link to={`/Seller/${val._id}`}>
                             <Card
                               className="card card-item"
@@ -517,7 +520,10 @@ function Seller() {
               {product.map((val, i) => {
                 return (
                   <>
-                    <div key={i} className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
+                    <div
+                      key={i}
+                      className="col-lg-15 ml-5 my-3 d-flex justify-content-center"
+                    >
                       <Link to={`/Seller/${val._id}`}>
                         <Card
                           className="card card-item"

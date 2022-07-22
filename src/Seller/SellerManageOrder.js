@@ -11,7 +11,12 @@ function reducer(state, action) {
     case "FETCH_REQUEST":
       return { ...state, loading: true, error: "" };
     case "FETCH_SUCCESS":
-      return { ...state, loading: false, orders: action.payload, error: "" };
+      return {
+        ...state,
+        loading: false,
+        sellerorders: action.payload,
+        error: "",
+      };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
   }
@@ -19,8 +24,8 @@ function reducer(state, action) {
 
 const SellerManageOrder = () => {
   const { state } = useContext(Store);
-  const { userInfo,sellerInfo } = state;
-  const [{ loading, error, orders }, dispatch] = useReducer(reducer, {
+  const { sellerInfo } = state;
+  const [{ loading, error, sellerorders }, dispatch] = useReducer(reducer, {
     loading: true,
     error: "",
   });
@@ -30,10 +35,7 @@ const SellerManageOrder = () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/orders/seller`,
-          {
-            headers: { authorization: `Bearer ${sellerInfo.token}` },
-          }
+          `http://localhost:5000/api/sellerorders/mine`
         );
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
@@ -41,16 +43,8 @@ const SellerManageOrder = () => {
       }
     };
     fetchdata();
-    const fetchProductId = async () => {
-      dispatch({ type: "FETCH_REQUEST" });
-      try {
-        const { data } = await axios.get(`http://localhost:5000/api/products`);
-        setId(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
   }, [sellerInfo]);
+
   return (
     <>
       {loading ? (
@@ -91,7 +85,7 @@ const SellerManageOrder = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {orders.map((item, i) => {
+                    {sellerorders.map((item, i) => {
                       return (
                         <TableRow
                           key={i}
@@ -104,45 +98,50 @@ const SellerManageOrder = () => {
                           <TableCell component="th" scope="row">
                             {i + 1}
                           </TableCell>
-                          {item.orderItems.map((val, i) => {
-                            if(val.mnfName === sellerInfo.mnfName){
-                                console.log(val.mnfName)
-                            }
-                            return (
-                              <>
-                                <TableRow>
-                                  <TableCell
-                                    align="left"
-                                    style={{
-                                      width: "100px",
-
-                                      marginRight: "12px",
-                                    }}
-                                  >
-                                    <img
+                          {item.orderItems
+                            .filter((itm) => {
+                              if (itm.mnfName === sellerInfo.mnfName) {
+                                console.log(itm.mnfName)
+                                return itm;
+                              }
+                            })
+                            .map((val, i) => {
+                              return (
+                                <>
+                                  <TableRow>
+                                    <TableCell
+                                      align="left"
                                       style={{
-                                        minWidth: "100px",
-                                        maxWidth: "200px",
                                         width: "100px",
-                                        height: "150px",
-                                        float: "left",
-                                        marginTop: "1em",
+
                                         marginRight: "12px",
                                       }}
-                                      className="img-fluid"
-                                      src={val.image}
-                                      alt=""
-                                    />
-                                  </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                  <TableCell align="left">
-                                    <b>{item.itemName}</b>
-                                  </TableCell>
-                                </TableRow>
-                              </>
-                            );
-                          })}
+                                    >
+                                      <p>{val.firstname}</p>
+                                      <img
+                                        style={{
+                                          minWidth: "100px",
+                                          maxWidth: "200px",
+                                          width: "100px",
+                                          height: "150px",
+                                          float: "left",
+                                          marginTop: "1em",
+                                          marginRight: "12px",
+                                        }}
+                                        className="img-fluid"
+                                        src={val.image}
+                                        alt=""
+                                      />
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell align="left">
+                                      <b>{item.itemName}</b>
+                                    </TableCell>
+                                  </TableRow>
+                                </>
+                              );
+                            })}
                           <TableCell align="left">
                             <span className="mx-2">
                               {item.isDelivered

@@ -29,7 +29,7 @@ function SellerAddProduct() {
   const [itemUnit, setItemUnit] = useState("")
   const [itemDescription, setItemDescription] = useState("")
   const [image, setImage] = useState("")
-console.log(localStorage.getItem("sellerInfo"))
+
   const sendRequest = async () => {
     const res = await axios
       .post("http://localhost:5000/api/products/add", {
@@ -65,8 +65,8 @@ console.log(localStorage.getItem("sellerInfo"))
     } else if (image === "") {
       toast.error("Image is Required");
     } 
-    sendRequest().then((data) => console.log(data));
-    // nav('/productview')
+    sendRequest()
+    nav('/SellerProduct')
     setItemName('')
   };
 

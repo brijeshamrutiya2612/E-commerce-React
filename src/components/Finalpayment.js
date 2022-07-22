@@ -67,6 +67,23 @@ function Finalpayment() {
           },
         }
       );
+      const { sellerData } = await axios.post(
+        "http://localhost:5000/api/sellerorders",
+        {
+          orderItems: cartItems,
+          shippingAddress: shippingAddress,
+          paymentMethod: paymentMethod,
+          itemPrice: cartItems.itemPrice,
+          shippingPrice: cartItems.shippingPrice,
+          taxPrice: cartItems.taxPrice,
+          totalPrice: cartItems.totalPrice,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
       ctxDispatch({ type: "CART_CLEAR" });
       dispatch({ type: "CREATE_SUCCESS" });
       localStorage.removeItem("cartItems");

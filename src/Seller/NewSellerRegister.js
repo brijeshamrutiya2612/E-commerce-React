@@ -1,4 +1,14 @@
-import { Button, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,6 +16,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserData } from "../store/userSlice";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const NewSellerRegister = () => {
   const sign = useNavigate();
@@ -48,18 +60,14 @@ const NewSellerRegister = () => {
     const data = await res.data;
     return data;
   };
-  
+
+  const [error, setEror] = useState("");
   const signIn = async (e) => {
     e.preventDefault();
-    if (registers.password !== registers.cPassword) {
-      toast.error("Password do not match");
-      return;
-    }
-  
+
     const {
       firstname,
       lastname,
-      
       email,
       password,
       address1,
@@ -98,20 +106,59 @@ const NewSellerRegister = () => {
     } else if (age === "") {
       toast.error("Age is Require");
     }
-    sendRequest().then(() => sign("/login"));
+    if (registers.password !== registers.cPassword) {
+      toast.error("Password do not match");
+    }
+
+    const res = await axios.get("http://localhost:5000/api/seller/sellerlogin");
+
+    if (res.data.sellers.find((user) => user.GSTIN === registers.gstin)) {
+      toast.error("This GST No. Already Register");
+    } else if (
+      res.data.sellers.find((user) => user.PAN_NO === registers.panno)
+    ) {
+      toast.error("This PAN No. Already Register");
+    }
+    if (res.data.sellers.find((user) => user.Mobile === registers.phone)) {
+      toast.error("This Mobile No. Already Register");
+    }
+    if (res.data.sellers.find((user) => user.email === registers.email)) {
+      setEror("This Email Already Register");
+    }
+    // sendRequest().then(() => sign("/login"));
     // localStorage.setItem("seller", JSON.stringify(registers));
   };
+  const [values, setValues] = React.useState({
+    amount: "",
+    password: "",
+    weight: "",
+    weightRange: "",
+    showPassword: false,
+  });
 
+  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const handleClickShowPassword = () => {
+    setValues({
+      ...values,
+      showPassword: !values.showPassword,
+    });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   return (
     <>
       <div
         style={{
-          background: "#D8E4E6",
           width: "auto",
           height: "auto",
         }}
       >
-        <div className="container col-lg-4 pt-5 pb-3 justify-content-center">
+        <div className="container col-lg-6 pt-5 pb-3 justify-content-center">
           <form>
             <Container className="pt-1 justify-content-center">
               <div
@@ -124,54 +171,127 @@ const NewSellerRegister = () => {
                   opacity: 0.8,
                 }}
               >
-                <h2 className="container pt-4 ml-4 col-md-11">Sign Up</h2>
-                <div className="container col-md-15 justify-content-center">
+                <h2 className="container pt-4 ml-4 col-md-11">
+                  Register Seller Account
+                </h2>
+                <Typography
+                  className="container pt-4 ml-2 col-md-11"
+                  variant="h6"
+                >
+                  Manufacture Information
+                </Typography>
+                <Box
+                  component="form"
+                  sx={{
+                    "& > :not(style)": { m: 3, width: "96ch" },
+                  }}
+                  noValidate
+                  autoComplete="off"
+                >
                   <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
-                    label="Firstname"
-                    variant="outlined"
-                    type="text"
-                    name="name.firstname"
-                    onChange={(e) =>
-                      setRegister({ ...registers, firstname: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="container col-md-15 justify-content-center">
-                  <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
-                    label="Lastname"
-                    variant="outlined"
-                    name="name.lastname"
-                    onChange={(e) =>
-                      setRegister({ ...registers, lastname: e.target.value })
-                    }
-                  />
-                  <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
                     label="Manufacturer Name:"
                     type="text"
                     variant="outlined"
+                    color={error ? "error" : "info"}
                     onChange={(e) =>
                       setRegister({ ...registers, mnfName: e.target.value })
                     }
                   />
-                </div>
-                <div className="container col-md-15 justify-content-center">
+                </Box>
+                <Box
+                  component="form"
+                  sx={{
+                    "& > :not(style)": { m: 3, width: "33ch" },
+                  }}
+                  noValidate
+                  autoComplete="off"
+                >
                   <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
+                    label="GSTIN No.:"
+                    type="text"
+                    variant="outlined"
+                    color={error ? "error" : "primary"}
+                    onChange={(e) =>
+                      setRegister({ ...registers, gstin: e.target.value })
+                    }
+                  />
+                  <TextField
+                    label="PAN No.:"
+                    type="text"
+                    variant="outlined"
+                    color={error ? "error" : "primary"}
+                    onChange={(e) =>
+                      setRegister({ ...registers, panno: e.target.value })
+                    }
+                  />
+                </Box>
+                <Typography
+                  className="container pt-4 ml-2 col-md-11"
+                  variant="h6"
+                >
+                  Social Information
+                </Typography>
+                <Box
+                  component="form"
+                  sx={{
+                    "& > :not(style)": { m: 3, width: "96ch" },
+                  }}
+                  noValidate
+                  autoComplete="off"
+                >
+                  <TextField
                     type="email"
                     label="Email"
-                    name="email"
-                    variant="outlined"
+                    color={error ? "error" : "primary"}
                     onChange={(e) =>
                       setRegister({ ...registers, email: e.target.value })
                     }
                   />
-                </div>
-                <div className="container col-md-15 justify-content-center">
+                  <span
+                    style={{ color: "#D35353" }}
+                    className="ml-4 col-md-11 justify-content-center"
+                  >
+                    {error}
+                  </span>
+                </Box>
+                <Box
+                  component="form"
+                  sx={{
+                    "& > :not(style)": { m: 3, width: "45ch" },
+                  }}
+                  noValidate
+                  autoComplete="off"
+                >
+                  <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password">
+                      Password
+                    </InputLabel>
+                    <OutlinedInput
+                      id="outlined-adornment-password"
+                      type={values.showPassword ? "text" : "password"}
+                      value={values.password}
+                      onChange={handleChange("password")}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {values.showPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      label="Password"
+                    />
+                  </FormControl>
+
                   <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
                     label="Password"
                     type="password"
                     name="password"
@@ -180,10 +300,8 @@ const NewSellerRegister = () => {
                       setRegister({ ...registers, password: e.target.value })
                     }
                   />
-                </div>
-                <div className="container col-md-15 justify-content-center">
+
                   <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
                     label="confirm Password"
                     type="password"
                     variant="outlined"
@@ -192,10 +310,51 @@ const NewSellerRegister = () => {
                       setRegister({ ...registers, cPassword: e.target.value })
                     }
                   />
-                </div>
-                <div className="container col-md-15 justify-content-center">
+                </Box>
+                <Typography
+                  className="container pt-4 ml-2 col-md-11"
+                  variant="h6"
+                >
+                  Personal Information
+                </Typography>
+                <Box
+                  component="form"
+                  sx={{
+                    "& > :not(style)": { m: 3, width: "45ch" },
+                  }}
+                  noValidate
+                  autoComplete="off"
+                >
                   <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
+                    label="Firstname"
+                    variant="outlined"
+                    type="text"
+                    name="name.firstname"
+                    color={error ? "error" : "primary"}
+                    htmlFor="component-outlined"
+                    onChange={(e) =>
+                      setRegister({ ...registers, firstname: e.target.value })
+                    }
+                  />
+                  <TextField
+                    label="Lastname"
+                    variant="outlined"
+                    name="name.lastname"
+                    color={error ? "error" : "primary"}
+                    onChange={(e) =>
+                      setRegister({ ...registers, lastname: e.target.value })
+                    }
+                  />
+                </Box>
+                <Box
+                  component="form"
+                  sx={{
+                    "& > :not(style)": { m: 3, width: "45ch" },
+                  }}
+                  noValidate
+                  autoComplete="off"
+                >
+                  <TextField
                     label="Address1"
                     type="text"
                     variant="outlined"
@@ -203,10 +362,7 @@ const NewSellerRegister = () => {
                       setRegister({ ...registers, address1: e.target.value })
                     }
                   />
-                </div>
-                <div className="container col-md-15 justify-content-center">
                   <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
                     label="Address2"
                     type="text"
                     variant="outlined"
@@ -214,10 +370,8 @@ const NewSellerRegister = () => {
                       setRegister({ ...registers, address2: e.target.value })
                     }
                   />
-                </div>
-                <div className="container col-md-15 justify-content-center">
+
                   <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
                     label="Address3"
                     type="text"
                     variant="outlined"
@@ -225,10 +379,7 @@ const NewSellerRegister = () => {
                       setRegister({ ...registers, address3: e.target.value })
                     }
                   />
-                </div>
-                <div className="container col-md-15 justify-content-center">
                   <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
                     label="Mobile:"
                     type="number"
                     variant="outlined"
@@ -236,40 +387,14 @@ const NewSellerRegister = () => {
                       setRegister({ ...registers, phone: e.target.value })
                     }
                   />
-                  <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
-                    label="Age:"
-                    type="number"
-                    variant="outlined"
-                    onChange={(e) =>
-                      setRegister({ ...registers, age: e.target.value })
-                    }
-                  />
-                  <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
-                    label="GSTIN No.:"
-                    type="text"
-                    variant="outlined"
-                    onChange={(e) =>
-                      setRegister({ ...registers, gstin: e.target.value })
-                    }
-                  />
-                  <TextField
-                    className="ml-4 col-md-11 my-3 justify-content-center"
-                    label="PAN No.:"
-                    type="text"
-                    variant="outlined"
-                    onChange={(e) =>
-                      setRegister({ ...registers, panno: e.target.value })
-                    }
-                  />
+                </Box>
+                <div className="container col-md-10 justify-content-center">
                   <div className="my-5 justify-content-center">
                     <Button
                       className="ml-4 col-md-11 justify-content-center"
                       variant="contained"
                       onClick={signIn}
                       style={{
-                        backgroundColor: "#96B5BA",
                         border: "none",
                         borderRadius: "50px",
                       }}
@@ -284,11 +409,6 @@ const NewSellerRegister = () => {
               </div>
             </Container>
           </form>
-          {/* {register.map((item, i)=>{
-      return(
-        <p key={i}>{item.firstname}</p>
-      )
-    })} */}
         </div>
       </div>
     </>
