@@ -19,8 +19,7 @@ Link{
 }
 
 .checkout-steps > div.active {
-  border-bottom: 0.2rem solid #f08000;
-  color: #f08000;
+  border-bottom: 0.2rem solid #557794;
 }
 .text-bold{
   font-weight: bold;

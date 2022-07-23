@@ -81,7 +81,6 @@ const Login = () => {
   return (
     <div
       style={{
-        background: "#D8E4E6",
         width: "auto",
         height: "auto",
       }}

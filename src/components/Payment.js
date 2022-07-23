@@ -32,7 +32,7 @@ const Payment = () => {
       <CheckOutSteps step1 step2 step3></CheckOutSteps>
       <div 
         style={{
-          background: "#D8E4E6",
+          background: "#D3DDE5",
           width: "auto",
           height: "auto",
         }}
@@ -61,7 +61,7 @@ const Payment = () => {
             >
             </Form.Check>
             <div className="text-left my-1">
-          <Button type="submit" variant="warning" size="sm">
+          <Button style={{background:"#6897bb",border:"1px solid #6897bb"}} type="submit" size="sm">
             Continue
           </Button>
         </div>

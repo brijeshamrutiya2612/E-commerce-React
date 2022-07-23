@@ -1,10 +1,8 @@
 import React from "react";
-import {
-  Container,
-  Navbar,
-} from "react-bootstrap";
+import { Container, Navbar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import ShoppingBag from "@mui/icons-material/ShoppingBag";
+import { Typography } from "@mui/material";
 
 function Footer() {
   const nav = useNavigate();
@@ -21,30 +19,36 @@ function Footer() {
           width: "100%",
           backgroundColor: "#fff",
           height: "52px",
-          marginTop:"1em",
+          marginTop: "1em",
           position: "absolute",
         }}
       >
-        <Navbar expand="lg" style={{ boxShadow: "1px 1px 10px #343A40", background: "#96b5ba"}}>
+        <Navbar
+          expand="lg"
+          style={{ background: "#557794" }}
+        >
           <Container>
             <Navbar.Brand className="container d-flex justify-content-center">
               <ShoppingBag
-                onClick={home}
-                style={{
-                  fontSize: "50px",
-                  textAlign: "center",
-                }}
+                sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
               />
-              <span
-                style={{
-                  fontSize: "30px",
-                  textAlign: "center",
-                  color: "#14657C",
-                  lineHeight: "1.8em",
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="/"
+                sx={{
+                  mr: 2,
+                  display: { xs: "none", md: "flex" },
+                  fontFamily: "monospace",
+                  fontWeight: 700,
+                  letterSpacing: ".3rem",
+                  color: "inherit",
+                  textDecoration: "none",
                 }}
               >
                 MART
-              </span>
+              </Typography>
             </Navbar.Brand>
           </Container>
         </Navbar>

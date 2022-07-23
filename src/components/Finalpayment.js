@@ -99,7 +99,7 @@ function Finalpayment() {
       <CheckOutSteps step1 step2 step3 step4></CheckOutSteps>
       <div
         style={{
-          background: "#D8E4E6",
+          background: "#D3DDE5",
           width: "auto",
           height: "auto",
         }}
@@ -230,7 +230,7 @@ function Finalpayment() {
                         <div className="demo-content bg-alt">
                           <div className="text-center my-4">
                             <Button
-                              variant="warning"
+                              style={{background:"#6897bb",border:"1px solid #6897bb"}}
                               size="md"
                               type="button"
                               onClick={handleSubmit}

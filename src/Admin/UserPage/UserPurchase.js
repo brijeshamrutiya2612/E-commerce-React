@@ -1,19 +1,66 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
-import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
-import {
-  Paper,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import { Store } from "../../store/Context";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Store } from "../../store/Context";
-import SideBar from "./SideBar";
+import { Spinner } from "react-bootstrap";
+import { Typography } from "@mui/material";
 
+const columns = [
+  { id: "name", label: "Name", minWidth: 170 },
+  { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
+  {
+    id: "population",
+    label: "Population",
+    minWidth: 170,
+    align: "right",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "size",
+    label: "Size\u00a0(km\u00b2)",
+    minWidth: 170,
+    align: "right",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "density",
+    label: "Density",
+    minWidth: 170,
+    align: "right",
+    format: (value) => value.toFixed(2),
+  },
+];
+
+const rows = [
+  createData("India", "IN", 1324171354, 3287263),
+  createData("China", "CN", 1403500365, 9596961),
+  createData("Italy", "IT", 60483973, 301340),
+  createData("United States", "US", 327167434, 9833520),
+  createData("Canada", "CA", 37602103, 9984670),
+  createData("Australia", "AU", 25475400, 7692024),
+  createData("Germany", "DE", 83019200, 357578),
+  createData("Ireland", "IE", 4857000, 70273),
+  createData("Mexico", "MX", 126577691, 1972550),
+  createData("Japan", "JP", 126317000, 377973),
+  createData("France", "FR", 67022000, 640679),
+  createData("United Kingdom", "GB", 67545757, 242495),
+  createData("Russia", "RU", 146793744, 17098246),
+  createData("Nigeria", "NG", 200962417, 923768),
+  createData("Brazil", "BR", 210147125, 8515767),
+];
+
+function createData(name, code, population, size) {
+  const density = population / size;
+  return { name, code, population, size, density };
+}
 function reducer(state, action) {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -25,6 +72,18 @@ function reducer(state, action) {
   }
 }
 const UserPurchase = () => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
   const { state } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
@@ -60,7 +119,7 @@ const UserPurchase = () => {
     };
     fetchProductId();
   }, [userInfo]);
-  console.log(id);
+
   return (
     <>
       {loading ? (
@@ -72,148 +131,75 @@ const UserPurchase = () => {
       ) : error ? (
         <div>{error}</div>
       ) : (
-        <>
-          {/* <div className="my-4 d-flex"> */}
-          <Row>
-            <Col md={3} style={{ height: "auto" }}>
-              <SideBar></SideBar>
-            </Col>
-            <Col style={{ height: "auto", width: "auto" }}>
-              {/* <div> */}
-              <div
-                className="col-lg-10 my-5"
-                style={{ paddingLeft: "1em"}}
-              >
-                <div
-                  style={{
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                    width: "auto",
-                    height: "auto",
-                  }}
-                >
-                  <div className="pl-1">
-                  {orders.length !== 0 ? 
-                  <>
-                  <TableContainer component={Paper}>
-                <Table sx={{ width: 750 }} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Item</TableCell>
-                      <TableCell colSpan={2}>Item Description</TableCell>
-                      <TableCell>Paid</TableCell>
-                      <TableCell>Delivered</TableCell>
-                      <TableCell>Date</TableCell>
-                      <TableCell align="right">Total Amount</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {orders.map((item, i) => {
-                      return (
-                        <TableRow
-                          key={i}
-                          sx={{
-                            "&:last-child td, &:last-child th": {
-                              border: 0,
-                            },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {i + 1}
-                          </TableCell>
-                          {item.orderItems.map((val, i) => {
+        <div className="col-lg-8">
+          <Paper sx={{ width: "100%", overflow: "hidden", mt: 5 }}>
+            <TableContainer sx={{ maxHeight: 640 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>#</TableCell>
+                    <TableCell colSpan={2}>Item Description</TableCell>
+                    <TableCell>Item Price</TableCell>
+                    <TableCell>Payment</TableCell>
+                    <TableCell>Delivery</TableCell>
+                    <TableCell>Total</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {/* .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) */}
+                  {orders.map((row, i) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.code}
+                        style={{ verticalAlign: "top" }}
+                      >
+                        <TableCell>{i + 1}</TableCell>
+                        <TableCell>
+                          {row.orderItems.map((item, i) => {
                             return (
                               <>
-                                <TableRow>
-                                  <TableCell
-                                    align="left"
-                                    style={{
-                                      width: "100px",
-
-                                      marginRight: "12px",
-                                    }}
-                                  >
+                                <TableRow rowsPan="2">
+                                  <TableCell style={{ borderBottom: "none" }}>
                                     <img
                                       style={{
-                                        minWidth: "100px",
-                                        maxWidth: "200px",
                                         width: "100px",
-                                        height: "150px",
-                                        float: "left",
-                                        marginTop: "1em",
-                                        marginRight: "12px",
                                       }}
-                                      className="img-fluid"
-                                      src={val.image}
-                                      alt=""
+                                      src={item.image}
                                     />
-                                    <>
-                                      <Button
-                                        className="my-2"
-                                        size="md"
-                                        variant="success"
-                                        onClick={() => {
-                                          navigate(`/seller/${val._id}`);
-                                        }}
-                                      >
-                                        Repeat
-                                      </Button>
-                                    </>
                                   </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                  <TableCell align="left">
-                                    <b>{item.itemName}</b>
-                                  </TableCell>
+                                  <TableRow style={{ borderBottom: "none" }}>
+                                    <TableCell style={{ borderBottom: "none" }}>
+                                      <Typography>
+                                        Name:
+                                        {item.itemName}
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
                                 </TableRow>
                               </>
                             );
                           })}
-                          <TableCell align="left">
-                            <Button variant="danger" className="btn btn-sm">
-                              <i className="fas fa-trash"></i>
-                            </Button>
-                          </TableCell>
-                          <TableCell align="left">
-                            <span className="mx-2">
-                              {item.isDelivered
-                                ? item.deliveredAt.substring(0, 10)
-                                : "No"}
-                            </span>
-                          </TableCell>
-                          <TableCell align="left">
-                            <span className="mx-2">
-                              {item.isPaid
-                                ? item.paidAt.substring(0, 10)
-                                : "No"}
-                            </span>
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.createdAt.substring(0, 10)}
-                          </TableCell>
-                          <TableCell align="right">
-                            &#x20B9; {item.totalPrice.toFixed(2)}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-                  </>
-                  :<>
-                    <div className="container">
-                    <div className="mt-5">
-                    <Typography variant="h4">You have a no any Products Purchase Yet</Typography>
-                    </div>
-                    </div></>}
-               </div>
-                </div>
-              </div>
-            </Col>
-          </Row>
-          {/* </div> */}
-        </>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+        </div>
       )}
     </>
   );

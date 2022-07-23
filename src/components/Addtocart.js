@@ -57,7 +57,7 @@ const Addtocart = () => {
   return (
     <div style={{marginTop:"2em"}}>
       <CheckOutSteps step1></CheckOutSteps>
-      <div className="pl-5 pr-5" style={{ background: "#D8E4E6" }}>
+      <div className="pl-5 pr-5" style={{ background: "#D3DDE5" }}>
         <div className="pt-3">
           <Button variant="light" className="btn" onClick={home}>
             <strong>&#x2190;Continue Shopping</strong>
@@ -200,9 +200,9 @@ const Addtocart = () => {
               ) : (
                 <Button
                   onClick={payment}
-                  variant="success"
                   disabled={cartItems.length === 0}
                   className="text-right ml-6 btn col-md-15 lg"
+                  style={{background:"#6897BB",border:"1px solid #6897BB"}}
                 >
                   Procced to Payment
                 </Button>

@@ -37,6 +37,7 @@ const NewSellerRegister = () => {
     age: "",
     gstin: "",
     panno: "",
+    showPassword: false,
   });
 
   // console.log(registers);
@@ -61,11 +62,13 @@ const NewSellerRegister = () => {
     return data;
   };
 
-  const [error, setEror] = useState("");
   const signIn = async (e) => {
     e.preventDefault();
 
     const {
+      mnfName,
+      gstin,
+      panno,
       firstname,
       lastname,
       email,
@@ -74,10 +77,19 @@ const NewSellerRegister = () => {
       address2,
       address3,
       phone,
-      age,
     } = registers;
-
-    if (firstname === "") {
+    
+    if (mnfName === "") {
+      toast.error("Please Enter Your Manufacture Name");
+    } else if (gstin === "") {
+      toast.error("GSTIN No. is Require");
+    } else if (gstin.length === 15) {
+      toast.error("Please Enter valid GSTIN No.");
+    } else if (panno === "") {
+      toast.error("PAN No. is Require");
+    } else if (panno.length === 10) {
+      toast.error("Please Enter valid PAN No.");
+    } else if (firstname === "") {
       toast.error("First Name is Require");
     } else if (firstname.length < 3) {
       toast.error("First Name is Greter than 3 words");
@@ -103,9 +115,7 @@ const NewSellerRegister = () => {
       toast.error("Mobile No. is Required");
     } else if (phone.length < 5) {
       toast.error("Plz Enter Mobile No. Must be < 5");
-    } else if (age === "") {
-      toast.error("Age is Require");
-    }
+    } 
     if (registers.password !== registers.cPassword) {
       toast.error("Password do not match");
     }
@@ -123,7 +133,10 @@ const NewSellerRegister = () => {
       toast.error("This Mobile No. Already Register");
     }
     if (res.data.sellers.find((user) => user.email === registers.email)) {
-      setEror("This Email Already Register");
+      toast.error("This Email Already Register");
+    }
+    if (res.data.sellers.find((user) => user.mnfName === registers.mnfName)) {
+      toast.error(`This ${registers.mnfName} Name Already Register` );
     }
     // sendRequest().then(() => sign("/login"));
     // localStorage.setItem("seller", JSON.stringify(registers));
@@ -133,7 +146,7 @@ const NewSellerRegister = () => {
     password: "",
     weight: "",
     weightRange: "",
-    showPassword: false,
+    
   });
 
   const handleChange = (prop) => (event) => {
@@ -158,7 +171,7 @@ const NewSellerRegister = () => {
           height: "auto",
         }}
       >
-        <div className="container col-lg-6 pt-5 pb-3 justify-content-center">
+        <div className="container col-lg-7 pt-5 pb-3 justify-content-center">
           <form>
             <Container className="pt-1 justify-content-center">
               <div
@@ -192,7 +205,6 @@ const NewSellerRegister = () => {
                     label="Manufacturer Name:"
                     type="text"
                     variant="outlined"
-                    color={error ? "error" : "info"}
                     onChange={(e) =>
                       setRegister({ ...registers, mnfName: e.target.value })
                     }
@@ -210,7 +222,6 @@ const NewSellerRegister = () => {
                     label="GSTIN No.:"
                     type="text"
                     variant="outlined"
-                    color={error ? "error" : "primary"}
                     onChange={(e) =>
                       setRegister({ ...registers, gstin: e.target.value })
                     }
@@ -219,7 +230,7 @@ const NewSellerRegister = () => {
                     label="PAN No.:"
                     type="text"
                     variant="outlined"
-                    color={error ? "error" : "primary"}
+                    color={registers.panno.length === 10 ? "secondary": "success"}
                     onChange={(e) =>
                       setRegister({ ...registers, panno: e.target.value })
                     }
@@ -229,7 +240,7 @@ const NewSellerRegister = () => {
                   className="container pt-4 ml-2 col-md-11"
                   variant="h6"
                 >
-                  Social Information
+                  Create Seller Email
                 </Typography>
                 <Box
                   component="form"
@@ -242,17 +253,10 @@ const NewSellerRegister = () => {
                   <TextField
                     type="email"
                     label="Email"
-                    color={error ? "error" : "primary"}
                     onChange={(e) =>
                       setRegister({ ...registers, email: e.target.value })
                     }
                   />
-                  <span
-                    style={{ color: "#D35353" }}
-                    className="ml-4 col-md-11 justify-content-center"
-                  >
-                    {error}
-                  </span>
                 </Box>
                 <Box
                   component="form"
@@ -268,9 +272,11 @@ const NewSellerRegister = () => {
                     </InputLabel>
                     <OutlinedInput
                       id="outlined-adornment-password"
-                      type={values.showPassword ? "text" : "password"}
-                      value={values.password}
-                      onChange={handleChange("password")}
+                      type={registers.showPassword ? "text" : "password"}
+                      value={registers.password}
+                      onChange={(e) =>
+                        setRegister({ ...registers, password: e.target.value })
+                      }
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton
@@ -290,17 +296,6 @@ const NewSellerRegister = () => {
                       label="Password"
                     />
                   </FormControl>
-
-                  <TextField
-                    label="Password"
-                    type="password"
-                    name="password"
-                    variant="outlined"
-                    onChange={(e) =>
-                      setRegister({ ...registers, password: e.target.value })
-                    }
-                  />
-
                   <TextField
                     label="confirm Password"
                     type="password"
@@ -330,7 +325,6 @@ const NewSellerRegister = () => {
                     variant="outlined"
                     type="text"
                     name="name.firstname"
-                    color={error ? "error" : "primary"}
                     htmlFor="component-outlined"
                     onChange={(e) =>
                       setRegister({ ...registers, firstname: e.target.value })
@@ -340,7 +334,6 @@ const NewSellerRegister = () => {
                     label="Lastname"
                     variant="outlined"
                     name="name.lastname"
-                    color={error ? "error" : "primary"}
                     onChange={(e) =>
                       setRegister({ ...registers, lastname: e.target.value })
                     }

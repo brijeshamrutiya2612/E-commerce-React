@@ -83,7 +83,6 @@ function Home() {
                   <div
                     className="my-4 p-2"
                     style={{
-                      background: "#D8E4E6",
                       position: "fixed",
                       width: "100%",
                     }}
@@ -109,8 +108,6 @@ function Home() {
                           <Carousel
                             fade
                             style={{
-                              border: "50px solid #D8E4E6",
-                              borderRadius: "50px",
                               padding: "3em",
                             }}
                             activeIndex={index}
@@ -151,7 +148,6 @@ function Home() {
                           </div>
                           <div
                             className="row"
-                            style={{ background: "#D8E4E6" }}
                           >
                             {getProd
                               .filter((itm) => {
@@ -266,7 +262,6 @@ function Home() {
                           </div>
                           <div
                             className="row"
-                            style={{ background: "#D8E4E6" }}
                           >
                             {getProd
                               .filter((itm) => {
@@ -381,7 +376,6 @@ function Home() {
                           </div>
                           <div
                             className="row"
-                            style={{ background: "#D8E4E6" }}
                           >
                             {getProd
                               .filter((itm) => {
@@ -496,7 +490,6 @@ function Home() {
                           </div>
                           <div
                             className="row"
-                            style={{ background: "#D8E4E6" }}
                           >
                             {getProd
                               .filter((itm) => {
@@ -611,7 +604,6 @@ function Home() {
                           </div>
                           <div
                             className="row"
-                            style={{ background: "#D8E4E6" }}
                           >
                             {getProd
                               .filter((itm) => {
@@ -726,7 +718,6 @@ function Home() {
                           </div>
                           <div
                             className="row"
-                            style={{ background: "#D8E4E6" }}
                           >
                             {getProd
                               .filter((itm) => {

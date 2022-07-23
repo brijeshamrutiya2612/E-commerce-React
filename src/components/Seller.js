@@ -15,6 +15,7 @@ import { FaCartArrowDown, FaCartPlus } from "react-icons/fa";
 import { getData } from "../store/ProductsSlice";
 import { Store } from "../store/Context";
 import { Rating } from "react-simple-star-rating";
+import ShoppingBag from "@mui/icons-material/ShoppingBag";
 import {
   AppBar,
   Avatar,
@@ -184,7 +185,6 @@ function Seller() {
             <div
               className="my-4 p-2"
               style={{
-                background: "#D8E4E6",
                 position: "fixed",
                 width: "100%",
               }}
@@ -234,7 +234,20 @@ function Seller() {
                 <Rating ratingValue={getProd.rating * 20} size={20} />(
                 {getProd.rating})<h5>Price: &#x20B9;{getProd.itemPrice}</h5>
                 <h5>Category: {getProd.itemCategory.toUpperCase()}</h5>
-                <h5>Manufacture By: {getProd.mnfName.toUpperCase()}</h5>
+                {getProd.mnfName ? (
+                  <h5>Manufacture By: {getProd.mnfName.toUpperCase()}</h5>
+                ) : (
+                  <h5>
+                    Manufacture By:{" "}
+                    <ShoppingBag
+                      style={{
+                        fontSize: "25px",
+                        textAlign: "center",
+                      }}
+                    />{" "}
+                    MART Product
+                  </h5>
+                )}
                 <p>
                   <b>Description:</b> {getProd.itemDescription}
                 </p>
@@ -410,7 +423,7 @@ function Seller() {
           </div>
           <div
             className="col-lg-15 mt-5"
-            style={{ zIndex: 1, background: "#D8E4E6" }}
+            style={{ zIndex: 1, background: "#D3DDE5" }}
           >
             <h3 className="d-flex pt-5 pb-5 pl-5">Related Products</h3>
             <div className="row pl-5">
@@ -513,10 +526,15 @@ function Seller() {
                   })}
             </div>
           </div>
-
-          <div style={{ zIndex: 0, background: "#D8E4E6" }}>
+          <div
+            style={{
+              marginTop: "2rem",
+              marginBottom: "2rem",
+            }}
+          ></div>
+          <div className="my-5" style={{ zIndex: 0, background: "#D3DDE5" }}>
             <h3 className="d-flex pt-5 pb-5 pl-5">Also may you like</h3>
-            <div className="row pl-5">
+            <div className="row pl-5 pb-5">
               {product.map((val, i) => {
                 return (
                   <>

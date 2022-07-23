@@ -153,7 +153,7 @@ const OrderScreen = () => {
         </Helmet>
         <div
         style={{
-          background: "#D8E4E6",
+          background: "#D3DDE5",
           width: "auto",
           height: "auto",
         }}

@@ -59,7 +59,7 @@ const ShippingAddress = () => {
       <CheckOutSteps step1 step2></CheckOutSteps>
       <div
         style={{
-          background: "#D8E4E6",
+          background: "#D3DDE5",
           width: "auto",
           height: "auto",
         }}
@@ -140,7 +140,7 @@ const ShippingAddress = () => {
             </form>
           </div>
           <div className="text-left my-1">
-            <Button variant="warning" size="sm" onClick={submitHandler}>
+            <Button style={{background:"#6897bb",border:"1px solid #6897bb"}} size="sm" onClick={submitHandler}>
               Continue
             </Button>
           </div>
