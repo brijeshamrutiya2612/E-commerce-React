@@ -423,7 +423,7 @@ function Seller() {
           </div>
           <div
             className="col-lg-15 mt-5"
-            style={{ zIndex: 1, background: "#D3DDE5" }}
+            style={{ zIndex: 1, }}
           >
             <h3 className="d-flex pt-5 pb-5 pl-5">Related Products</h3>
             <div className="row pl-5">
@@ -532,7 +532,7 @@ function Seller() {
               marginBottom: "2rem",
             }}
           ></div>
-          <div className="my-5" style={{ zIndex: 0, background: "#D3DDE5" }}>
+          <div className="my-5" style={{ zIndex: 0 }}>
             <h3 className="d-flex pt-5 pb-5 pl-5">Also may you like</h3>
             <div className="row pl-5 pb-5">
               {product.map((val, i) => {

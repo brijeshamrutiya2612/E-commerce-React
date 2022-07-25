@@ -10,8 +10,10 @@ import TableRow from "@mui/material/TableRow";
 import { Store } from "../../store/Context";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Spinner } from "react-bootstrap";
-import { Typography } from "@mui/material";
+import { Col, FormLabel, Row, Spinner } from "react-bootstrap";
+import { Button, Typography } from "@mui/material";
+import SideBar from "./SideBar";
+import { Link } from "react-router-dom";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 170 },
@@ -131,78 +133,280 @@ const UserPurchase = () => {
       ) : error ? (
         <div>{error}</div>
       ) : (
-        <div className="col-lg-8">
-          <Paper sx={{ width: "100%", overflow: "hidden", mt: 5 }}>
-            <TableContainer sx={{ maxHeight: 640 }}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>#</TableCell>
-                    <TableCell colSpan={2}>Item Description</TableCell>
-                    <TableCell>Item Price</TableCell>
-                    <TableCell>Payment</TableCell>
-                    <TableCell>Delivery</TableCell>
-                    <TableCell>Total</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {/* .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) */}
-                  {orders.map((row, i) => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={row.code}
-                        style={{ verticalAlign: "top" }}
-                      >
-                        <TableCell>{i + 1}</TableCell>
-                        <TableCell>
-                          {row.orderItems.map((item, i) => {
-                            return (
-                              <>
-                                <TableRow rowsPan="2">
-                                  <TableCell style={{ borderBottom: "none" }}>
-                                    <img
-                                      style={{
-                                        width: "100px",
-                                      }}
-                                      src={item.image}
-                                    />
-                                  </TableCell>
-                                  <TableRow style={{ borderBottom: "none" }}>
-                                    <TableCell style={{ borderBottom: "none" }}>
-                                      <Typography>
-                                        Name:
-                                        {item.itemName}
-                                      </Typography>
+        <>
+          <div className="my-5">
+            <Row>
+              <Col md={2}>
+                <SideBar></SideBar>
+              </Col>
+              <Col lg={10}>
+                <div className="col-lg-11">
+                  <Typography variant="h5">History of Purchase Products</Typography>
+                  <Paper sx={{ width: "100%", overflow: "hidden", mt: 5 }}>
+                    <TableContainer sx={{ maxHeight: 640 }}>
+                      <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Item Description</TableCell>
+                            <TableCell>Payment</TableCell>
+                            <TableCell>Delivery</TableCell>
+                            <TableCell>Tax</TableCell>
+                            <TableCell>Total (+Shipping Charge)</TableCell>
+                            <TableCell>Grand Total</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        {loading ? (
+                          <>
+                            <div className="container pt-5">
+                              <Spinner
+                                animation="border"
+                                role="status"
+                              ></Spinner>
+                            </div>
+                          </>
+                        ) : error ? (
+                          <div>{error}</div>
+                        ) : (
+                          <TableBody>
+                            {/* .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) */}
+                            {orders
+                              .slice(
+                                page * rowsPerPage,
+                                page * rowsPerPage + rowsPerPage
+                              )
+                              .map((row, i) => {
+                                return (
+                                  <TableRow
+                                    hover
+                                    role="checkbox"
+                                    tabIndex={-1}
+                                    key={row.code}
+                                    style={{ verticalAlign: "top" }}
+                                  >
+                                    <TableCell>
+                                      {row.orderItems.map((item, i) => {
+                                        return (
+                                          <>
+                                            <TableRow rowsPan="2">
+                                              <TableCell
+                                                style={{ borderBottom: "none" }}
+                                              >
+                                                <img
+                                                  style={{
+                                                    width: "100px",
+                                                  }}
+                                                  src={item.image}
+                                                />
+                                              </TableCell>
+                                              <TableRow
+                                                style={{ borderBottom: "none" }}
+                                              >
+                                                <TableCell
+                                                  style={{
+                                                    borderBottom: "none",
+                                                  }}
+                                                >
+                                                  <Typography>
+                                                    <b>Name:</b>
+                                                  </Typography>
+                                                </TableCell>
+                                                <TableCell
+                                                  style={{
+                                                    borderBottom: "none",
+                                                  }}
+                                                >
+                                                  <Typography>
+                                                    <b>Price:</b>
+                                                  </Typography>
+                                                </TableCell>
+                                                <TableCell
+                                                  style={{
+                                                    borderBottom: "none",
+                                                  }}
+                                                >
+                                                  <Typography>
+                                                    <b>Manufacture:</b>
+                                                  </Typography>
+                                                </TableCell>
+                                                <TableCell
+                                                  style={{
+                                                    borderBottom: "none",
+                                                  }}
+                                                >
+                                                  <Typography>
+                                                    <b>Item Qty:</b>
+                                                  </Typography>
+                                                </TableCell>
+                                              </TableRow>
+                                              <TableRow
+                                                style={{ verticalAlign: "top" }}
+                                              >
+                                                <TableCell
+                                                  style={{
+                                                    borderBottom: "none",
+                                                    width: "50px",
+                                                  }}
+                                                >
+                                                  <Typography>
+                                                    {item.itemName}
+                                                  </Typography>
+                                                </TableCell>
+                                                <TableCell
+                                                  style={{
+                                                    borderBottom: "none",
+                                                  }}
+                                                >
+                                                  <Typography>
+                                                    &#x20B9; {item.itemPrice}
+                                                  </Typography>
+                                                </TableCell>
+                                                <TableCell
+                                                  style={{
+                                                    borderBottom: "none",
+                                                  }}
+                                                >
+                                                  <Typography>
+                                                    {item.mnfName
+                                                      ? item.mnfName
+                                                      : "-"}
+                                                  </Typography>
+                                                </TableCell>
+                                                <TableCell
+                                                  style={{
+                                                    borderBottom: "none",
+                                                  }}
+                                                >
+                                                  <Typography>
+                                                    {item.quantity}
+                                                  </Typography>
+                                                </TableCell>
+                                              </TableRow>
+                                              <TableRow>
+                                              <TableCell
+                                              colSpan={4}
+                                                  style={{
+                                                    borderBottom: "none",
+                                                  }}
+                                                >
+                                                  {id ? id.filter((h,i)=>{
+                                                    if(h._id === item.product){
+                                                      return h;
+                                                    }
+
+                                                  }).map((g,i)=>{
+                                                  return(
+                                                    <>
+                                                    <Button variant="contained" color="success"><Link style={{color:"white"}} to={`/seller/${g._id}`}>Repeat</Link></Button>
+                                                    </>
+                                                  )
+                                                  }):"No"}
+                                                  </TableCell>
+                                              </TableRow>
+                                            </TableRow>
+                                          </>
+                                        );
+                                      })}
+                                    </TableCell>
+                                    <TableCell>
+                                      {row.isPaid === false ? (
+                                        <Typography style={{ color: "red" }}>
+                                          Payment Peding
+                                        </Typography>
+                                      ) : (
+                                        <>
+                                          <Typography
+                                            style={{ color: "green" }}
+                                          >
+                                            Payment Done{" "}
+                                          </Typography>{" "}
+                                          via {row.paymentMethod}
+                                        </>
+                                      )}
+                                    </TableCell>
+                                    <TableCell>
+                                      {row.isDelivered === false ? (
+                                        <Typography style={{ color: "red" }}>
+                                          Delivery Peding
+                                        </Typography>
+                                      ) : (
+                                        <Typography style={{ color: "green" }}>
+                                          Payment Done
+                                        </Typography>
+                                      )}
+                                      <TableRow>
+                                        <TableCell
+                                          style={{
+                                            verticalAlign: "top",
+                                            borderBottom: "none",
+                                          }}
+                                        >
+                                          Address
+                                        </TableCell>
+                                        <TableCell
+                                          style={{
+                                            verticalAlign: "top",
+                                            borderBottom: "none",
+                                          }}
+                                        >
+                                          {row.shippingAddress.firstname +
+                                            " " +
+                                            row.shippingAddress.lastname}
+                                          <br />
+                                          {row.shippingAddress.phone}
+                                          <br />
+                                          {row.shippingAddress.address1}
+                                          <br />
+                                          {row.shippingAddress.address2}
+                                          <br />
+                                          {row.shippingAddress.address3}
+                                          <br />
+                                        </TableCell>
+                                      </TableRow>
+                                    </TableCell>
+                                    <TableCell>
+                                      {Math.ceil(row.taxPrice)}
+                                    </TableCell>
+                                    <TableCell>
+                                      {Math.ceil(row.itemPrice) +
+                                        " " +
+                                        (row.shippingPrice > 0
+                                          ? "+" + row.shippingPrice
+                                          : "")}
+                                    </TableCell>
+                                    <TableCell>
+                                      {Math.ceil(row.totalPrice)}
                                     </TableCell>
                                   </TableRow>
-                                </TableRow>
-                              </>
-                            );
-                          })}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-        </div>
+                                );
+                              })}
+                          </TableBody>
+                        )}
+                      </Table>
+                    </TableContainer>
+                    <TablePagination
+                      rowsPerPageOptions={[10, 25, 100]}
+                      component="div"
+                      count={orders.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                  </Paper>
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </>
       )}
     </>
   );
 };
-
+// {id
+//   .filter((t) => {
+//     if (t._id === val._id) {
+//       return t;
+//     }
+//   })
+//   .map((im, i) => {
 export default UserPurchase;

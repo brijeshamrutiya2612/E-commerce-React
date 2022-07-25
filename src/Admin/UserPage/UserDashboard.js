@@ -80,20 +80,17 @@ const Userdashboard = () => {
       ) : error ? (
         <div>{error}</div>
       ) : (
-        <Row>
-          <Col
-            md={3}
-            style={{ width:"auto", height: "auto", minHeight: "680px", maxHeight: "500px" }}
-          >
-            <SideBar></SideBar>
-          </Col>
-          <Col md={8} style={{ width: "auto"}}>
-            <>
-              <div className="col-lg-15 mt-5 pt-5">
-                <Typography variant="h4" className="ml-3">
+        <div className="my-5">
+          <Row>
+            <Col md={2}>
+              <SideBar></SideBar>
+            </Col>
+            <Col lg={10}>
+              <div className="col-lg-11">
+                <Typography variant="h4">
                   Dashboard
                 </Typography>
-                <Typography variant="h5" className="ml-5 my-4">
+                <Typography variant="h5" className="my-4">
                   Profile Summary
                 </Typography>
                 <TableContainer component={Paper} className="container">
@@ -120,15 +117,13 @@ const Userdashboard = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <Typography variant="h5" className="ml-5 my-4">
+                <Typography variant="h5" className="my-4">
                   Orders Summary
                 </Typography>
-                <TableContainer
-                  component={Paper}
-                  className="mt-3 container my-4"
-                >
-                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
+                <Paper sx={{ width: "100%", overflow: "hidden", mt: 5 }}>
+                    <TableContainer sx={{ maxHeight: 640 }}>
+                      <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
                       <TableRow>
                         <TableCell>#</TableCell>
                         <TableCell>Product Name</TableCell>
@@ -164,23 +159,26 @@ const Userdashboard = () => {
                         })
                       ) : (
                         <>
-                              <TableRow>
-                                <TableCell colSpan={4}>
-                                  <Typography variant="h6" style={{textAlign:"center"}}>
-                                    You have a no any Products Purchase Yet
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                          
+                          <TableRow>
+                            <TableCell colSpan={4}>
+                              <Typography
+                                variant="h6"
+                                style={{ textAlign: "center" }}
+                              >
+                                You have a no any Products Purchase Yet
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
                         </>
                       )}
                     </TableBody>
                   </Table>
                 </TableContainer>
+                </Paper>
               </div>
-            </>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+        </div>
       )}
     </>
   );

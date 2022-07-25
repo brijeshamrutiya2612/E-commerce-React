@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  font-family: "monospace",
 }
 
 .App-logo {
@@ -19,7 +20,7 @@ main{
   flex: 1;
 }
 .btn-c{
-  background-color: #f0c040;
+  background-color: #BFD3E2;
   color: #000000;
 }
 .App-header {

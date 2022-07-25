@@ -1,7 +1,7 @@
 import React, { useContext, useReducer, useState } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import axios from "axios";
-import { Input, TextField } from "@mui/material";
+import { Box, Input, TextField } from "@mui/material";
 import { Store } from "../../store/Context";
 import SideBar from "./SideBar";
 import { toast, ToastContainer } from "react-toastify";
@@ -25,8 +25,9 @@ function reducer(state, action) {
 const Userprofile = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
-  const [{ loadingUpdate }, dispatch] = useReducer(reducer, {
+  const [{ loadingUpdate, error }, dispatch] = useReducer(reducer, {
     loadingUpdate: false,
+    error: "",
   });
   const nav = useNavigate();
   const [firstname, setFirstname] = useState(userInfo.firstname);
@@ -42,7 +43,7 @@ const Userprofile = () => {
 
   const sendUpdateRequest = async (e) => {
     e.preventDefault();
-    if(password !== cPassword){
+    if (password !== cPassword) {
       toast.error("Password do not match");
       return;
     }
@@ -109,7 +110,7 @@ const Userprofile = () => {
 
   return (
     <>
-      {/* {loading ? (
+      {loadingUpdate ? (
         <>
           <div className="container pt-5">
             <Spinner animation="border" role="status"></Spinner>
@@ -118,160 +119,155 @@ const Userprofile = () => {
       ) : error ? (
         <div>{error}</div>
       ) : (
-        <> */}
-      <div>
-        <Row>
-          <Col
-            md={3}
-            style={{ height: "auto", minHeight: "680px", maxHeight: "500px" }}
-          >
-            <SideBar></SideBar>
-          </Col>
-          <Col lg={8} style={{ width: "auto" }}>
-            <ToastContainer position="top-center" limit={1} />
-            <div>
-              <div>
-                <div>
-                  <form>
-                    <Container className="pt-5 justify-content-center">
-                      <div
-                        className="container justify-content-center"
-                        style={{
-                          backgroundColor: "white",
-                          overflow: "hidden",
-                          boxShadow: "1px 1px 15px #343A40",
-                          borderRadius: "20px",
-                          opacity: 0.8,
-                        }}
-                      >
-                        <h2 className="container pt-4 ml-4 col-md-11">
-                          Profile
-                        </h2>
-                        <div className="container col-md-15 justify-content-center">
-                          <TextField
-                            className="ml-4 col-md-11 my-3 justify-content-center"
-                            label="Firstname"
-                            type="text"
-                            variant="outlined"
-                            value={firstname}
-                            onChange={(e) => setFirstname(e.target.value)}
-                          />
-                        </div>
-                        <div className="container col-md-15 justify-content-center">
-                          <TextField
-                            className="ml-4 col-md-11 my-3 justify-content-center"
-                            label="Lastname"
-                            variant="outlined"
-                            value={lastname}
-                            onChange={(e) => setLastname(e.target.value)}
-                          />
-                        </div>
-
-                        <div className="container col-md-15 justify-content-center">
-                          <TextField
-                            className="ml-4 col-md-11 my-3 justify-content-center"
-                            type="email"
-                            label="Email"
-                            value={email}
-                            variant="outlined"
-                            onChange={(e) => setEmail(e.target.value)}
-                          />
-                        </div>
-                        <div className="container col-md-15 justify-content-center">
-                          <TextField
-                            className="ml-4 col-md-11 my-3 justify-content-center"
-                            label="Password"
-                            type="password"
-                            variant="outlined"
-                            onChange={(e) => setPassword(e.target.value)}
-                          />
-                          </div>
-                          <div className="container col-md-15 justify-content-center">
-                            <TextField
-                              className="ml-4 col-md-11 my-3 justify-content-center"
-                              label="confirm Password"
-                              type="password"
-                              variant="outlined"
-                              name="cPassword"
-                              onChange={(e) => setCPassword(e.target.value)}
-                            />
-                          </div>
-                          <div className="container col-md-15 justify-content-center">
-                            <TextField
-                              className="ml-4 col-md-11 my-3 justify-content-center"
-                              label="Address1"
-                              type="text"
-                              variant="outlined"
-                              value={address1}
-                              onChange={(e) =>setAddress1(e.target.value)}
-                            />
-                          </div>
-                          <div className="container col-md-15 justify-content-center">
-                            <TextField
-                              className="ml-4 col-md-11 my-3 justify-content-center"
-                              label="Address2"
-                              type="text"
-                              variant="outlined"
-                              value={address2}
-                              onChange={(e) => setAddress2(e.target.value)}
-                            />
-                          </div>
-                          <div className="container col-md-15 justify-content-center">
-                            <TextField
-                              className="ml-4 col-md-11 my-3 justify-content-center"
-                              label="Address3"
-                              type="text"
-                              variant="outlined"
-                              value={address3}
-                              onChange={(e) => setAddress3(e.target.value)}
-                            />
-                          </div>
-                          <div className="container col-md-15 justify-content-center">
-                            <TextField
-                              className="ml-4 col-md-11 my-3 justify-content-center"
-                              label="Mobile:"
-                              type="number"
-                              variant="outlined"
-                              value={phone}
-                              onChange={(e) =>
-                                setPhone(e.target.value)
-                              }
-                            />
-                            </div>
-                            <div className="container col-md-15 justify-content-center">
-                            <TextField
-                              className="ml-4 col-md-11 my-3 justify-content-center"
-                              label="Age:"
-                              type="number"
-                              variant="outlined"
-                              value={age}
-                              onChange={(e) =>
-                                setAge(e.target.value)
-                              }
-                            />
-                          </div>
-                        <div className="container col-md-15 justify-content-center">
-                          <div className="my-5 justify-content-center">
-                            <Button
-                              className="ml-4 col-md-11 justify-content-center"
-                              variant="warning"
-                              onClick={sendUpdateRequest}
+        <>
+          <div className="my-5">
+            <Row>
+              <Col md={2}>
+                  <SideBar></SideBar>
+              </Col>
+              <Col lg={10}>
+                <div className="col-lg-11">
+                  <ToastContainer position="top-center" limit={1} />
+                  <div>
+                    <div>
+                      <div>
+                        <form>
+                          <Container className="pt-1 justify-content-center">
+                            <div
+                              className="container justify-content-center"
+                              style={{
+                                backgroundColor: "white",
+                                overflow: "hidden",
+                                boxShadow: "1px 1px 15px #343A40",
+                                borderRadius: "20px",
+                                opacity: 0.8,
+                              }}
                             >
-                              Update Profile
-                            </Button>
-                          </div>
-                        </div>
+                              <h2 className="container pt-4 ml-4 col-md-11">
+                                Profile
+                              </h2>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="Firstname"
+                                  type="text"
+                                  variant="outlined"
+                                  value={firstname}
+                                  onChange={(e) => setFirstname(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="Lastname"
+                                  variant="outlined"
+                                  value={lastname}
+                                  onChange={(e) => setLastname(e.target.value)}
+                                />
+                              </div>
+
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  type="email"
+                                  label="Email"
+                                  value={email}
+                                  variant="outlined"
+                                  onChange={(e) => setEmail(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="Password"
+                                  type="password"
+                                  variant="outlined"
+                                  onChange={(e) => setPassword(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="confirm Password"
+                                  type="password"
+                                  variant="outlined"
+                                  name="cPassword"
+                                  onChange={(e) => setCPassword(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="Address1"
+                                  type="text"
+                                  variant="outlined"
+                                  value={address1}
+                                  onChange={(e) => setAddress1(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="Address2"
+                                  type="text"
+                                  variant="outlined"
+                                  value={address2}
+                                  onChange={(e) => setAddress2(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="Address3"
+                                  type="text"
+                                  variant="outlined"
+                                  value={address3}
+                                  onChange={(e) => setAddress3(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="Mobile:"
+                                  type="number"
+                                  variant="outlined"
+                                  value={phone}
+                                  onChange={(e) => setPhone(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <TextField
+                                  className="ml-4 col-md-11 my-3 justify-content-center"
+                                  label="Age:"
+                                  type="number"
+                                  variant="outlined"
+                                  value={age}
+                                  onChange={(e) => setAge(e.target.value)}
+                                />
+                              </div>
+                              <div className="container col-md-15 justify-content-center">
+                                <div className="my-5 justify-content-center">
+                                  <Button
+                                    className="ml-4 col-md-11 justify-content-center"
+                                    style={{ background: "#557794" }}
+                                    onClick={sendUpdateRequest}
+                                  >
+                                    Update Profile
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </Container>
+                        </form>
                       </div>
-                    </Container>
-                  </form>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </div>
-      {/* </>
-      )} */}
+              </Col>
+            </Row>
+          </div>
+        </>
+      )}
     </>
   );
 };
