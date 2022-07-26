@@ -5,6 +5,7 @@ import { Store } from "../store/Context";
 import CheckOutSteps from "./CheckOutSteps";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -96,6 +97,9 @@ function Finalpayment() {
 
   return (
     <div>
+      <Helmet>
+          <title>Final Payment</title>
+        </Helmet>
       <CheckOutSteps step1 step2 step3 step4></CheckOutSteps>
       <div
         style={{

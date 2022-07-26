@@ -1,5 +1,5 @@
 import { CurrencyRupee } from "@mui/icons-material";
-import { Typography } from "@mui/material";
+import { AppBar, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useReducer, useState } from "react";
 import {
@@ -94,6 +94,7 @@ const Search = () => {
 
   const [{ loading, error, products, pages, countProducts }, dispatch] =
     useReducer(reducer, {
+      getProd: [],
       loading: true,
       error: "",
     });
@@ -114,8 +115,8 @@ const Search = () => {
     fetchData();
     console.log(searching);
   }, [itemCategory, error, order, page, itemPrice, searching, rating]);
-
   const [categories, setCategories] = useState([]);
+  const [product, setProduct] = useState([]);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -123,6 +124,8 @@ const Search = () => {
           "http://localhost:5000/api/products/categories"
         );
         setCategories(data);
+        const product = await axios.get("http://localhost:5000/api/products/");
+        setProduct(product.data);
       } catch (error) {
         console.log("Problem");
       }
@@ -159,23 +162,40 @@ const Search = () => {
                   height: "auto",
                 }}
               >
-                <div className="my-4 p-4" style={{ background: "#D8E4E6" }}>
+                <div className="my-4 p-4">
                   <div className="pt-2">
-                    <Form className="d-flex col-lg-3 mx-auto">
-                      <Form.Control
-                        type="search"
-                        placeholder="Search by product, category..."
-                        aria-label="Search"
-                        onChange={(e) => setSearch(e.target.value)}
-                      />
-                    </Form>
+                    <AppBar className="mt-5">
+                      <div
+                        className="my-4 p-2"
+                        style={{
+                          position: "fixed",
+                          width: "100%",
+                        }}
+                      >
+                        <div className="pt-2 pb-2" style={{}}>
+                          <Form className="d-flex col-lg-3 mx-auto">
+                            <Form.Control
+                              type="search"
+                              placeholder="Search by product, category..."
+                              aria-label="Search"
+                              onChange={(e) => setSearch(e.target.value)}
+                            />
+                          </Form>
+                        </div>
+                      </div>
+                    </AppBar>
                   </div>
                 </div>
                 <div className="my-4">
                   <div>
                     <div className="col-lg-12">
                       <Row style={{ width: "100%" }}>
-                        <Col lg={2} style={{background:"#D8E4E6", borderRight:"5px solid #ffffff"}}>
+                        <Col
+                          lg={2}
+                          style={{
+                            borderRight: "5px solid #ffffff",
+                          }}
+                        >
                           <Typography variant="h6">Category</Typography>
                           <div>
                             <ul style={{ listStyleType: "none" }}>
@@ -304,7 +324,7 @@ const Search = () => {
                             </ul>
                           </div>
                         </Col>
-                        <Col lg={10} className="p-3" style={{background:"#D8E4E6",width:"100%"}}>
+                        <Col lg={10} className="p-3" style={{ width: "100%" }}>
                           {loading ? (
                             <div className="container pt-5">
                               <Spinner
@@ -316,198 +336,366 @@ const Search = () => {
                             <div>{error}</div>
                           ) : (
                             <>
-                              <Row className="justify-content-between mb-3">
-                                <Col md={8}>
-                                  <div
-                                    className="container ml-5"
-                                    style={{
-                                      fontWeight: "bold",
-                                      fontSize: "20px",
-                                    }}
-                                  >
-                                    Results "
-                                    {countProducts === 0 ? "No" : countProducts}
-                                    " Found
-                                    {/* {searching !== "all" && " : " + searching.toUpperCase()} */}
-                                    {itemCategory !== "all" &&
-                                      " : " + itemCategory.toUpperCase()}
-                                    {itemPrice !== "all" &&
-                                      " : Price " + itemPrice}
-                                    {rating !== "all" &&
-                                      " : Rating " + rating + " & up"}
-                                    {searching !== "all" ||
-                                    itemCategory !== "all" ||
-                                    rating !== "all" ||
-                                    itemPrice !== "all" ? (
-                                      <Button
-                                        className="ml-1"
-                                        variant="light"
-                                        onClick={() => navigate("/search")}
+                              {searching == "" ? (
+                                <>
+                                  <Row className="justify-content-between mb-3">
+                                    <Col md={8}>
+                                      <div
+                                        className="container ml-5"
+                                        style={{
+                                          fontWeight: "bold",
+                                          fontSize: "20px",
+                                        }}
                                       >
-                                        <i className="fas fa-times-circle"></i>
-                                      </Button>
-                                    ) : null}
-                                  </div>
-                                </Col>
-                                <Col md={4} className="text-right">
-                                  Sort by{" "}
-                                  <select
-                                    value={order}
-                                    onChange={(e) => {
-                                      navigate(
-                                        getFilterUrl({ order: e.target.value })
-                                      );
-                                    }}
-                                  >
-                                    <option value="newest">
-                                      Newest Arrivals
-                                    </option>
-                                    <option value="lowest">
-                                      Price: Low to High
-                                    </option>
-                                    <option value="highest">
-                                      Price: High to Low
-                                    </option>
-                                    <option value="toprated">
-                                      Avg. Customer Reviews
-                                    </option>
-                                  </select>
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col>
-                                  <div className="row" style={{ width: "100%" }}>
-                                    {products.map((val, i) => {
-                                      return (
-                                        <div
-                                          className="p-3"
-                                        >
-                                          <Link
-                                            key={i}
-                                            to={`/Seller/${val._id}`}
+                                        Results "
+                                        {countProducts === 0
+                                          ? "No"
+                                          : countProducts}
+                                        " Found
+                                        {/* {searching !== "all" && " : " + searching.toUpperCase()} */}
+                                        {itemCategory !== "all" &&
+                                          " : " + itemCategory.toUpperCase()}
+                                        {itemPrice !== "all" &&
+                                          " : Price " + itemPrice}
+                                        {rating !== "all" &&
+                                          " : Rating " + rating + " & up"}
+                                        {searching !== "all" ||
+                                        itemCategory !== "all" ||
+                                        rating !== "all" ||
+                                        itemPrice !== "all" ? (
+                                          <Button
+                                            className="ml-1"
+                                            variant="light"
+                                            onClick={() => navigate("/search")}
                                           >
-                                            <Card
-                                              className="card card-item"
-                                              key={i}
-                                              style={{
-                                                overflow: "hidden",
-                                                width: "250px",
-                                                maxWidth: "500px",
-                                                background: "#FFFFFF",
-                                                transitionDuration: "1s",
-                                              }}
-                                            >
-                                              <Container>
-                                                <Row>
-                                                  <Col
-                                                    style={{
-                                                      height: "200px",
-                                                      minHeight: "170px",
-                                                      width: "150px",
-                                                      maxHeight: "550px",
-                                                      marginTop: "1em",
-                                                      textAlign: "center",
-                                                    }}
+                                            <i className="fas fa-times-circle"></i>
+                                          </Button>
+                                        ) : null}
+                                      </div>
+                                    </Col>
+                                    <Col md={4} className="text-right">
+                                      Sort by{" "}
+                                      <select
+                                        value={order}
+                                        onChange={(e) => {
+                                          navigate(
+                                            getFilterUrl({
+                                              order: e.target.value,
+                                            })
+                                          );
+                                        }}
+                                      >
+                                        <option value="newest">
+                                          Newest Arrivals
+                                        </option>
+                                        <option value="lowest">
+                                          Price: Low to High
+                                        </option>
+                                        <option value="highest">
+                                          Price: High to Low
+                                        </option>
+                                        <option value="toprated">
+                                          Avg. Customer Reviews
+                                        </option>
+                                      </select>
+                                    </Col>
+                                  </Row>
+                                  <Row>
+                                    <Col>
+                                      <div
+                                        className="row"
+                                        style={{ width: "100%" }}
+                                      >
+                                        {products.map((val, i) => {
+                                          return (
+                                            <div className="p-3">
+                                              <Link
+                                                key={i}
+                                                to={`/Seller/${val._id}`}
+                                              >
+                                                <Card
+                                                  className="card card-item"
+                                                  key={i}
+                                                  style={{
+                                                    overflow: "hidden",
+                                                    width: "250px",
+                                                    maxWidth: "500px",
+                                                    background: "#FFFFFF",
+                                                    transitionDuration: "1s",
+                                                    border: "5px solid #BFD3E2",
+                                                  }}
+                                                >
+                                                  <Container>
+                                                    <Row>
+                                                      <Col
+                                                        style={{
+                                                          height: "200px",
+                                                          minHeight: "170px",
+                                                          width: "150px",
+                                                          maxHeight: "550px",
+                                                          marginTop: "1em",
+                                                          textAlign: "center",
+                                                        }}
+                                                      >
+                                                        <Card.Img
+                                                          src={val.image}
+                                                          style={{
+                                                            maxHeight: "250px",
+                                                            height: "auto",
+                                                            width: "auto",
+                                                            maxWidth: "200px",
+                                                            textAlign: "center",
+                                                          }}
+                                                        />
+                                                      </Col>
+                                                    </Row>
+                                                    <Row className="mt-5">
+                                                      <Col
+                                                        style={{
+                                                          height: "230px",
+                                                          textAlign: "center",
+                                                        }}
+                                                      >
+                                                        <Rating
+                                                          ratingValue={
+                                                            val.rating * 20
+                                                          }
+                                                          size={20}
+                                                        ></Rating>
+                                                        <Card.Body
+                                                          style={{
+                                                            textAlign: "center",
+                                                            color: "black",
+                                                          }}
+                                                        >
+                                                          <Card.Title
+                                                            style={{
+                                                              textAlign:
+                                                                "center",
+                                                              color: "black",
+                                                            }}
+                                                          >
+                                                            {val.itemName.substring(
+                                                              0,
+                                                              20
+                                                            )}
+                                                          </Card.Title>
+                                                          <Card.Title
+                                                            style={{
+                                                              textAlign:
+                                                                "center",
+                                                              color: "black",
+                                                            }}
+                                                          >
+                                                            &#x20B9;{" "}
+                                                            {val.itemPrice}
+                                                          </Card.Title>
+                                                          <Card.Text
+                                                            style={{
+                                                              textAlign:
+                                                                "center",
+                                                              color: "black",
+                                                            }}
+                                                          >
+                                                            {val.itemCategory.toUpperCase()}
+                                                          </Card.Text>
+                                                          <Button
+                                                            className="btn-sm btn-c"
+                                                            variant="dark"
+                                                          >
+                                                            Shop now &#x2192;
+                                                          </Button>
+                                                        </Card.Body>
+                                                      </Col>
+                                                    </Row>
+                                                  </Container>
+                                                </Card>
+                                              </Link>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                  <div
+                                    className="pb-3 pt-5"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    {[...Array(pages).keys()].map((x) => (
+                                      <LinkContainer
+                                        key={x + 1}
+                                        className="mx-1"
+                                        to={getFilterUrl({ page: x + 1 })}
+                                      >
+                                        <Button
+                                          className={
+                                            Number(page) === x + 1
+                                              ? "text-bold"
+                                              : ""
+                                          }
+                                          variant="light"
+                                        >
+                                          {x + 1}
+                                        </Button>
+                                      </LinkContainer>
+                                    ))}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="row">
+                                    {product
+                                      .filter((itm) => {
+                                        if (searching == "") {
+                                          return itm;
+                                        } else if (
+                                          itm.itemName
+                                            .toLowerCase()
+                                            .includes(searching.toLowerCase())
+                                        ) {
+                                          let final = [{ itm }];
+                                          return final;
+                                        } else if (
+                                          itm.itemCategory
+                                            .toLowerCase()
+                                            .includes(searching.toLowerCase())
+                                        ) {
+                                          let final = [{ itm }];
+                                          return final;
+                                        }
+                                      })
+                                      .map((val, i) => {
+                                        console.log(val);
+                                        return (
+                                          <>
+                                            {val ? (
+                                              <>
+                                                <div className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
+                                                  <Link
+                                                    key={i}
+                                                    to={`/Seller/${val._id}`}
                                                   >
-                                                    <Card.Img
-                                                      src={val.image}
+                                                    <Card
+                                                      className="card card-item"
+                                                      key={i}
                                                       style={{
-                                                        maxHeight: "250px",
-                                                        height: "auto",
-                                                        width: "auto",
-                                                        maxWidth: "200px",
-                                                        textAlign: "center",
-                                                      }}
-                                                    />
-                                                  </Col>
-                                                </Row>
-                                                <Row className="mt-5">
-                                                  <Col
-                                                    style={{
-                                                      height: "230px",
-                                                      textAlign: "center",
-                                                    }}
-                                                  >
-                                                    <Rating
-                                                      ratingValue={
-                                                        val.rating * 20
-                                                      }
-                                                      size={20}
-                                                    ></Rating>
-                                                    <Card.Body
-                                                      style={{
-                                                        textAlign: "center",
-                                                        color: "black",
+                                                        overflow: "hidden",
+                                                        width: "250px",
+                                                        maxWidth: "500px",
+                                                        background: "#FFFFFF",
+                                                        transitionDuration:
+                                                          "1s",
+                                                        border:
+                                                          "5px solid #BFD3E2",
                                                       }}
                                                     >
-                                                      <Card.Title
-                                                        style={{
-                                                          textAlign: "center",
-                                                          color: "black",
-                                                        }}
-                                                      >
-                                                        {val.itemName.substring(
-                                                          0,
-                                                          20
-                                                        )}
-                                                      </Card.Title>
-                                                      <Card.Title
-                                                        style={{
-                                                          textAlign: "center",
-                                                          color: "black",
-                                                        }}
-                                                      >
-                                                        &#x20B9; {val.itemPrice}
-                                                      </Card.Title>
-                                                      <Card.Text
-                                                        style={{
-                                                          textAlign: "center",
-                                                          color: "black",
-                                                        }}
-                                                      >
-                                                        {val.itemCategory.toUpperCase()}
-                                                      </Card.Text>
-                                                      <Button
-                                                        className="btn-sm btn-c"
-                                                        variant="dark"
-                                                      >
-                                                        Shop now &#x2192;
-                                                      </Button>
-                                                    </Card.Body>
-                                                  </Col>
-                                                </Row>
-                                              </Container>
-                                            </Card>
-                                          </Link>
-                                        </div>
-                                      );
-                                    })}
+                                                      <Container>
+                                                        <Row>
+                                                          <Col
+                                                            style={{
+                                                              height: "200px",
+                                                              minHeight:
+                                                                "170px",
+                                                              width: "150px",
+                                                              maxHeight:
+                                                                "550px",
+                                                              marginTop: "1em",
+                                                              textAlign:
+                                                                "center",
+                                                            }}
+                                                          >
+                                                            <Card.Img
+                                                              src={val.image}
+                                                              style={{
+                                                                maxHeight:
+                                                                  "250px",
+                                                                height: "auto",
+                                                                width: "auto",
+                                                                maxWidth:
+                                                                  "200px",
+                                                                textAlign:
+                                                                  "center",
+                                                              }}
+                                                            />
+                                                          </Col>
+                                                        </Row>
+                                                        <Row className="mt-5">
+                                                          <Col
+                                                            style={{
+                                                              height: "200px",
+                                                              textAlign:
+                                                                "center",
+                                                            }}
+                                                          >
+                                                            <Card.Body
+                                                              style={{
+                                                                textAlign:
+                                                                  "center",
+                                                                color: "black",
+                                                              }}
+                                                            >
+                                                              <Card.Title
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                  color:
+                                                                    "black",
+                                                                }}
+                                                              >
+                                                                {val.itemName.substring(
+                                                                  0,
+                                                                  20
+                                                                )}
+                                                              </Card.Title>
+                                                              <Card.Title
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                  color:
+                                                                    "black",
+                                                                }}
+                                                              >
+                                                                &#x20B9;{" "}
+                                                                {val.itemPrice}
+                                                              </Card.Title>
+                                                              <Card.Text
+                                                                style={{
+                                                                  textAlign:
+                                                                    "center",
+                                                                  color:
+                                                                    "black",
+                                                                }}
+                                                              >
+                                                                {val.itemCategory.toUpperCase()}
+                                                              </Card.Text>
+                                                              <Button
+                                                                className="btn-sm btn-c"
+                                                                variant="dark"
+                                                              >
+                                                                Shop now
+                                                                &#x2192;
+                                                              </Button>
+                                                            </Card.Body>
+                                                          </Col>
+                                                        </Row>
+                                                      </Container>
+                                                    </Card>
+                                                  </Link>
+                                                </div>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <div className="col-lg-15 ml-5 my-3 d-flex justify-content-center">
+                                                  <p>Not Product Found</p>
+                                                </div>
+                                              </>
+                                            )}
+                                          </>
+                                        );
+                                      })}
                                   </div>
-                                </Col>
-                              </Row>
-                              <div
-                                className="pb-3 pt-5"
-                                style={{ textAlign: "center" }}
-                              >
-                                {[...Array(pages).keys()].map((x) => (
-                                  <LinkContainer
-                                    key={x + 1}
-                                    className="mx-1"
-                                    to={getFilterUrl({ page: x + 1 })}
-                                  >
-                                    <Button
-                                      className={
-                                        Number(page) === x + 1
-                                          ? "text-bold"
-                                          : ""
-                                      }
-                                      variant="light"
-                                    >
-                                      {x + 1}
-                                    </Button>
-                                  </LinkContainer>
-                                ))}
-                              </div>
+                                </>
+                              )}
                             </>
                           )}
                         </Col>

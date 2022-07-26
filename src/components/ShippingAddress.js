@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import Helmet from "helmet";
 import { TextField } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { Store } from "../store/Context";
 import { useNavigate } from "react-router-dom";
 import CheckOutSteps from "./CheckOutSteps";
-import { HelmetProvider } from "react-helmet-async";
+import {Helmet} from "react-helmet"
 
 const ShippingAddress = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);

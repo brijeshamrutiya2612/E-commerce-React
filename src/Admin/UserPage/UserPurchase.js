@@ -141,7 +141,10 @@ const UserPurchase = () => {
               </Col>
               <Col lg={10}>
                 <div className="col-lg-11">
-                  <Typography variant="h5">History of Purchase Products</Typography>
+                  <Typography variant="h5">
+                    History of Purchase Products
+                  </Typography>
+                    <p>*Some Products are you buyed but can't buy in recently, Because It Products are currently not available</p>
                   <Paper sx={{ width: "100%", overflow: "hidden", mt: 5 }}>
                     <TableContainer sx={{ maxHeight: 640 }}>
                       <Table stickyHeader aria-label="sticky table">
@@ -168,7 +171,6 @@ const UserPurchase = () => {
                           <div>{error}</div>
                         ) : (
                           <TableBody>
-                            {/* .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) */}
                             {orders
                               .slice(
                                 page * rowsPerPage,
@@ -268,7 +270,7 @@ const UserPurchase = () => {
                                                   <Typography>
                                                     {item.mnfName
                                                       ? item.mnfName
-                                                      : "-"}
+                                                      : "MART Product"}
                                                   </Typography>
                                                 </TableCell>
                                                 <TableCell
@@ -282,25 +284,41 @@ const UserPurchase = () => {
                                                 </TableCell>
                                               </TableRow>
                                               <TableRow>
-                                              <TableCell
-                                              colSpan={4}
+                                                <TableCell
+                                                  colSpan={4}
                                                   style={{
                                                     borderBottom: "none",
                                                   }}
                                                 >
-                                                  {id ? id.filter((h,i)=>{
-                                                    if(h._id === item.product){
-                                                      return h;
-                                                    }
-
-                                                  }).map((g,i)=>{
-                                                  return(
-                                                    <>
-                                                    <Button variant="contained" color="success"><Link style={{color:"white"}} to={`/seller/${g._id}`}>Repeat</Link></Button>
-                                                    </>
-                                                  )
-                                                  }):"No"}
-                                                  </TableCell>
+                                                  {id
+                                                    .filter((h, i) => {
+                                                      if (
+                                                        h._id === item.product
+                                                      ) {
+                                                        return h;
+                                                      }
+                                                    })
+                                                    .map((g, i) => {
+                                                      return (
+                                                        <>
+                                                            <Button
+                                                              variant="contained"
+                                                              color="warning"
+                                                            >
+                                                              <Link
+                                                                style={{
+                                                                  color:
+                                                                    "white",
+                                                                }}
+                                                                to={`/seller/${g._id}`}
+                                                              >
+                                                                Buy
+                                                              </Link>
+                                                            </Button>
+                                                        </>
+                                                      );
+                                                    })}
+                                                </TableCell>
                                               </TableRow>
                                             </TableRow>
                                           </>

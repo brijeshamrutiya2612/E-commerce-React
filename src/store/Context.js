@@ -48,9 +48,6 @@ function reducer(state, action) {
         (item) => item._id !== action.payload._id
       );
       localStorage.setItem("cartItems", JSON.stringify(cartItems));
-      toast.info(`${action.payload.itemName}  removed from cart`, {
-        position: "bottom-left",
-      });
       return {
         ...state,
         cart: {
@@ -64,9 +61,6 @@ function reducer(state, action) {
         (item) => item !== action.payload
       );
       localStorage.removeItem("cartItems", JSON.stringify(cartItems));
-      toast.success(`Cart Clear`, {
-        position: "bottom-left",
-      });
       return { ...state, cart: { cartItems: [] } };
     }
     case "USER_SIGNIN": {

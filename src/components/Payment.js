@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-
 import { Store } from '../store/Context'
 import CheckOutSteps from './CheckOutSteps'
+import {Helmet} from "react-helmet"
 
 const Payment = () => {
     const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -29,6 +29,9 @@ const Payment = () => {
     }
   return (
     <div>
+       <Helmet>
+          <title>Payment Mode</title>
+        </Helmet>
       <CheckOutSteps step1 step2 step3></CheckOutSteps>
       <div 
         style={{

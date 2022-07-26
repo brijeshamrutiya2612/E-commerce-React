@@ -13,6 +13,7 @@ import Carousel from "react-bootstrap/Carousel";
 import { Link } from "react-router-dom";
 import logger from "use-reducer-logger";
 import { AppBar, Typography } from "@mui/material";
+import {Helmet} from "react-helmet"
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -58,16 +59,19 @@ function Home() {
     console.log(search);
     setSearch("");
   };
-
+ 
   return (
     <>
       <div>
+      <Helmet>
+          <title>Welcome to MART</title>
+        </Helmet>
         {loading ? (
           <div className="container pt-5">
             <Spinner animation="border" role="status"></Spinner>
           </div>
         ) : error ? (
-          <div>{error}</div>
+          <div className="container pt-5">{error}</div>
         ) : (
           <>
             <div>
@@ -169,6 +173,7 @@ function Home() {
                                             maxWidth: "500px",
                                             background: "#FFFFFF",
                                             transitionDuration: "1s",
+                                            border: "5px solid #BFD3E2",
                                           }}
                                         >
                                           <Container>
@@ -283,6 +288,7 @@ function Home() {
                                             maxWidth: "500px",
                                             background: "#FFFFFF",
                                             transitionDuration: "1s",
+                                            border: "5px solid #BFD3E2",
                                           }}
                                         >
                                           <Container>
@@ -397,6 +403,7 @@ function Home() {
                                             maxWidth: "500px",
                                             background: "#FFFFFF",
                                             transitionDuration: "1s",
+                                            border: "5px solid #BFD3E2",
                                           }}
                                         >
                                           <Container>
@@ -511,6 +518,7 @@ function Home() {
                                             maxWidth: "500px",
                                             background: "#FFFFFF",
                                             transitionDuration: "1s",
+                                            border: "5px solid #BFD3E2",
                                           }}
                                         >
                                           <Container>
@@ -625,6 +633,7 @@ function Home() {
                                             maxWidth: "500px",
                                             background: "#FFFFFF",
                                             transitionDuration: "1s",
+                                            border: "5px solid #BFD3E2",
                                           }}
                                         >
                                           <Container>
@@ -739,6 +748,7 @@ function Home() {
                                             maxWidth: "500px",
                                             background: "#FFFFFF",
                                             transitionDuration: "1s",
+                                            border: "5px solid #BFD3E2",
                                           }}
                                         >
                                           <Container>
@@ -862,6 +872,7 @@ function Home() {
                                               maxWidth: "500px",
                                               background: "#FFFFFF",
                                               transitionDuration: "1s",
+                                              border:"5px solid #557794"
                                             }}
                                           >
                                             <Container>

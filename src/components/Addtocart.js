@@ -14,6 +14,8 @@ import {
 import { Store } from "../store/Context";
 import axios from "axios";
 import CheckOutSteps from "./CheckOutSteps";
+import { toast } from "react-toastify";
+import { Helmet } from "react-helmet";
 
 const Addtocart = () => {
 
@@ -37,10 +39,11 @@ const Addtocart = () => {
   };
   const removeCartItems = (item,quantity) => {
     ctxDispatch({type:'CART_REMOVE_ITEM', payload: {...item, quantity},})
-
+    toast.error(item.itemName + "remove from cart")
   };
   const cartClear = (item, quantity) => {
     ctxDispatch({type:'CART_CLEAR', payload: {...item, quantity}})
+    toast.error("Clear All Items in Cart")
 
   };
   const payment = () => {
@@ -56,6 +59,9 @@ const Addtocart = () => {
 
   return (
     <div style={{marginTop:"2em"}}>
+       <Helmet>
+          <title>Your Cart</title>
+        </Helmet>
       <CheckOutSteps step1></CheckOutSteps>
       <div className="pl-5 pr-5" style={{ background: "#D3DDE5" }}>
         <div className="pt-3">
